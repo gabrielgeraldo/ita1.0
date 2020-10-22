@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<h:form>
+
+		<p:hotkey bind="F1" action="#{orcamentoMB.listar}" />
+
+	</h:form>
+
+	<ul class="sidebar-menu tree" data-widget="tree">
+
+		<li class="header">#{configuracaoMB.razaoSocial}</li>
+
+		<li>
+			<p:commandLink onclick="PF('dlg2').show()">
+				<i class="fa fa-book"></i>
+				<span>Empresa</span>
+			</p:commandLink>
+		</li>
+
+		<p:dialog header="Dados da Empresa" widgetVar="dlg2" modal="true"
+			height="175" width="350" appendTo="@(body)" resizable="false"
+			styleClass="box-primary">
+
+			<div class="social-auth-links text-center">
+
+				<p>Razao Social: #{configuracaoMB.razaoSocial}</p>
+				<p>Nome Fantasia: #{configuracaoMB.nomeFantasia}</p>
+				<p>CNPJ: #{configuracaoMB.cnpj}</p>
+				<p>Incrição Estadual: #{configuracaoMB.inscricaoEstadual}</p>
+
+				<p>Código do Cliente: #{configuracaoMB.codClient}</p>
+
+
+			</div>
+
+		</p:dialog>
+
+		<li class="header"></li>
+
+		<li>
+			<p:link outcome="/home.xhtml" onclick="clearBreadCrumbs()">
+				<i class="fa fa-home"></i>
+				<span>Home</span>
+			</p:link>
+		</li>
+		<li class="header">Geral</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-clipboard"></i><span>Orçamento</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{orcamentoMB.listar}" title="Orçamento">
+						<i class="fa fa-file-text-o"></i>
+						<span>Orçamento (F1)</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="header">Sistema</li>
+
+		<li>
+			<p:commandLink>
+				<i class="fa fa-book"></i>
+				<span>Sobre</span>
+			</p:commandLink>
+		</li>
+
+	</ul>
+</ui:composition>

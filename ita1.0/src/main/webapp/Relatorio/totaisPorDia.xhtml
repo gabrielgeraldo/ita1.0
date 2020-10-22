@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:g="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Totais P/ Dia</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formRel">
+
+				<g:passThroughAttribute name="autocomplete" value="off" />
+
+				<p:growl id="growl" />
+
+				<p:tabView>
+
+					<p:tab title="Relatório Totais P/ Dia">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<h:outputText value="Relatório:" />
+							<p:selectOneButton value="#{tataisPorDiaMB.tipoRelatorio}">
+								<f:selectItem itemLabel="NFC-e" itemValue="nfce" />
+								<f:selectItem itemLabel="NF-e" itemValue="nfe" />
+								<f:selectItem itemLabel="Venda" itemValue="venda" />
+							</p:selectOneButton>
+
+						</p:panelGrid>
+
+						<br />
+
+						<p:panelGrid columns="8" layout="grid">
+
+							<p:outputLabel for="dtini" value="Data início:" />
+							<p:calendar id="dtini" value="#{tataisPorDiaMB.dataInicio}"
+								pattern="dd/MM/yyyy HH:mm" size="16" locale="pt" />
+
+							<h:outputText value="Até" />
+
+							<p:outputLabel for="dtfim" value="Data fim:" />
+							<p:calendar id="dtfim" value="#{tataisPorDiaMB.dataFim}"
+								label="Data fim" pattern="dd/MM/yyyy HH:mm" size="16"
+								locale="pt" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton ajax="false" id="REL"
+						styleClass="btn-success btn-block"
+						action="#{tataisPorDiaMB.gerarRelatorio}" value="Gerar relatório" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

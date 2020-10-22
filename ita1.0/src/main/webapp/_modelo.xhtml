@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</f:facet>
+
+	<title><ui:insert id="titulo" name="titulo">ITA - Gerenciamento Comercial</ui:insert></title>
+
+	<h:outputStylesheet library="algaworks" name="styles/custom.css" />
+	<h:outputStylesheet library="algaworks" name="styles/layout.css" />
+	<h:outputStylesheet library="algaworks" name="styles/components.css" />
+
+	<h:outputScript target="body" library="primefaces"
+		name="jquery/jquery.js" />
+
+	<h:outputScript target="body" library="algaworks"
+		name="javascripts/app.js" />
+
+	<!-- CSS/JavaScript do Menu -->
+	<h:outputStylesheet library="css" name="menu.css" />
+
+	<h:outputScript target="body"
+		src="http://code.jquery.com/jquery-latest.min.js"
+		type="text/javascript" />
+
+	<h:outputScript target="body" library="js" name="menu.js" />
+	<!-- CSS/JavaScript do Menu -->
+
+	
+/* Demo Style primefaces 6.0 */
+<style type="text/css">
+.white-button.ui-button.ui-state-default {
+	background-color: #ffffff;
+	color: #222222;
+	border-color: #d6d6d6;
+}
+
+.white-button.ui-button.ui-state-default:enabled:hover, .white-button.ui-button.ui-state-default:focus
+	{
+	background-color: #f2f2f2;
+	border-color: #ccc;
+	color: #373a3c;
+}
+
+.green-button.ui-button.ui-state-default {
+	background-color: #5cb85c;
+	border-color: #5cb85c;
+	color: #fff;
+}
+
+.green-button.ui-button.ui-state-default:enabled:hover, .green-button.ui-button.ui-state-default:focus
+	{
+	background-color: #4cae4c;
+	border-color: #5cb85c;
+}
+
+.red-button.ui-button.ui-state-default {
+	background-color: #d9534f;
+	border-color: #d9534f;
+	color: #fff;
+}
+
+.red-button.ui-button.ui-state-default:enabled:hover, .red-button.ui-button.ui-state-default:focus
+	{
+	background-color: #d43f3a;
+	border-color: #d9534f;
+}
+</style>
+
+
+
+</h:head>
+
+<h:body>
+
+	<header
+		style="position: fixed; top: 0; right: 0; left: 0; min-height: 50px; background-color: #3E8CCD;">
+
+		<ui:remove>
+			<h:graphicImage library="algaworks" name="images/logo.png"
+				style="margin-top: 10px;margin-left: 5px;" />
+		</ui:remove>
+
+		<a href="#" class="aw-toggle  js-toggle"><i
+			class="fa fa-align-justify"
+			style="font-size: 20px; margin-top: 14px; margin-left: 5px;"></i></a>
+
+	</header>
+
+	<aside style="z-index: 0;" class="aw-sidebar js-sidebar">
+
+		<ui:include src="menu.xhtml" />
+
+	</aside>
+
+	<section class="aw-content  js-content">
+
+		<br /> <br />
+
+		<ui:remove>
+			<h:form>
+				<br />
+				<p:toolbar>
+					<f:facet name="left">
+
+					</f:facet>
+					<f:facet name="right">
+
+						<h:outputText value="Olá #{request.remoteUser}!"
+							style="font-size: 15px;" />
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton value=" Sair " action="#{logonMB.logout()}"
+							ajax="false" />
+
+						<f:facet name="left">
+							<ui:insert name="opcoesbarra" />
+						</f:facet>
+					</f:facet>
+				</p:toolbar>
+				<br />
+			</h:form>
+		</ui:remove>
+
+		<ui:insert name="conteudo" />
+
+	</section>
+
+</h:body>
+
+</html>

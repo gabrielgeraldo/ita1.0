@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Consultar Nota Fiscal Eletrônica</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formNFes">
+
+				<p:growl id="growl" />
+
+				<br />
+
+				<p:panelGrid columns="10" layout="grid">
+
+					<p:outputLabel for="dtini" value="Data início:" />
+
+					<p:calendar id="dtini" value="#{consultarNfeMB.filtro.dataInicio}"
+						pattern="dd/MM/yyyy HH:mm" size="16" locale="pt" />
+
+					<h:outputText value="Até" />
+
+					<p:outputLabel for="dtfim" value="Data fim:" />
+
+					<p:calendar id="dtfim" value="#{consultarNfeMB.filtro.dataFim}"
+						label="Data fim" pattern="dd/MM/yyyy HH:mm" size="16" locale="pt" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-4">
+						<div class="ui-inputgroup">
+							<p:inputText id="nun" value="#{consultarNfeMB.filtro.numero}"
+								placeholder="Digite aqui o número da nota..." />
+							<p:commandButton styleClass="btn-primary btn-block"
+								update=":formNFes:tabNFes :formNFes:dtini :formNFes:dtfim :formNFes:nun"
+								action="#{consultarNfeMB.consultar}" icon="fa fa-search" />
+						</div>
+					</div>
+				</div>
+
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+					<p:outputLabel style="font-weight: bold"
+						value="Notas filtradas (Max. 50 itens)." />
+
+				</h:panelGrid>
+
+				<br />
+
+				<t:saveState value="#{consultarNfeMB.nfes}" />
+
+				<p:dataTable id="tabNFes" var="item" value="#{consultarNfeMB.nfes}"
+					emptyMessage="Não há itens."
+					filteredValue="#{consultarNfeMB.nfesFiltrados}" paginator="true"
+					rowKey="#{item.codigo}" rowsPerPageTemplate="5,10" rows="5"
+					selectionMode="single">
+
+					<p:column style="width:100px">
+						<f:facet name="header">
+							<h:outputText value="Número/Série" />
+						</f:facet>
+						<h:outputText
+							value="#{item.numero.toString().concat(' / ').concat(item.serie)}" />
+					</p:column>
+
+					<p:column filterBy="#{item.cliente}" style="width:580px">
+						<f:facet name="header">
+							<h:outputText value="Cliente" />
+						</f:facet>
+						<h:outputText value="#{item.cliente}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Ambiente" />
+						</f:facet>
+						<h:outputText rendered="#{item.ambienteRecebimento.equals('1')}"
+							value="Produção">
+						</h:outputText>
+						<h:outputText rendered="#{item.ambienteRecebimento.equals('2')}"
+							value="Homologação">
+						</h:outputText>
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Emissão" />
+						</f:facet>
+						<h:outputText value="#{item.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:175px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:splitButton value="Vizualizar"
+								action="#{consultarNfeMB.vizualizar}" icon="ui-icon-document"
+								ajax="false">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								<p:menuitem icon="ui-icon-document" ajax="false" value="Danfe"
+									action="#{consultarNfeMB.imprimirDanfe}">
+
+									<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								</p:menuitem>
+
+								<p:menuitem icon="ui-icon-document" ajax="false" value="XML"
+									action="#{consultarNfeMB.downloadXml}">
+
+									<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								</p:menuitem>
+
+								<p:menuitem>
+
+									<p:commandLink styleClass="ui-menuitem-link"
+										icon="ui-icon-close" action="#{consultarNfeMB.cancelarNota}"
+										ajax="false">
+
+										<p:confirm header="Cancelamento" message="Deseja prosseguir?"
+											icon="ui-icon-alert" />
+
+										<f:param value="#{item.codigo}" name="itemcodigo" />
+
+										<h:outputText
+											styleClass="ui-menuitem-icon ui-icon ui-icon-close" />
+										<h:outputText styleClass="ui-menuitem-text" value="Cancelar" />
+
+									</p:commandLink>
+
+									<p:confirmDialog global="true" showEffect="fade">
+										<p:commandButton value="Sim" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="Não" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</p:confirmDialog>
+
+								</p:menuitem>
+
+								<p:menuitem>
+
+									<p:commandLink styleClass="ui-menuitem-link"
+										icon="ui-icon-close" action="#{consultarNfeMB.corrigirNota}"
+										ajax="false">
+
+										<p:confirm header="Carta correção"
+											message="Deseja prosseguir?" icon="ui-icon-alert" />
+
+										<f:param value="#{item.codigo}" name="itemcodigo" />
+
+										<h:outputText
+											styleClass="ui-menuitem-icon ui-icon ui-icon-document" />
+										<h:outputText styleClass="ui-menuitem-text" value="Corrigir" />
+
+									</p:commandLink>
+
+									<p:confirmDialog global="true" showEffect="fade">
+										<p:commandButton value="Sim" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="Não" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</p:confirmDialog>
+
+								</p:menuitem>
+
+							</p:splitButton>
+
+
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

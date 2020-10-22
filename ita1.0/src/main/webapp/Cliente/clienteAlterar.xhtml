@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Cadastrar / Editar cliente</h1>
+	</ui:define>
+
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<h:inputHidden id="idId" value="#{clienteMB.cliente.codigo}" />
+
+				<p:growl id="messagens" showSummary="false" showDetail="true"
+					sticky="true" />
+
+				<p:tabView id="tabView">
+
+					<p:tab title="Dados do Cliente">
+
+						<h:inputHidden value="#{clienteMB.cliente.tipo}" />
+						<h:inputHidden value="#{clienteMB.cliente.cgc}" />
+						<h:inputHidden value="#{clienteMB.cliente.inscEst}" />
+						<h:inputHidden value="#{clienteMB.cliente.nome}" />
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="tipo" value="Tipo:" />
+							<p:selectOneButton id="tipo" disabled="true"
+								value="#{clienteMB.cliente.tipo}">
+								<f:selectItem itemLabel="Jurídica" itemValue="J" />
+								<f:selectItem itemLabel="Física" itemValue="F" />
+							</p:selectOneButton>
+
+							<p:outputLabel value="CNPJ/CPF:" />
+							<p:inputText value="#{clienteMB.cliente.cgc}" readonly="true"
+								validatorMessage="Verifique o CNPJ/CPF. Caracteres permitidos: [0-9] Min:1 Max:18">
+								<f:validateRegex pattern="(^[0-9]+$)?" />
+							</p:inputText>
+
+							<p:outputLabel for="inscri" value="Incrição Estadual:" />
+							<p:inputText id="inscri" style="width: 60%"
+								value="#{clienteMB.cliente.inscEst}" readonly="true"
+								validatorMessage="Verifique o código. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$)?" />
+							</p:inputText>
+
+							<p:outputLabel for="nome" value="Nome:" />
+							<p:inputMask id="nome" style="width: 190%"
+								value="#{clienteMB.cliente.nome}"
+								converter="toUpperCaseConverter" readonly="true">
+							</p:inputMask>
+
+							<p:outputLabel for="nfan" value="Nome Fantasia:" />
+							<p:inputMask id="nfan" style="width: 190%"
+								value="#{clienteMB.cliente.nomeFantasia}"
+								converter="toUpperCaseConverter">
+							</p:inputMask>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Endereço">
+
+						<t:saveState value="#{clienteMB.municipios}" />
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="end" value="Endereço:" />
+							<p:inputText id="end" style="width:350px"
+								converter="toUpperCaseConverter"
+								value="#{clienteMB.cliente.endereco}">
+							</p:inputText>
+
+							<p:outputLabel for="nun" value="Número:" />
+							<p:inputMask id="nun" style="width:85px"
+								value="#{clienteMB.cliente.numero}"
+								converter="toUpperCaseConverter" mask="9?9999999">
+							</p:inputMask>
+
+							<p:outputLabel for="estado" value="Estado:" />
+							<p:selectOneMenu id="estado" value="#{clienteMB.cliente.estado}"
+								filter="true" filterMatchMode="startsWith"
+								converter="converter-generico">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{clienteMB.estados}" />
+								<p:ajax listener="#{clienteMB.selecionaMunicipio}"
+									update="form:tabView:municipio" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="municipio" value="Município:" />
+							<p:selectOneMenu id="municipio"
+								value="#{clienteMB.cliente.municipio}" filter="true"
+								filterMatchMode="startsWith" converter="converter-generico">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{clienteMB.municipios}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="bairro" value="Bairro:" />
+							<p:inputText id="bairro" value="#{clienteMB.cliente.bairro}"
+								converter="toUpperCaseConverter">
+							</p:inputText>
+
+							<p:outputLabel for="cep" value="CEP:" />
+							<p:inputMask id="cep" style="width:100px"
+								value="#{clienteMB.cliente.cep}" mask="99999-999"
+								required="true"
+								requiredMessage="O CEP é de preenchimento obrigatório.">
+							</p:inputMask>
+
+							<p:outputLabel for="com" value="Complemento:" />
+							<p:inputText id="com" style="width:300px"
+								value="#{clienteMB.cliente.complemento}"
+								converter="toUpperCaseConverter" required="true"
+								requiredMessage="O complemento é de preenchimento obrigatório.">
+							</p:inputText>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Contato">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="tel" value="Telefone:" />
+							<p:inputMask id="tel" style="width:140px"
+								value="#{clienteMB.cliente.telefone}" mask="(99)9999-9999">
+							</p:inputMask>
+
+							<p:outputLabel for="cel" value="Celular:" />
+							<p:inputMask id="cel" style="width:140px"
+								value="#{clienteMB.cliente.celular}" mask="(99)99999-9999">
+							</p:inputMask>
+
+							<p:outputLabel for="email" value="E-mail:" />
+							<p:inputText id="email" style="width:320px"
+								value="#{clienteMB.cliente.email}" required="true"
+								requiredMessage="O email é de preenchimento obrigatório.">
+							</p:inputText>
+
+							<p:outputLabel for="obs" value="Obs:" />
+							<p:inputText id="obs" value="#{clienteMB.cliente.obs}"
+								converter="toUpperCaseConverter">
+							</p:inputText>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Dados Fiscais">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="ind" value="Indicador IE Destinatario:" />
+							<p:selectOneMenu id="ind"
+								converter="omnifaces.GenericEnumConverter"
+								value="#{clienteMB.cliente.nfIndicadorIEDestinatario}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{clienteMB.nfIndicadoresIEDestinatarios}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<p:separator />
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton ajax="false" id="btnSalvar"
+						styleClass="btn-success btn-block"
+						action="#{clienteMB.salvarAlteracao}" value="Salvar" />
+
+					<p:spacer width="8" />
+
+					<p:commandButton styleClass="btn-danger btn-block" ajax="false"
+						id="btnCancelar" action="#{clienteMB.cancelar}" immediate="true"
+						value="Cancelar" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

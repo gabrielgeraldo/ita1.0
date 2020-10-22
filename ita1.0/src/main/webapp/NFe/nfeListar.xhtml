@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Nota Fiscal Eletrônica</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<p:growl id="messagens" showSummary="false" showDetail="true" />
+
+				<p:dataTable id="tabNFes" var="item"
+					value="#{nfeMB.notasParaCorrigir}" emptyMessage="Não há itens."
+					widgetVar="itemTable"
+					filteredValue="#{nfeMB.notasParaCorrigirFiltrados}"
+					paginator="true" rowKey="#{item.codigo}" rowsPerPageTemplate="5,10"
+					rows="5" selectionMode="single">
+
+					<p:column style="width:100px">
+						<f:facet name="header">
+							<h:outputText value="Número/Série" />
+						</f:facet>
+						<h:outputText
+							value="#{item.numero.toString().concat(' / ').concat(item.serie)}" />
+					</p:column>
+
+					<p:column filterBy="#{item.cliente}" style="width:500px">
+						<f:facet name="header">
+							<h:outputText value="Cliente" />
+						</f:facet>
+						<h:outputText value="#{item.cliente}" />
+					</p:column>
+
+					<p:column style="width:100px">
+						<f:facet name="header">
+							<h:outputText value="Orçamento" />
+						</f:facet>
+						<h:outputText value="#{item.orcamento.numero}" />
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Emissão" />
+						</f:facet>
+						<h:outputText value="#{item.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Total" />
+						</f:facet>
+						<h:outputText value="#{item.total}" />
+					</p:column>
+
+					<p:column style="width:130px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:commandButton value="Alterar" icon="ui-icon-wrench"
+								action="#{nfeMB.alterarNFe}" ajax="false"
+								update="formPrepDialog:panelDialog">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+							</p:commandButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton styleClass="btn-success btn-block"
+						value="Nova NF-e" action="#{nfeMB.novo}" ajax="false" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

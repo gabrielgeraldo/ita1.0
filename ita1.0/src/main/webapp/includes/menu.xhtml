@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<h:form>
+
+		<p:hotkey bind="F1" action="#{orcamentoMB.listar}" />
+
+	</h:form>
+
+	<ul class="sidebar-menu tree" data-widget="tree">
+
+		<li class="header">#{configuracaoMB.razaoSocial}</li>
+
+		<li>
+			<p:commandLink onclick="PF('dlg2').show()">
+				<i class="fa fa-book"></i>
+				<span>Empresa</span>
+			</p:commandLink>
+		</li>
+
+		<p:dialog header="Dados da Empresa" widgetVar="dlg2" modal="true"
+			height="175" width="350" appendTo="@(body)" resizable="false"
+			styleClass="box-primary">
+
+			<div class="social-auth-links text-center">
+
+				<p>Razao Social: #{configuracaoMB.razaoSocial}</p>
+				<p>Nome Fantasia: #{configuracaoMB.nomeFantasia}</p>
+				<p>CNPJ: #{configuracaoMB.cnpj}</p>
+				<p>Incrição Estadual: #{configuracaoMB.inscricaoEstadual}</p>
+
+				<p>Código do Cliente: #{configuracaoMB.codClient}</p>
+
+
+			</div>
+
+		</p:dialog>
+
+		<li class="header"></li>
+
+		<li>
+			<p:link outcome="/home.xhtml" onclick="clearBreadCrumbs()">
+				<i class="fa fa-home"></i>
+				<span>Home</span>
+			</p:link>
+		</li>
+		<li class="header">Geral</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-pencil-square-o"></i> <span>Cadastros</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{produtoMB.listar}" title="Produto">
+						<i class="fa fa-cubes"></i>
+						<span>Produto</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{fornecedorMB.listar}" title="Fornecedor">
+						<i class="fa fa-handshake-o"></i>
+						<span>Fornecedor</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{clienteMB.listar}" title="Cliente">
+						<i class="fa fa-handshake-o"></i>
+						<span>Cliente</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{categoriaMB.listar}" title="Categoria">
+						<i class="fa fa-cube"></i>
+						<span>Categoria</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{condicaoPagamentoMB.listar}"
+						title="Condição de Pagamento">
+						<i class="fa fa-money"></i>
+						<span>Condição de Pagamento</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{bancoMB.listar}" title="Banco">
+						<i class="fa fa-handshake-o"></i>
+						<span>Banco</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{userMB.listar}" title="Usuário">
+						<i class="fa fa-user"></i>
+						<span>Usuário</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-file-text-o"></i> <span>Movimentos</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{nfEntradaMB.listar}" title="NF Entrada">
+						<i class="fa fa-file-text-o"></i>
+						<span>NF Entrada</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-money"></i> <span>Financeiro</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{contasReceberMB.listar}"
+						title="Contas Receber">
+						<i class="fa fa-file-text-o"></i>
+						<span>Contas Receber</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{baixaCRMB.listar}"
+						title="Baixar Contas Receber">
+						<i class="fa fa-calculator"></i>
+						<span>Baixar Contas Receber</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{contasPagarMB.listar}"
+						title="Contas Pagar">
+						<i class="fa fa-file-text-o"></i>
+						<span>Contas Pagar</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{baixaCPMB.listar}"
+						title="Baixar Contas Pagar">
+						<i class="fa fa-calculator"></i>
+						<span>Baixar Contas Pagar</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-clipboard"></i> <span>Orçamento</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{orcamentoMB.listar}" title="Orçamento">
+						<i class="fa fa-file-text-o"></i>
+						<span>Orçamento (F1)</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="header">Documentos fiscais</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-file-text-o"></i> <span>NF-e</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{nfeMB.listar}" title="NF-e">
+						<i class="fa fa-file-text-o"></i>
+						<span>NF-e</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{transmissaoNFeMB.listar}"
+						title="Transmissão">
+						<i class="fa fa-rss"></i>
+						<span>Transmissão</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{consultarNfeMB.acaoConsultar}"
+						title="Consultar">
+						<i class="fa fa-clipboard"></i>
+						<span>Consultar</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-file-text-o"></i> <span>NFC-e</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{nfceMB.iniciarNTFCe}" title="NFC-e">
+						<i class="fa fa-file-text-o"></i>
+						<span>NFC-e</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{consultarNFCeMB.acaoConsultar}"
+						title="Consultar">
+						<i class="fa fa-clipboard"></i>
+						<span>Consultar</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="header">Atendimento</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-file-text-o"></i> <span>Atendimento</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{vendaMB.iniciarVenda}" title="Venda">
+						<i class="fa fa-shopping-cart"></i>
+						<span>Venda</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{vendasMB.acaoListar}" title="Consultar">
+						<i class="fa fa-clipboard"></i>
+						<span>Consultar</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="header">Movimentações</li>
+
+		<li class="treeview">
+			<a href="#"> <i class="fa fa-clipboard"></i> <span>Relatórios</span>
+				<span class="pull-right-container"> <i
+					class="fa fa-angle-left pull-right"></i>
+			</span>
+			</a>
+			<ul class="treeview-menu">
+				<li>
+					<p:commandLink action="#{tataisPorDiaMB.acaoRelatorios}"
+						title="Totais P/ Dia">
+						<i class="fa fa-file-text-o"></i>
+						<span>Totais P/ Dia</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{movimentoMB.acaoRelatorios}"
+						title="Movimento">
+						<i class="fa fa-file-text-o"></i>
+						<span>Movimento</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{maisVendidosMB.acaoRelatorios}"
+						title="Mais Vendidos">
+						<i class="fa fa-file-text-o"></i>
+						<span>Mais Vendidos</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{financeiroMB.acaoRelatorios}"
+						title="Financeiro">
+						<i class="fa fa-file-text-o"></i>
+						<span>Financeiro</span>
+					</p:commandLink>
+				</li>
+				<li>
+					<p:commandLink action="#{movBancariaMB.acaoRelatorios}"
+						title="Movimentação Bancária">
+						<i class="fa fa-file-text-o"></i>
+						<span>Mov. Bancária</span>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+		<li class="header">Sistema</li>
+
+		<li>
+			<p:commandLink action="#{configuracaoMB.listar}">
+				<i class="fa fa-wrench"></i>
+				<span>Configuração</span>
+			</p:commandLink>
+		</li>
+
+		<li>
+			<p:commandLink>
+				<i class="fa fa-book"></i>
+				<span>Sobre</span>
+			</p:commandLink>
+		</li>
+
+	</ul>
+</ui:composition>

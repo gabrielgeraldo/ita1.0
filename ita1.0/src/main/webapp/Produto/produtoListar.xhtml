@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Produtos</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formCadProduto">
+
+				<p:growl id="messagens" showSummary="false" showDetail="true" />
+
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-4">
+						<div class="ui-inputgroup">
+							<p:inputText id="desc" value="#{produtoMB.filtro.descricao}"
+								placeholder="Digite aqui a descrição..." />
+							<p:commandButton
+								update=":formCadProduto:tabProdutos :formCadProduto:desc"
+								action="#{produtoMB.consultar}" icon="fa fa-search"
+								styleClass="btn-primary btn-block" />
+						</div>
+					</div>
+				</div>
+
+				<ui:remove>
+					<h:panelGrid columns="4">
+
+						<p:outputLabel value="Descrição:" />
+
+						<p:inputText id="desc" value="#{produtoMB.filtro.descricao}"
+							style="width: 300px" />
+
+						<p:commandButton value="Consultar"
+							update=":formCadProduto:tabProdutos :formCadProduto:desc"
+							action="#{produtoMB.consultar}" image="ui-icon-search" />
+
+					</h:panelGrid>
+				</ui:remove>
+
+				<t:saveState value="#{produtoMB.produtos}" />
+
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+					<p:outputLabel style="font-weight: bold"
+						value="Produtos filtrados (Max. 50 itens). #{produtoMB.cont} Itens
+					cadastrados e #{produtoMB.produtosSemNcm} sem NCM." />
+
+				</h:panelGrid>
+
+				<br />
+
+				<p:dataTable id="tabProdutos" var="item"
+					value="#{produtoMB.produtos}" emptyMessage="Não há itens."
+					paginator="true" rowKey="#{item.codigo}" rowsPerPageTemplate="5,10"
+					rows="5" selectionMode="single" reflow="true">
+
+					<p:column style="width:120px" sortBy="#{item.codigo}"
+						filterBy="#{item.codigo}">
+						<f:facet name="header">
+							<h:outputText value="Código" />
+						</f:facet>
+						<h:outputText value="#{item.codigo}" />
+					</p:column>
+
+					<p:column style="width:400px" sortBy="#{item.descricao}">
+						<f:facet name="header">
+							<h:outputText value="Descrição" />
+						</f:facet>
+						<h:outputText
+							value="#{item.descricao.length() >= 50 ? item.descricao.substring(0,50).concat('...') : item.descricao}" />
+					</p:column>
+
+					<p:column style="width:85px" sortBy="#{item.precoCusto}">
+						<f:facet name="header">
+							<h:outputText value="Preço Custo" />
+						</f:facet>
+						<h:outputText value="R$ #{item.precoCusto}" />
+					</p:column>
+
+					<p:column style="width:85px" sortBy="#{item.precoUnitario}">
+						<f:facet name="header">
+							<h:outputText value="Preço Unitário" />
+						</f:facet>
+						<h:outputText value="R$ #{item.precoUnitario}" />
+					</p:column>
+
+					<p:column style="width:85px" sortBy="#{item.qtdEstq}">
+						<f:facet name="header">
+							<h:outputText value="Qtd.Estq." />
+						</f:facet>
+						<h:outputText value="#{item.qtdEstq}" />
+					</p:column>
+
+					<p:column style="width:130px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:splitButton value="Alterar" action="#{produtoMB.alterar}"
+								update="formCadProduto" icon="ui-icon-wrench" ajax="false">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								<p:menuitem>
+
+									<p:commandLink styleClass="ui-menuitem-link"
+										icon="ui-icon-close" action="#{produtoMB.excluir}"
+										update="formCadProduto" ajax="false">
+
+										<p:confirm header="Confirmação"
+											message="Deseja excluir este registro?" icon="ui-icon-alert" />
+
+										<f:param value="#{item.codigo}" name="itemcodigo" />
+
+										<h:outputText
+											styleClass="ui-menuitem-icon ui-icon ui-icon-close" />
+										<h:outputText styleClass="ui-menuitem-text" value="Excluir" />
+
+									</p:commandLink>
+
+									<p:confirmDialog global="true" showEffect="fade">
+										<p:commandButton value="Sim" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="Não" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</p:confirmDialog>
+
+								</p:menuitem>
+
+							</p:splitButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton styleClass="btn-success btn-block"
+						value="Novo Produto" ajax="false" action="#{produtoMB.novo}" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

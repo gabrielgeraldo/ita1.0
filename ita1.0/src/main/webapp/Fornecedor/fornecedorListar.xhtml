@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Fornecedores</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formCadFornecedor">
+
+				<p:growl id="messagens" showSummary="false" showDetail="true" />
+
+				<p:dataTable id="tabFornecedores" var="item"
+					value="#{fornecedorMB.fornecedores}" emptyMessage="Não há itens."
+					widgetVar="itemTable"
+					filteredValue="#{fornecedorMB.fornecedoresFiltrados}"
+					paginator="true" rowKey="#{item.codigo}" rowsPerPageTemplate="5,10"
+					rows="5" selectionMode="single">
+
+					<f:facet name="header">
+						<div align="right">
+							<h:outputText value="Pesquisar: " />
+							<p:inputText id="globalFilter" onkeyup="PF('itemTable').filter()"
+								style="width:150px" />
+
+							<p:commandButton id="colunas" type="button" style="float:left"
+								icon="ui-icon-calculator" />
+							<p:columnToggler datasource="tabFornecedores" trigger="colunas" />
+						</div>
+					</f:facet>
+
+					<p:column style="width:125px" filterBy="#{item.cgc}">
+						<f:facet name="header">
+							<h:outputText value="CNPJ/CPF" />
+						</f:facet>
+						<h:outputText value="#{item.cgc}" />
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Inscrição Estadual" />
+						</f:facet>
+						<h:outputText value="#{item.inscricaoEstadual}" />
+					</p:column>
+
+					<p:column style="width:320px" sortBy="#{item.razaoSocial}"
+						filterBy="#{item.razaoSocial}">
+						<f:facet name="header">
+							<h:outputText value="Razão Social" />
+						</f:facet>
+						<h:outputText value="#{item.razaoSocial}" />
+					</p:column>
+
+					<p:column style="width:320px" sortBy="#{item.nomeFantasia}">
+						<f:facet name="header">
+							<h:outputText value="Nome Fantasia" />
+						</f:facet>
+						<h:outputText value="#{item.nomeFantasia}" />
+					</p:column>
+
+					<p:column style="width:105px">
+						<f:facet name="header">
+							<h:outputText value="Telefone" />
+						</f:facet>
+						<h:outputText value="#{item.telefone}" />
+					</p:column>
+
+					<p:column style="width:105px">
+						<f:facet name="header">
+							<h:outputText value="Celular" />
+						</f:facet>
+						<h:outputText value="#{item.celular}" />
+					</p:column>
+
+					<p:column style="width:245px">
+						<f:facet name="header">
+							<h:outputText value="E-mail" />
+						</f:facet>
+						<h:outputText value="#{item.email}" />
+					</p:column>
+
+					<p:column style="width:245px">
+						<f:facet name="header">
+							<h:outputText value="Obs" />
+						</f:facet>
+						<h:outputText value="#{item.obs}" />
+					</p:column>
+
+					<p:column style="width:320px">
+						<f:facet name="header">
+							<h:outputText value="Endereço" />
+						</f:facet>
+						<h:outputText value="#{item.endereco}" />
+					</p:column>
+
+					<p:column style="width:70px">
+						<f:facet name="header">
+							<h:outputText value="Número" />
+						</f:facet>
+						<h:outputText value="#{item.numero}" />
+					</p:column>
+
+					<p:column style="width:240px">
+						<f:facet name="header">
+							<h:outputText value="Estado" />
+						</f:facet>
+						<h:outputText value="#{item.estado}" />
+					</p:column>
+
+					<p:column style="width:240px">
+						<f:facet name="header">
+							<h:outputText value="Município" />
+						</f:facet>
+						<h:outputText value="#{item.municipio}" />
+					</p:column>
+
+					<p:column style="width:200px">
+						<f:facet name="header">
+							<h:outputText value="Bairro" />
+						</f:facet>
+						<h:outputText value="#{item.bairro}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CEP" />
+						</f:facet>
+						<h:outputText value="#{item.cep}" />
+					</p:column>
+
+					<p:column style="width:200px">
+						<f:facet name="header">
+							<h:outputText value="Complemento" />
+						</f:facet>
+						<h:outputText value="#{item.complemento}" />
+					</p:column>
+
+					<p:column style="width:160px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:splitButton value="Alterar" action="#{fornecedorMB.alterar}"
+								update="formCadFornecedor" icon="ui-icon-wrench" ajax="false">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								<p:menuitem>
+
+									<p:commandLink styleClass="ui-menuitem-link"
+										icon="ui-icon-close" action="#{fornecedorMB.excluir}"
+										update="formCadFornecedor" ajax="false">
+
+										<p:confirm header="Confirmação"
+											message="Deseja excluir este registro?" icon="ui-icon-alert" />
+
+										<f:param value="#{item.codigo}" name="itemcodigo" />
+
+										<h:outputText
+											styleClass="ui-menuitem-icon ui-icon ui-icon-close" />
+										<h:outputText styleClass="ui-menuitem-text" value="Excluir" />
+
+									</p:commandLink>
+
+									<p:confirmDialog global="true" showEffect="fade">
+										<p:commandButton value="Sim" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="Não" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</p:confirmDialog>
+
+								</p:menuitem>
+
+							</p:splitButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton styleClass="btn-success btn-block" ajax="false"
+						value="Novo Fornecedor" action="#{fornecedorMB.novo}" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

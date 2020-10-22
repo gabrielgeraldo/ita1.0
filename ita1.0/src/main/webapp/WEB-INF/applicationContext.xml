@@ -1,0 +1,97 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<beans:bean id="appUserDetailsService" class="br.com.ita.security.AppUserDetailsService" />
+
+	<beans:bean id="cStartEventHandler" class="br.com.ita.security.CStartEventHandler" />
+
+	<beans:bean id="myAuthenticationSuccessHandler"
+		class="br.com.ita.security.MySimpleUrlAuthenticationSuccessHandler" />
+
+	<beans:bean id="customLogoutSuccessHandler"
+		class="br.com.ita.security.CustomLogoutSuccessHandler" />
+
+	<http pattern="/javax.faces.resource/**" security="none" />
+
+	<http pattern="/rest/**" security="none" />
+
+	<http pattern="/login.xhtml" security="none" />
+	<http pattern="/index.xhtml" security="none" />
+	<http pattern="/_erro.xhtml" security="none" />
+	<http pattern="/500.xhtml" security="none" />
+	<http pattern="/_acessoNegado.xhtml" security="none" />
+	<http pattern="/403.xhtml" security="none" />
+	<http pattern="/_senhaMes.xhtml" security="none" />
+	<http pattern="/_sistemaNaoRegistrado.xhtml" security="none" />
+
+	<http pattern="/404.xhtml" security="none" />
+	<http pattern="/expired.xhtml" security="none" />
+
+	<http auto-config="true" use-expressions="true" create-session="ifRequired">
+
+		<intercept-url pattern="/home.xhtml" access="isAuthenticated()" />
+
+		<intercept-url pattern="/Cliente/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Fornecedor/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Categoria/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/CondicaoPagamento/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Banco/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Produto/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Relatorio/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Usuario/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/EfetuarVenda/**"
+			access="hasAnyRole('GERENTE', 'CAIXA','ADMINISTRADOR')" />
+		<intercept-url pattern="/NFe/**"
+			access="hasAnyRole('GERENTE', 'CAIXA','ADMINISTRADOR')" />
+		<intercept-url pattern="/Vendas/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Configuracao/**" access="hasAnyRole('ADMINISTRADOR')" />
+		<intercept-url pattern="/NFCe/**"
+			access="hasAnyRole('GERENTE', 'CAIXA','ADMINISTRADOR')" />
+		<intercept-url pattern="/NFEntrada/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+		<intercept-url pattern="/Orcamento/**"
+			access="hasAnyRole('GERENTE', 'VENDEDOR','ADMINISTRADOR')" />
+		<intercept-url pattern="/Financeiro/**"
+			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+
+		<intercept-url pattern="/**" access="denyAll" />
+
+		<access-denied-handler error-page="/403.xhtml" />
+
+		<session-management>
+			<concurrency-control max-sessions="1"
+				error-if-maximum-exceeded="true" expired-url="/expired.xhtml" />
+		</session-management>
+
+		<form-login login-page="/login.xhtml"
+			authentication-failure-url="/login.xhtml?invalid=true"
+			default-target-url="/home.xhtml" always-use-default-target="true"
+			authentication-success-handler-ref="myAuthenticationSuccessHandler" />
+
+
+		<logout logout-url="/j_spring_security_logout"
+			invalidate-session="true" success-handler-ref="customLogoutSuccessHandler" />
+
+	</http>
+
+	<authentication-manager>
+		<authentication-provider user-service-ref="appUserDetailsService">
+			<!-- <password-encoder hash="md5" /> -->
+		</authentication-provider>
+	</authentication-manager>
+
+
+</beans:beans>

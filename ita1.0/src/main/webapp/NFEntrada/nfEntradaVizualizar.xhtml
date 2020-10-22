@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Vizualizar Nota Fiscal Entrada</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form>
+
+				<p:tabView>
+
+					<p:tab title="Dados gerais">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Número:" />
+							<p:outputLabel value="#{nfEntradaMB.nfEntrada.numero}" />
+
+							<p:outputLabel for="serie" value="Série:" />
+							<p:outputLabel id="serie" value="#{nfEntradaMB.nfEntrada.serie}" />
+
+							<p:outputLabel for="id_for" value="Fornecedor:" />
+							<p:outputLabel id="id_for"
+								value="#{nfEntradaMB.nfEntrada.fornecedor}" />
+
+							<p:outputLabel for="ch" value="Chave:" />
+							<p:outputLabel id="ch" value="#{nfEntradaMB.nfEntrada.chave}"
+								size="55" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Financeiro">
+
+						<p:dataTable var="item"
+							value="#{nfEntradaMB.nfEntrada.contasPagar}"
+							emptyMessage="Não há itens." paginator="true" rows="5"
+							rowsPerPageTemplate="5,10">
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Número" />
+								</f:facet>
+								<h:outputText value="#{item.id.numeroCP}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Parcela" />
+								</f:facet>
+								<h:outputText value="#{item.id.parcelaCP}" />
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Emissão" />
+								</f:facet>
+								<h:outputText value="#{item.emissao}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Vencimento" />
+								</f:facet>
+								<h:outputText value="#{item.vencimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Baixa" />
+								</f:facet>
+								<h:outputText value="#{item.baixa}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Valor" />
+								</f:facet>
+								<h:outputText value="#{item.valor}" />
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Saldo" />
+								</f:facet>
+								<h:outputText value="#{item.saldo}" />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<h:panelGrid columns="2">
+
+					<p:outputPanel id="panelItens">
+
+						<p:dataTable value="#{nfEntradaMB.itensNFEntrada}" var="item"
+							paginator="true" rows="5" rowsPerPageTemplate="5,10">
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText />
+							</p:column>
+
+							<p:column style="width:150px">
+								<f:facet name="header">
+									<h:outputText value="Código" />
+								</f:facet>
+								<h:outputText value="#{item.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" style="width:400px">
+								<h:outputText value="#{item.produto.descricao}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="QTD" />
+								</f:facet>
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Custo" />
+								</f:facet>
+								<h:outputText value="#{item.precoCusto}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Venda" />
+								</f:facet>
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+						<ui:remove>
+							<div style="position: relative; height: 116px; top: 97px;"></div>
+						</ui:remove>
+
+						<div>
+
+							<h:outputText id="output1"
+								value="Valor total: #{nfEntradaMB.nfEntrada.total}"
+								style="float:right;font-weight: bold">
+							</h:outputText>
+
+						</div>
+
+					</p:outputPanel>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2019-12-02T12:16:03 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="totaisPorDiaNFCeItemSub" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="20" uuid="d07b9ce7-5181-461c-9448-c7d158ec0539">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Data Adapter ita"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="ID" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT produto.codigo AS prodcod,
+	produto.descricao proddesc,
+	item_nfce.precovenda AS prodven,
+	item_nfce.quantidade AS prodqt
+FROM item_nfce
+	INNER JOIN produto ON 
+	 item_nfce.produto_codigo = produto.codigo
+WHERE 
+     item_nfce.nfce_codigo = $P{ID}]]>
+	</queryString>
+	<field name="prodcod" class="java.lang.String"/>
+	<field name="proddesc" class="java.lang.String"/>
+	<field name="prodven" class="java.math.BigDecimal"/>
+	<field name="prodqt" class="java.lang.Integer"/>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="14" uuid="e89ca066-4901-4406-8502-6bddba81d831">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="310" height="14" uuid="e89add42-5103-4902-a75a-06c0a8958dfd">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descricao:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="0" width="120" height="14" uuid="90dc4f21-d7c4-40ba-9003-27910a0e8df8">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preco venda:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="1" width="40" height="14" uuid="2dfb06d0-37aa-4e0f-999b-6c3f3fdc76a1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="0" y="0" width="80" height="14" uuid="44affe9c-b087-400c-8223-df8fbdf33248">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodcod}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="310" height="14" uuid="8c7ac847-e7a7-4f9f-9560-ec8f4fa57a83">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{proddesc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="430" y="0" width="120" height="14" uuid="1f91807c-5d13-4bd8-a5b9-d4fb42ca3582">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodven}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="40" height="14" uuid="9519beef-d2c6-4dc6-9607-fc3f50755ef0">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodqt}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

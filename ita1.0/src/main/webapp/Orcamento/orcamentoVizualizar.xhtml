@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Vizualizar Orçamento</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form>
+
+				<p:tabView>
+
+					<p:tab title="Dados gerais">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Código:" />
+							<p:outputLabel value="#{orcamentoMB.orcamento.codigo}" />
+
+							<p:outputLabel for="id_cli" value="Cliente:" />
+							<p:outputLabel id="id_cli"
+								value="#{orcamentoMB.orcamento.cliente}" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<h:panelGrid columns="2">
+
+					<p:outputPanel id="panelItens">
+
+						<p:dataTable value="#{orcamentoMB.itensOrcamento}" var="item"
+							paginator="true">
+
+							<f:facet name="header">
+       							Itens
+    						</f:facet>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText />
+							</p:column>
+
+							<p:column style="width:150px">
+								<f:facet name="header">
+									<h:outputText value="Código" />
+								</f:facet>
+								<h:outputText value="#{item.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" style="width:400px">
+								<h:outputText value="#{item.produto.descricao}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="QTD" />
+								</f:facet>
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Venda" />
+								</f:facet>
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+						<div>
+
+							<h:outputText id="output1"
+								value="Valor total: #{orcamentoMB.orcamento.total}"
+								style="float:right;font-weight: bold">
+							</h:outputText>
+
+						</div>
+
+					</p:outputPanel>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Nota Fiscal Consumidor Eletrônica</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formVenda">
+
+				<p:messages id="growl" showSummary="false" showDetail="true"
+					closable="true" />
+
+				<br />
+
+				<h:outputText rendered="#{nfceMB.ambienteConfigurado.equals('1')}"
+					id="ambConfigProd" value="Ambiente configurado: Produção"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<h:outputText rendered="#{nfceMB.ambienteConfigurado.equals('2')}"
+					id="ambConfigHml" value="Ambiente configurado: Homologação"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<h:panelGrid id="grid" columns="10">
+
+					<p:focus context="grid" />
+
+					<p:outputLabel for="produto" value="Código:" />
+
+					<p:spacer width="10" />
+
+					<p:inputText id="produto" value="#{nfceMB.produtoEscolhido}"
+						converter="toUpperCaseConverter"
+						disabled="#{nfceMB.desabilitaHabilita}"
+						validatorMessage="Verifique o código. Caracteres permitidos: [A-Z|0-9]">
+						<f:validateRegex pattern="(^[a-zA-Z0-9]+$)?" />
+					</p:inputText>
+
+					<p:spacer width="10" />
+
+					<p:commandButton value="Adicionar item"
+						id="botaoAdicionarProdutoPeloCodigo"
+						update=":formVenda:tabelaItensVenda :formVenda:grid :formVenda:growl"
+						actionListener="#{nfceMB.adicionarProdutoPeloCodigo}"
+						styleClass="btn-primary btn-block"
+						disabled="#{nfceMB.desabilitaHabilita}" />
+
+					<p:spacer width="15" />
+
+					<p:outputLabel value="Cliente:" for="cli" />
+
+					<p:spacer width="10" />
+
+					<p:autoComplete id="cli" dropdown="true" maxResults="10"
+						value="#{nfceMB.nfce.cliente}" converter="converter-generico"
+						completeMethod="#{nfceMB.completeCliente}" var="item"
+						itemLabel="#{item.nome}" itemValue="#{item}" forceselection="true"
+						size="50" disabled="#{nfceMB.desabilitaHabilita}" />
+
+				</h:panelGrid>
+
+				<h:outputText id="nSerie"
+					value="Número/Série: #{nfceMB.nfce.numero.toString().concat(' / ').concat(nfceMB.nfce.serie)}"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<br />
+
+				<h:panelGrid columns="8">
+
+					<p:commandButton value="Pesquisar produto"
+						styleClass="btn-primary btn-block"
+						onclick=" PF('dlgPesquisar').show();"
+						disabled="#{nfceMB.desabilitaHabilita}" />
+
+					<p:spacer width="8" />
+
+					<p:commandButton styleClass="btn-success btn-block"
+						value="Importar Orcamento"
+						onclick=" PF('dlgImportarOrcamento').show();"
+						disabled="#{nfeMB.desabilitaHabilita}" />
+
+					<p:spacer width="15" />
+
+					<p:outputLabel for="condPgto" value="Condição de Pagamento:" />
+
+					<p:spacer width="10" />
+
+					<p:selectOneMenu id="condPgto"
+						value="#{nfceMB.nfce.condicaoPagamento}" filter="true"
+						filterMatchMode="startsWith" converter="converter-generico">
+						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{nfceMB.condicoesPagamentos}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<br />
+
+				<h:panelGrid columns="2" cellpadding="5">
+
+					<p:outputPanel id="tabelaItensVenda">
+
+						<p:dataTable id="panel" value="#{nfceMB.itensNfce}" var="item"
+							paginator="true" rows="5" emptyMessage="Não há itens.">
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText />
+							</p:column>
+
+							<p:column style="text-align: center;width:150px">
+								<f:facet name="header">
+									<h:outputText value="Código" />
+								</f:facet>
+								<h:outputText value="#{item.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição">
+								<h:outputText value="#{item.produto.descricao}" />
+							</p:column>
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="QTD" />
+								</f:facet>
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Venda" />
+								</f:facet>
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+							<p:column headerText="Opções"
+								style="text-align: center;width:100px">
+
+								<p:commandLink actionListener="#{nfceMB.removerProduto(item)}"
+									update=":formVenda" disabled="#{nfceMB.desabilitaHabilita}">
+
+									<i class="fa fa-trash fa-1x" />
+
+								</p:commandLink>
+
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+						<p:separator />
+
+						<h:outputText id="outputTextTotal"
+							value="Valor total: #{nfceMB.nfce.total}"
+							style="float:right;font-weight: bold">
+						</h:outputText>
+
+					</p:outputPanel>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="1">
+
+					<p:commandButton id="btFimVenda" value="Finalizar"
+						action="#{nfceMB.finalizarNTFCe}"
+						styleClass="btn-success btn-block" update=":formVenda"
+						onclick="PF('statusDialog').show();" ajax="false"
+						oncomplete="handleLoginRequestStatus(xhr, status, args)" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<div style="padding: 15px">
+
+					<div align="center">
+						<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+
+					</div>
+				</div>
+				<script type="text/javascript">
+					function handleLoginRequestStatus(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialogStatus) {
+							PF('statusDialog').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('statusDialog').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+			</p:dialog>
+
+			<p:dialog header="Adicionar produto" widgetVar="dlgPesquisar"
+				modal="true" resizable="false" width="650" styleClass="box-primary">
+
+				<h:form id="formPesquisaProdutos">
+
+					<h:panelGrid columns="1">
+
+						<p:outputLabel value="Digita a descrição do produto:" for="pr" />
+						<p:autoComplete id="pr" dropdown="true" maxResults="10"
+							value="#{nfceMB.itemNfce.produto}"
+							converter="converter-genericop"
+							completeMethod="#{nfceMB.completeProduto}" var="item"
+							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}"
+							itemValue="#{item}" forceselection="true" size="90" />
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Adcionar"
+								id="adicionarProdutoPorPesquisa"
+								actionListener="#{nfceMB.adicionarProdutoPorPesquisa}"
+								styleClass="btn-success btn-block"
+								update=":formVenda:tabelaItensVenda :formVenda:growl :formPesquisaProdutos"
+								oncomplete="handleLoginRequest(xhr, status, args)" />
+
+						</h:panelGrid>
+
+						<br />
+
+					</h:panelGrid>
+
+				</h:form>
+
+			</p:dialog>
+
+			<p:dialog header="Importar Orcamento"
+				widgetVar="dlgImportarOrcamento" modal="true" resizable="false"
+				width="650" closable="false" styleClass="box-primary">
+
+				<h:form id="formImportarOrcamento">
+
+					<h:panelGrid columns="1"
+						style="margin-top:20px;margin-bottom: 10px">
+
+						<p:outputLabel value="Digita o número do orcamento" for="pd" />
+						<p:autoComplete id="pd" dropdown="true" maxResults="10"
+							value="#{nfceMB.nfce.orcamento}" converter="converter-generico"
+							completeMethod="#{nfceMB.completeOrcamento}" var="item"
+							itemLabel="#{item.numero.toString().concat(' - ').concat(item.cliente)}"
+							itemValue="#{item}" forceselection="true" size="90" />
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Importar"
+								action="#{nfceMB.importarOrcamento}" ajax="false"
+								styleClass="btn-success btn-block"
+								update=":formVenda:tabelaItensVenda :formVenda:growl :formPesquisaProdutos"
+								oncomplete="handleLoginRequest(xhr, status, args)" />
+
+						</h:panelGrid>
+
+						<br />
+
+					</h:panelGrid>
+
+				</h:form>
+
+				<script type="text/javascript">
+					function handleLoginRequest(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialog) {
+							PF('dlgImportarOrcamento').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('dlgImportarOrcamento').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+
+			</p:dialog>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

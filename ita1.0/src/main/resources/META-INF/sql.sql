@@ -1,0 +1,1 @@
+insert into categoria(codigo, descricao) values(1, 'testesql');

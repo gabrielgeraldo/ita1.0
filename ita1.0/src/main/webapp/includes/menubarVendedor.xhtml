@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<h:form>
+
+		<p:hotkey bind="F1" action="#{orcamentoMB.listar}" />
+
+	</h:form>
+
+	<ul class="nav navbar-nav">
+		<li>
+			<p:link outcome="/home.xhtml" onclick="clearBreadCrumbs()">
+				<i class="fa fa-home"></i>
+				<span>Home</span>
+			</p:link>
+		</li>
+
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">#{configuracaoMB.razaoSocial}<span
+				class="caret"></span> <i class="fa fa-book"></i>
+			</a>
+
+			<ul class="dropdown-menu" role="menu">
+
+				<li>
+					<p:commandLink onclick="PF('dlg2').show()">
+						<i class="fa fa-book"></i>
+						<span>Empresa</span>
+					</p:commandLink>
+				</li>
+
+				<p:dialog header="Dados da Empresa" widgetVar="dlg2" modal="true"
+					height="175" width="350" appendTo="@(body)" resizable="false"
+					styleClass="box-primary">
+
+					<div class="social-auth-links text-center">
+
+						<p>Razao Social: #{configuracaoMB.razaoSocial}</p>
+						<p>Nome Fantasia: #{configuracaoMB.nomeFantasia}</p>
+						<p>CNPJ: #{configuracaoMB.cnpj}</p>
+						<p>Incrição Estadual: #{configuracaoMB.inscricaoEstadual}</p>
+
+						<p>Código do Cliente: #{configuracaoMB.codClient}</p>
+
+
+					</div>
+
+				</p:dialog>
+
+			</ul>
+		</li>
+
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Orçamento<span
+				class="caret"></span> <i class="fa fa-clipboard"></i>
+			</a>
+
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<p:commandLink action="#{orcamentoMB.listar}" title="Orçamento">
+						<span>Orçamento (F1)</span>
+						<i class="fa fa-file-text-o"></i>
+					</p:commandLink>
+				</li>
+			</ul>
+		</li>
+
+	</ul>
+
+</ui:composition>

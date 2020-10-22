@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Baixa Contas Receber</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<p:growl id="growl" showSummary="false" showDetail="true" />
+
+				<br />
+
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+					<p:outputLabel for="banco" value="Banco:" />
+					<p:selectOneMenu id="banco"
+						value="#{baixaCRMB.movimentacaoBancaria.banco}" filter="true"
+						filterMatchMode="startsWith" converter="converter-generico">
+						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{baixaCRMB.bancos}" />
+						<p:ajax event="itemSelect" update="nomeBanco" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="1" layout="grid">
+
+					<p:outputLabel id="nomeBanco"
+						value="Saldo atual: #{baixaCRMB.movimentacaoBancaria.banco.saldoAtual}" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<br />
+
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+					<p:outputLabel for="titulo" value="Título:" />
+					<p:selectOneMenu id="titulo"
+						value="#{baixaCRMB.movimentacaoBancaria.contasReceber}"
+						filter="true" filterMatchMode="startsWith"
+						converter="converter-genericopk">
+						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{baixaCRMB.contasReceberLista}" />
+						<p:ajax event="itemSelect"
+							update="form:tituloSaldo form:tituloEmissao form:tituloVenc form:tituloValor form:tituloVersao" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="5" layout="grid">
+
+					<p:outputLabel value="Vencimento:" />
+
+					<p:outputLabel value="Emissão:" />
+
+					<p:outputLabel value="Valor:" />
+
+					<p:outputLabel value="Saldo:" />
+
+					<p:outputLabel value="Versão:" />
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="5" layout="grid">
+
+					<p:outputLabel id="tituloVenc"
+						value="#{baixaCRMB.movimentacaoBancaria.contasReceber.vencimento}">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="America/Sao_Paulo" />
+					</p:outputLabel>
+
+					<p:outputLabel id="tituloEmissao"
+						value="#{baixaCRMB.movimentacaoBancaria.contasReceber.emissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="America/Sao_Paulo" />
+					</p:outputLabel>
+
+					<p:outputLabel id="tituloValor"
+						value="#{baixaCRMB.movimentacaoBancaria.contasReceber.valor}" />
+
+					<p:outputLabel id="tituloSaldo"
+						value="#{baixaCRMB.movimentacaoBancaria.contasReceber.saldo}" />
+
+					<p:outputLabel id="tituloVersao"
+						value="#{baixaCRMB.movimentacaoBancaria.contasReceber.versao}" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<br />
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+					<p:outputLabel for="historico" value="Histórico:" />
+					<p:inputText id="historico"
+						value="#{baixaCRMB.movimentacaoBancaria.historico}"
+						converter="toUpperCaseConverter" style="width: 300px">
+					</p:inputText>
+
+					<p:outputLabel value="Data da movimentação:" />
+					<p:calendar id="ven"
+						value="#{baixaCRMB.movimentacaoBancaria.dataMovimentacao}"
+						pattern="dd/MM/yyyy" size="16" locale="pt" required="true" />
+
+					<p:outputLabel for="valor" value="Valor:" />
+					<p:inputNumber id="valor"
+						value="#{baixaCRMB.movimentacaoBancaria.valorEntrada}" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton ajax="false" styleClass="btn-success btn-block"
+						value="Baixar" action="#{baixaCRMB.baixar}" update=":form" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

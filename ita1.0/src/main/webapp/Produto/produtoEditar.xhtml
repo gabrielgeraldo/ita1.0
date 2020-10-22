@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:g="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Cadastrar / Editar produto</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form>
+
+				<g:passThroughAttribute name="autocomplete" value="off" />
+
+				<p:growl id="messagens" showSummary="false" showDetail="true"
+					sticky="true" />
+
+				<p:tabView>
+
+					<p:tab title="Dados do Produto">
+
+						<p:panelGrid columns="4" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="codigo" value="Código:" />
+							<p:inputText id="codigo" value="#{produtoMB.produto.codigo}"
+								converter="toUpperCaseConverter"
+								validatorMessage="Verifique o código. Caracteres permitidos: [A-Z|0-9]">
+								<f:validateRegex pattern="(^[a-zA-Z0-9]+$)?" />
+							</p:inputText>
+
+							<p:outputLabel for="codigoBarras" value="Código de barras:" />
+							<p:inputMask id="codigoBarras"
+								value="#{produtoMB.produto.codigoBarras}"
+								mask="9?9999999999999999999999" slotChar="">
+							</p:inputMask>
+
+							<p:outputLabel for="descricao" value="Descrição:" />
+							<p:inputText id="descricao"
+								value="#{produtoMB.produto.descricao}"
+								converter="toUpperCaseConverter" style="width: 300px">
+							</p:inputText>
+
+							<p:outputLabel for="cate" value="Categoria:" />
+							<p:selectOneMenu id="cate" value="#{produtoMB.produto.categoria}"
+								filter="true" filterMatchMode="startsWith"
+								converter="converter-generico">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{produtoMB.categorias}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="forn" value="Fornecedor:" />
+							<p:selectOneMenu id="forn" style="width: 300px"
+								value="#{produtoMB.produto.fornecedor}" filter="true"
+								filterMatchMode="startsWith" converter="converter-generico">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{produtoMB.fornecedores}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="ucomer" value="Unidade Comercial:" />
+							<p:selectOneMenu id="ucomer"
+								value="#{produtoMB.produto.unidadeComercial}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" />
+								<f:selectItem itemLabel="CX - Caixa" itemValue="CX"
+									noSelectionOption="true" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="precocusto" value="Preço Custo:" />
+							<p:inputNumber id="precocusto"
+								value="#{produtoMB.produto.precoCusto}" />
+
+							<p:outputLabel for="precovenda" value="Preço Unitário:" />
+							<p:inputNumber id="precovenda"
+								value="#{produtoMB.produto.precoUnitario}" />
+
+							<p:outputLabel for="qtdEst" value="Qtd. Estq.:" />
+							<p:spinner id="qtdEst" value="#{produtoMB.produto.qtdEstq}"
+								readonly="true" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Impostos">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="NCM:" for="dd" />
+
+							<p:autoComplete id="dd" dropdown="true" maxResults="5"
+								value="#{produtoMB.produto.ncm}"
+								completeMethod="#{produtoMB.completeNcm}" var="item"
+								itemLabel="#{item}" itemValue="#{item.ncm}"
+								forceselection="true" size="60" />
+
+							<p:outputLabel for="cest" value="CEST (7 dígitos):" />
+							<p:inputMask id="cest" style="width:85px"
+								value="#{produtoMB.produto.cest}" mask="9?9999999">
+							</p:inputMask>
+
+							<p:outputLabel for="csosn" value="CSOSN:"
+								rendered="#{produtoMB.renderizaConfgImposto}" />
+							<p:selectOneMenu id="csosn" value="#{produtoMB.produto.csosn}"
+								filterMatchMode="startsWith"
+								rendered="#{produtoMB.renderizaConfgImposto}">
+								<f:selectItem itemLabel="" itemValue="" />
+								<f:selectItem
+									itemLabel="101 – Tributada pelo Simples Nacional com permissão de crédito"
+									itemValue="101" noSelectionOption="true" />
+								<f:selectItem
+									itemLabel="102 – Tributada pelo Simples Nacional sem permissão de crédito"
+									itemValue="102" noSelectionOption="true" />
+								<f:selectItem
+									itemLabel="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+									itemValue="500" noSelectionOption="true" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:tabView rendered="#{produtoMB.renderizaConfgImposto}">
+
+							<p:tab
+								title="101 – Tributada pelo Simples Nacional com permissão de crédito">
+
+								<p:panelGrid columns="2" layout="grid">
+
+									<p:outputLabel for="pCredSN"
+										value="Percentual aplicável no cálculo do crédito:" />
+									<p:inputNumber id="pCredSN"
+										value="#{produtoMB.produto.pCredSN}" />
+
+									<p:outputLabel for="vCredICMSSN"
+										value="Valor do ICMS que pode ser aproveitado:" />
+									<p:inputNumber id="vCredICMSSN"
+										value="#{produtoMB.produto.vCredICMSSN}" />
+
+								</p:panelGrid>
+
+							</p:tab>
+
+							<p:tab
+								title="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação">
+
+								<p:panelGrid columns="2" layout="grid">
+
+									<p:outputLabel for="vBCSTRet"
+										value="Base de Cálculo do ICMS ST:" />
+									<p:inputNumber id="vBCSTRet"
+										value="#{produtoMB.produto.vBCSTRet}" />
+
+									<p:outputLabel for="vICMSSTRet"
+										value="Informar o valor do ICMS ST retido:" />
+									<p:inputNumber id="vICMSSTRet"
+										value="#{produtoMB.produto.vICMSSTRet}" />
+
+									<p:outputLabel for="pST" value="Percentual aliquota ICMSST:" />
+									<p:inputNumber id="pST" value="#{produtoMB.produto.pST}" />
+
+								</p:panelGrid>
+
+							</p:tab>
+
+						</p:tabView>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<p:separator />
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton ajax="false" id="btnSalvar"
+						styleClass="btn-success btn-block" action="#{produtoMB.salvar}"
+						value="Salvar" />
+
+					<p:spacer width="8" />
+
+					<p:commandButton styleClass="btn-danger btn-block" ajax="false"
+						id="btnCancelar" action="#{produtoMB.cancelar}" immediate="true"
+						value="Cancelar" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

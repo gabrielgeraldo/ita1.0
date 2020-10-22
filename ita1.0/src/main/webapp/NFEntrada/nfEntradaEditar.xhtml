@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Preparar\Editar Nota Fiscal Entrada</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formPrepDialog">
+
+				<p:outputPanel id="panelDialog">
+
+					<div align="left">
+
+						<p:messages id="messagens" showSummary="false" showDetail="true"
+							closable="true" />
+
+						<p:tabView>
+
+							<p:tab title="Dados gerais">
+
+								<p:panelGrid columns="2" layout="grid"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+									<p:outputLabel value="Número:" />
+									<p:inputMask id="numero" style="width:85px"
+										value="#{nfEntradaMB.nfEntrada.numero}" autocomplete="off"
+										readonly="#{nfEntradaMB.bloqueaCampos}"
+										mask="9?9999999999999999999999" slotChar="">
+									</p:inputMask>
+
+									<p:outputLabel for="serie" value="Série:" />
+									<p:inputMask id="serie" style="width:85px"
+										readonly="#{nfEntradaMB.bloqueaCampos}"
+										value="#{nfEntradaMB.nfEntrada.serie}" autocomplete="off"
+										mask="9?9999999999999999999999" slotChar="">
+									</p:inputMask>
+
+									<p:outputLabel for="emissao" value="Emissão:" />
+									<p:calendar id="emissao"
+										disabled="#{nfEntradaMB.bloqueaCampos}"
+										value="#{nfEntradaMB.nfEntrada.emissao}" pattern="dd/MM/yyyy"
+										size="16" locale="pt" autocomplete="off" />
+
+									<p:outputLabel value="fornecedor:" for="for" />
+									<p:autoComplete id="for" dropdown="true" maxResults="10"
+										value="#{nfEntradaMB.nfEntrada.fornecedor}"
+										converter="converter-generico"
+										readonly="#{nfEntradaMB.bloqueaCampos}"
+										completeMethod="#{nfEntradaMB.completeFornecedor}" var="item"
+										itemLabel="#{item.nomeFantasia}" itemValue="#{item}"
+										forceselection="true" size="90" />
+
+									<p:outputLabel for="chave" value="Chave:" />
+									<p:inputText id="chave" size="55"
+										readonly="#{nfEntradaMB.bloqueaCampos}"
+										value="#{nfEntradaMB.nfEntrada.chave}">
+									</p:inputText>
+
+								</p:panelGrid>
+
+							</p:tab>
+
+						</p:tabView>
+
+						<h:panelGrid columns="3">
+
+							<p:fileUpload label="XML" update="formPrepDialog"
+								disabled="#{nfEntradaMB.bloqueaCampos}"
+								fileUploadListener="#{nfEntradaMB.upload}" auto="true"
+								allowTypes="/(\.|\/)(xml)$/"
+								invalidFileMessage="Arquivo inválido" />
+
+							<p:spacer width="25" />
+
+							<p:commandButton value="Adcionar itens"
+								styleClass="btn-primary btn-block"
+								disabled="#{nfEntradaMB.bloqueaCampos}"
+								onclick=" PF('dlgPesquisar').show();" />
+
+						</h:panelGrid>
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:dataTable var="item" style="width:350px;"
+								value="#{nfEntradaMB.nfEntrada.contasPagar}"
+								emptyMessage="Não há itens.">
+
+								<p:column headerText="N. Parcela">
+									<h:outputText value="#{item.id.parcelaCP}" />
+								</p:column>
+
+								<p:column headerText="Vencimento">
+									<h:outputText value="#{item.vencimento}" />
+								</p:column>
+
+								<p:column headerText="Valor">
+									<h:outputText value="#{item.valor}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="2">
+
+							<p:outputPanel id="panelItens">
+
+								<p:dataTable value="#{nfEntradaMB.itensNFEntrada}" var="item"
+									paginator="true" rows="5" emptyMessage="Não há itens."
+									editable="true" editMode="cell">
+
+									<p:column style="text-align: center;width:80px">
+										<f:facet name="header">
+											<h:outputText value="Item" />
+										</f:facet>
+										<h:outputText />
+									</p:column>
+
+									<p:column style="text-align: center;width:120px">
+										<f:facet name="header">
+											<h:outputText value="Código" />
+										</f:facet>
+										<h:outputText value="#{item.produto.codigo}" />
+									</p:column>
+
+									<p:column headerText="Descrição">
+										<h:outputText value="#{item.produto.descricao}" />
+									</p:column>
+
+									<p:column style="text-align: center;width:200px">
+										<f:facet name="header">
+											<h:outputText value="QTD (Atualiza Qtd. Cad. Prod.)" />
+										</f:facet>
+										<h:outputText value="#{item.quantidade}" />
+									</p:column>
+
+									<p:column style="text-align: center;width:200px">
+										<f:facet name="header">
+											<h:outputText value="Preço Custo (Atualiza preço Cad. Prod.)" />
+										</f:facet>
+										<h:outputText value="#{item.precoCusto}" />
+									</p:column>
+
+									<p:column headerText="Preço Venda (Atualiza preço Cad. Prod.)"
+										style="text-align: center;width:200px">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{item.precoVenda}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputNumber value="#{item.precoVenda}" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+
+									<p:column headerText="Opções"
+										style="text-align: center;width:100px">
+
+										<p:commandLink disabled="#{nfEntradaMB.bloqueaCampos}"
+											actionListener="#{nfEntradaMB.removerProduto(item)}"
+											update="formPrepDialog:panelItens :formPrepDialog:messagens">
+											<i class="fa fa-trash fa-1x" />
+										</p:commandLink>
+
+									</p:column>
+
+								</p:dataTable>
+
+								<br />
+
+								<p:separator />
+
+								<h:inputHidden value="#{nfEntradaMB.nfEntrada.total}" />
+
+								<h:outputText id="output1"
+									value="Valor total (Preço custo): #{nfEntradaMB.nfEntrada.total}"
+									style="float:right;font-weight: bold">
+								</h:outputText>
+
+							</p:outputPanel>
+
+						</h:panelGrid>
+
+					</div>
+
+				</p:outputPanel>
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton id="btFimVenda" value="Finalizar"
+						action="#{nfEntradaMB.finalizar}"
+						styleClass="btn-success btn-block" ajax="false" />
+
+					<p:spacer width="8" />
+
+					<p:commandButton styleClass="btn-danger btn-block" ajax="false"
+						id="btnCancelar" action="#{nfEntradaMB.cancelar}" immediate="true"
+						value="Cancelar" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+			<p:dialog header="Adicionar produto" widgetVar="dlgPesquisar"
+				modal="true" resizable="false" width="650" styleClass="box-primary">
+
+				<h:form id="formPesquisaProdutos">
+
+					<h:panelGrid columns="3">
+						<p:outputLabel for="tipoPesquisaProduto" value="Pesquisar por:" />
+						<p:spacer width="10" />
+						<p:selectOneRadio id="tipoPesquisaProduto"
+							converter="omnifaces.GenericEnumConverter"
+							value="#{nfEntradaMB.tipoPesquisaProduto}" unselectable="true">
+							<p:ajax event="change" />
+							<f:selectItems value="#{nfEntradaMB.tiposPesquisaProduto}"
+								var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+
+					<h:panelGrid columns="1"
+						style="margin-top:20px;margin-bottom: 10px">
+
+						<p:outputLabel value="Digita a descrição ou o código do produto:"
+							for="pr" />
+						<p:autoComplete id="pr" dropdown="true" maxResults="10"
+							value="#{nfEntradaMB.itemNFEntrada.produto}"
+							converter="converter-genericop"
+							completeMethod="#{nfEntradaMB.completeProduto}" var="item"
+							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao).concat(' - ').concat(item.precoUnitario)}"
+							itemValue="#{item}" forceselection="true" size="90" />
+
+						<br />
+
+						<p:outputLabel for="qtd" value="Quantidade:" />
+						<p:spinner id="qtd"
+							value="#{nfEntradaMB.itemNFEntrada.quantidade}" />
+
+						<br />
+
+						<p:outputLabel for="precocusto" value="Novo preço Custo:" />
+						<p:inputNumber id="precocusto"
+							value="#{nfEntradaMB.novoPrecoCusto}" />
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Adcionar"
+								actionListener="#{nfEntradaMB.adicionar}"
+								styleClass="btn-success btn-block"
+								update=":formPrepDialog:panelItens  :formPesquisaProdutos :formPrepDialog:messagens"
+								oncomplete="handleLoginRequest(xhr, status, args)" />
+
+						</h:panelGrid>
+
+						<br />
+
+					</h:panelGrid>
+
+				</h:form>
+
+				<script type="text/javascript">
+					function handleLoginRequest(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialog) {
+							PF('dlgPesquisar').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('dlgPesquisar').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+
+			</p:dialog>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Contas Receber</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formCadContasReceber">
+
+				<p:growl id="messagens" showSummary="false" showDetail="true" />
+
+				<br />
+
+				<p:panelGrid columns="4" layout="grid"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+					<h:outputText value="Consultar por:" />
+					<p:selectOneButton
+						value="#{contasReceberMB.filtro.dataParaConsulta}"
+						converter="omnifaces.GenericEnumConverter">
+						<f:selectItems value="#{contasReceberMB.datasParaConsulta}"
+							var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneButton>
+
+					<h:outputText value="Status:" />
+					<p:selectOneMenu value="#{contasReceberMB.filtro.statusTitulo}"
+						converter="omnifaces.GenericEnumConverter">
+						<f:selectItems value="#{contasReceberMB.statusTitulo}" var="item"
+							itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="10" layout="grid">
+
+					<p:outputLabel for="dtini" value="Data início:" />
+
+					<p:calendar id="dtini" value="#{contasReceberMB.filtro.dataInicio}"
+						pattern="dd/MM/yyyy" size="16" locale="pt" />
+
+					<h:outputText value="Até" />
+
+					<p:outputLabel for="dtfim" value="Data fim:" />
+
+					<p:calendar id="dtfim" value="#{contasReceberMB.filtro.dataFim}"
+						label="Data fim" pattern="dd/MM/yyyy" size="16" locale="pt" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-4">
+						<div class="ui-inputgroup">
+							<p:inputText id="nun" value="#{contasReceberMB.filtro.numero}"
+								placeholder="Digite aqui o número do título..." />
+							<p:commandButton icon="fa fa-search"
+								styleClass="btn-primary btn-block"
+								update=":formCadContasReceber:tabContasReceber :formCadContasReceber:dtini :formCadContasReceber:dtfim :formCadContasReceber:nun :formCadContasReceber:messagens"
+								action="#{contasReceberMB.consultar}" />
+						</div>
+					</div>
+				</div>
+
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+					<p:outputLabel style="font-weight: bold"
+						value="Títulos filtrados (Max. 50 itens)." />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" style="float:right;">
+
+					<h:commandLink>
+						<p:graphicImage name="/demo/images/csv.png" width="24" />
+						<p:dataExporter type="csv" target="tabContasReceber"
+							fileName="Contas Receber" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/demo/images/xlsx.png" width="24" />
+						<p:dataExporter type="xlsxstream" target="tabContasReceber"
+							fileName="Contas Receber" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/demo/images/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="tabContasReceber"
+							fileName="Contas Receber" />
+					</h:commandLink>
+
+				</h:panelGrid>
+
+				<br />
+
+				<br />
+
+				<t:saveState value="#{contasReceberMB.contasReceberLista}" />
+
+				<p:dataTable id="tabContasReceber" var="item"
+					value="#{contasReceberMB.contasReceberLista}"
+					emptyMessage="Não há itens." widgetVar="itemTable"
+					filteredValue="#{contasReceberMB.contasReceberListaFiltrados}"
+					paginator="true" rowKey="#{item.id}" rowsPerPageTemplate="5,10"
+					rows="5" selectionMode="single">
+
+					<p:column style="width:460px" sortBy="#{item.cliente}"
+						filterBy="#{item.id.cliente}">
+						<f:facet name="header">
+							<h:outputText value="Cliente" />
+						</f:facet>
+						<h:outputText value="#{item.id.cliente}" />
+					</p:column>
+
+					<p:column style="width:125px" sortBy="#{item.numero}"
+						filterBy="#{item.id.numeroCR}">
+						<f:facet name="header">
+							<h:outputText value="Número" />
+						</f:facet>
+						<h:outputText value="#{item.id.numeroCR}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Parcela" />
+						</f:facet>
+						<h:outputText value="#{item.id.parcelaCR}" />
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Emissão" />
+						</f:facet>
+						<h:outputText value="#{item.emissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Vencimento" />
+						</f:facet>
+						<h:outputText value="#{item.vencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Baixa" />
+						</f:facet>
+						<h:outputText value="#{item.baixa}">
+							<f:convertDateTime pattern="dd/MM/yyyy"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Valor" />
+						</f:facet>
+						<h:outputText value="#{item.valor}" />
+					</p:column>
+
+					<p:column style="width:110px">
+						<f:facet name="header">
+							<h:outputText value="Saldo" />
+						</f:facet>
+						<h:outputText value="#{item.saldo}" />
+					</p:column>
+
+					<p:column style="width:125px">
+						<f:facet name="header">
+							<h:outputText value="NF-e Número/Série" />
+						</f:facet>
+						<h:outputText
+							value="#{item.nfe.numero.toString().concat(' / ').concat(item.nfe.serie)}" />
+					</p:column>
+
+					<p:column style="width:160px" exportable="false">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:commandButton styleClass="ui-menuitem-link"
+								icon="ui-icon-close" action="#{contasReceberMB.excluir}"
+								update="formCadContasReceber" ajax="true" value="Excluir">
+
+								<p:confirm header="Confirmação"
+									message="Deseja excluir este título?" icon="ui-icon-alert" />
+
+								<f:param value="#{item.id}" name="itemcodigo" />
+
+							</p:commandButton>
+
+							<p:confirmDialog global="true" showEffect="fade">
+								<p:commandButton value="Sim" type="button"
+									styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+								<p:commandButton value="Não" type="button"
+									styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							</p:confirmDialog>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton styleClass="btn-success btn-block" ajax="false"
+						value="Novo Título" action="#{contasReceberMB.novoTitulo}" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

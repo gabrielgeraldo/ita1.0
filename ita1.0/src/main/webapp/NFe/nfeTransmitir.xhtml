@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Transmissão SEFAZ</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<div style="padding: 15px">
+						<div align="center">
+							<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+						</div>
+					</div>
+				</p:dialog>
+
+				<p:messages id="messagens" showSummary="false" showDetail="true"
+					closable="true" />
+
+				<br />
+
+				<h:outputText
+					rendered="#{transmissaoNFeMB.ambienteConfigurado.equals('1')}"
+					id="ambConfigProd" value="Ambiente configurado: Produção"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<h:outputText
+					rendered="#{transmissaoNFeMB.ambienteConfigurado.equals('2')}"
+					id="ambConfigHml" value="Ambiente configurado: Homologação"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton value="Status SEFAZ"
+						styleClass="btn-success btn-block"
+						actionListener="#{transmissaoNFeMB.consultarStatusSefaz}"
+						update=":form:messagens :form:statusSefaz" />
+
+					<p:spacer width="8" />
+
+					<p:outputLabel id="statusSefaz" style="font-weight: bold"
+						value="#{transmissaoNFeMB.statusSefaz}" />
+
+				</h:panelGrid>
+
+				<br />
+
+				<p:dataTable id="tabNFes" var="item"
+					value="#{transmissaoNFeMB.notasParaTransmitir}"
+					emptyMessage="Não há itens." widgetVar="itemTable"
+					filteredValue="#{transmissaoNFeMB.notasParaTransmitirFiltrados}"
+					paginator="true" rowKey="#{item.codigo}" rowsPerPageTemplate="5,10"
+					rows="10" selectionMode="single">
+
+					<p:column style="width:100px">
+						<f:facet name="header">
+							<h:outputText value="Número/Série" />
+						</f:facet>
+						<h:outputText
+							value="#{item.numero.toString().concat(' / ').concat(item.serie)}" />
+					</p:column>
+
+					<p:column filterBy="#{item.rejeicaoMotivo}" style="width:698px">
+						<f:facet name="header">
+							<h:outputText value="Rejeicao Motivo" />
+						</f:facet>
+						<h:outputText value="#{item.rejeicaoMotivo}" />
+					</p:column>
+
+					<p:column style="width:130px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:commandButton image="ui-icon-document" value="Transmitir"
+								action="#{transmissaoNFeMB.transmitirNFe}" update="form">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+							</p:commandButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

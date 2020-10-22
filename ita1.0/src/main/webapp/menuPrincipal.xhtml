@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
+	<br />
+	<h:form>
+		<nav class="aw-menu">
+			<ul>
+
+				<li><h:commandLink action="/home.xhtml?faces-redirect=true">
+						<i class="fa fa-home" /> Início </h:commandLink></li>
+
+				<li><h:commandLink action="#{produtoMB.listarProduto}">
+						<i class="fa fa-plus-square"></i> Produto </h:commandLink></li>
+
+				<li><h:commandLink action="#{fornecedorMB.acaoListar}">
+						<i class="fa fa-plus-square"></i> Fornecedor </h:commandLink></li>
+
+				<li><h:commandLink action="#{clienteMB.acaoListar}">
+						<i class="fa fa-plus-square"></i> Cliente </h:commandLink></li>
+
+				<li><h:commandLink action="#{categoriaMB.acaoListar}">
+						<i class="fa fa-plus-square"></i> Categoria </h:commandLink></li>
+
+				<li><h:commandLink action="#{formaPagamentoMB.acaoListar}">
+						<i class="fa fa-plus-square"></i> Form. pagamento </h:commandLink></li>
+
+				<li><h:commandLink action="#{userMB.acaoListar}">
+						<i class="fa fa-plus-square"></i> Usuário </h:commandLink></li>
+
+				<li><h:commandLink action="#{vendaMB.iniciarVenda}">
+						<i class="fa fa-shopping-cart"></i> Efetuar venda </h:commandLink></li>
+
+				<li><h:commandLink action="#{vendasMB.acaoListar}">
+						<i class="fa fa-check-square-o"></i> Consultar venda </h:commandLink></li>
+
+				<li><h:commandLink action="#{nfeMB.acaoListar}">
+						<i class="fa fa-files-o"></i> Preparar NF-e </h:commandLink></li>
+
+				<li><h:commandLink action="#{nfesSaidaMB.acaoListar}">
+						<i class="fa fa-circle-o"></i> Transmitir NF-e </h:commandLink></li>
+
+				<li><h:commandLink action="#{consultarNfeMB.acaoConsultar}">
+						<i class="fa fa-check-square-o"></i> Consultar NF-e </h:commandLink></li>
+
+				<li><h:commandLink action="#{relatorioMB.acaoRelatorios}">
+						<i class="fa fa-print"></i> Relatório </h:commandLink></li>
+			</ul>
+		</nav>
+	</h:form>
+</ui:composition>

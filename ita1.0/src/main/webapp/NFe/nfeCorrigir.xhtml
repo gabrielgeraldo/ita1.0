@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Corrigir Nota Fiscal Eletrônca</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form>
+
+				<p:messages id="growl" showSummary="false" showDetail="true"
+					closable="true" />
+
+				<h:inputHidden value="#{consultarNfeMB.nfe.codigo}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.numero}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.serie}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.cliente}"
+					converter="converter-generico" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.data}">
+					<f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss.SSS"
+						timeZone="GMT-03:00" />
+				</h:inputHidden>
+				<h:inputHidden value="#{consultarNfeMB.nfe.total}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.naturezaOperacao}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.condicaoPagamento}"
+					converter="converter-generico" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.tipo}"
+					converter="omnifaces.GenericEnumConverter" />
+				<h:inputHidden
+					value="#{consultarNfeMB.nfe.nfIdentificadorLocalDestinoOperacao}"
+					converter="omnifaces.GenericEnumConverter" />
+				<h:inputHidden
+					value="#{consultarNfeMB.nfe.nfOperacaoConsumidorFinal}"
+					converter="omnifaces.GenericEnumConverter" />
+				<h:inputHidden
+					value="#{consultarNfeMB.nfe.nfIndicadorPresencaComprador}"
+					converter="omnifaces.GenericEnumConverter" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.nfModalidadeFrete}"
+					converter="omnifaces.GenericEnumConverter" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.chave}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.numProtocolo}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.status}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.rejeicaoMotivo}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.ambienteRecebimento}" />
+				<h:inputHidden value="#{consultarNfeMB.nfe.dataRecebimento}">
+					<f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"
+						timeZone="GMT-03:00" />
+				</h:inputHidden>
+				<h:inputHidden value="#{consultarNfeMB.nfe.nfFfinalidade}"
+					converter="omnifaces.GenericEnumConverter" />
+
+				<h:panelGrid columns="1">
+
+					<p:outputLabel value="Texto correção:" />
+
+					<p:inputTextarea rows="6" cols="33" id="desc"
+						value="#{consultarNfeMB.mensagemEvento}" />
+
+				</h:panelGrid>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton ajax="false" styleClass="btn-success btn-block"
+						value="Corrigir NF-e" action="#{consultarNfeMB.corrigir}"
+						onclick="PF('statusDialog').show();"
+						oncomplete="handleLoginRequestStatus(xhr, status, args)" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+			<br />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+
+				<div style="padding: 15px">
+
+					<div align="center">
+						<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+
+					</div>
+				</div>
+
+				<script type="text/javascript">
+					function handleLoginRequestStatus(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialogStatus) {
+							PF('statusDialog').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('statusDialog').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+
+			</p:dialog>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

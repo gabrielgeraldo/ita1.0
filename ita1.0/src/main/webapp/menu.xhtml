@@ -1,0 +1,199 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<h:body>
+
+		<h:form>
+
+			<div id='cssmenu' style="width: 210px;">
+				<br />
+				<ul>
+
+					<li><h:commandLink action="/home.xhtml?faces-redirect=true"
+							style="word-spacing: 10px;">
+							<i class="fa fa-align-justify" /> Dashboard </h:commandLink></li>
+
+					<li class='active has-sub'><a href='#'> Atualizações </a>
+						<ul>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-files-o" /> Cadastros
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{produtoMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Produto </h:commandLink></li>
+
+									<li><h:commandLink action="#{fornecedorMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Fornecedor </h:commandLink></li>
+
+									<li><h:commandLink action="#{clienteMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Cliente </h:commandLink></li>
+
+									<li><h:commandLink action="#{categoriaMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Categoria </h:commandLink></li>
+
+									<li><h:commandLink action="#{formaPagamentoMB.listar}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-text-o" /> F/ Pagamento </h:commandLink></li>
+
+									<li><h:commandLink action="#{userMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Usuário </h:commandLink></li>
+
+								</ul></li>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-files-o" /> Movimentos
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{nfEntradaMB.listar}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-text-o" /> NF Entrada </h:commandLink></li>
+
+								</ul></li>
+
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-files-o" /> Financeiro
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{contasReceberMB.listar}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-text-o" /> Contas Receber </h:commandLink></li>
+
+									<li><h:commandLink action="#{contasPagarMB.listar}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-text-o" /> Contas Pagar </h:commandLink></li>
+
+								</ul></li>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-files-o" /> Pedidos
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{pedido_vendaMB.listar}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-text-o" /> Pedido</h:commandLink></li>
+
+								</ul></li>
+
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-file-text-o" /> NF-e
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{nfeMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> NF-e </h:commandLink></li>
+
+									<li><h:commandLink action="#{transmissaoNFeMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-rss" /> Transmissão </h:commandLink></li>
+
+									<li><h:commandLink
+											action="#{consultarNfeMB.acaoConsultar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Consultar </h:commandLink></li>
+
+								</ul></li>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-file-text-o" /> NFC-e
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{nfceMB.iniciarNTFCe}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> NFC-e </h:commandLink></li>
+
+									<li><h:commandLink
+											action="#{consultarNFCeMB.acaoConsultar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Consultar </h:commandLink></li>
+
+								</ul></li>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-file-text-o" /> Atendimento
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{vendaMB.iniciarVenda}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Venda </h:commandLink></li>
+
+									<li><h:commandLink action="#{vendasMB.acaoListar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-file-text-o" /> Consultar </h:commandLink></li>
+
+								</ul></li>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-files-o" /> Relatórios
+							</a>
+								<ul>
+
+									<li><h:commandLink
+											action="#{tataisPorDiaMB.acaoRelatorios}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-pdf-o" /> Totais P/ Dia </h:commandLink></li>
+
+									<li><h:commandLink action="#{movimentoMB.acaoRelatorios}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-pdf-o" /> Movimento </h:commandLink></li>
+
+									<li><h:commandLink
+											action="#{maisVendidosMB.acaoRelatorios}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-pdf-o" /> Mais Vendidos </h:commandLink></li>
+
+									<li><h:commandLink action="#{financeiroMB.acaoRelatorios}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-pdf-o" /> Financeiro </h:commandLink></li>
+
+								</ul></li>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-wrench" /> Configurações
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{configuracaoMB.listar}"
+											style="word-spacing: 10px;">
+											<i class="fa fa-wrench" /> Configuração </h:commandLink></li>
+									<ui:remove>
+
+										<li><h:commandLink action="#{impostoMB.listar}">
+												<i></i> Impostos </h:commandLink></li>
+
+									</ui:remove>
+
+								</ul></li>
+
+						</ul></li>
+
+					<li><h:commandLink style="word-spacing: 10px;">
+							<i class="fa fa-list" /> Sobre </h:commandLink></li>
+
+					<li><h:commandLink action="#{logonMB.logout()}" ajax="false"
+							style="word-spacing: 10px;">
+							<i class="fa fa-sign-out" /> Sair </h:commandLink></li>
+
+				</ul>
+			</div>
+
+		</h:form>
+
+	</h:body>
+
+</ui:composition>

@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Vizualizar Nota Fiscal Eletrônca</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form>
+
+				<p:tabView>
+
+					<p:tab title="Dados gerais">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Número:" />
+							<p:outputLabel value="#{consultarNfeMB.nfe.numero}" />
+
+							<p:outputLabel for="serie" value="Série:" />
+							<p:outputLabel id="serie" value="#{consultarNfeMB.nfe.serie}" />
+
+							<p:outputLabel for="natOpr" value="Natur. Operação:" />
+							<p:outputLabel id="natOpr"
+								value="#{consultarNfeMB.nfe.naturezaOperacao.substring(0, 1).concat(consultarNfeMB.nfe.naturezaOperacao.substring(1).toLowerCase())}" />
+
+							<p:outputLabel for="id_cli" value="Cliente:" />
+							<p:outputLabel id="id_cli" value="#{consultarNfeMB.nfe.cliente}" />
+
+							<p:outputLabel for="condPgto" value="Condição de Pagamento:" />
+							<p:outputLabel id="condPgto"
+								value="#{consultarNfeMB.nfe.condicaoPagamento}" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Dados complemetares">
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="tipo" value="Tipo:" />
+							<p:outputLabel id="tipo"
+								value="#{consultarNfeMB.nfe.tipo.toString()}" />
+
+							<p:outputLabel for="idf"
+								value="Identificador Local Destino Operação:" />
+							<p:outputLabel id="idf"
+								value="#{consultarNfeMB.nfe.nfIdentificadorLocalDestinoOperacao.toString()}" />
+
+							<p:outputLabel for="op" value="Operação Consumidor Final:" />
+							<p:outputLabel id="op"
+								value="#{consultarNfeMB.nfe.nfOperacaoConsumidorFinal.toString()}" />
+
+							<p:outputLabel for="ind" value="Indicador Presença Comprador:" />
+							<p:outputLabel id="ind"
+								value="#{consultarNfeMB.nfe.nfIndicadorPresencaComprador.toString()}" />
+
+							<p:outputLabel for="fret" value="Modalidade Frete:" />
+							<p:outputLabel id="fret"
+								value="#{consultarNfeMB.nfe.nfModalidadeFrete.toString()}" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Dados da transmissão">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="dataRecebimento" value="Data Recebimento:" />
+							<p:outputLabel id="dataRecebimento"
+								value="#{consultarNfeMB.nfe.dataRecebimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Sao_Paulo" />
+							</p:outputLabel>
+
+							<p:outputLabel value="Ambiente Recebimento:" />
+
+							<p:outputLabel
+								rendered="#{consultarNfeMB.nfe.ambienteRecebimento.equals('1')}"
+								value="Produção" />
+
+							<p:outputLabel
+								rendered="#{consultarNfeMB.nfe.ambienteRecebimento.equals('2')}"
+								value="Homologação" />
+
+							<p:outputLabel for="pro" value="Protocolo:" />
+							<p:outputLabel id="pro"
+								value="#{consultarNfeMB.nfe.numProtocolo}" />
+
+							<p:outputLabel for="ch" value="Chave:" />
+							<p:outputLabel id="ch" value="#{consultarNfeMB.nfe.chave}"
+								size="55" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Eventos">
+
+						<p:dataTable value="#{consultarNfeMB.eventos}" var="evento"
+							paginator="true" emptyMessage="Não há itens.">
+
+							<f:facet name="header">
+       							Eventos
+    						</f:facet>
+
+							<p:column headerText="Número/Série">
+								<h:outputText
+									value="#{evento.nfe.numero.toString().concat(' / ').concat(evento.nfe.serie)}" />
+							</p:column>
+
+							<p:column headerText="Tipo Evento">
+								<h:outputText value="#{evento.tipoEvento}" />
+							</p:column>
+
+							<p:column headerText="Núm. Protoc.">
+								<h:outputText value="#{evento.numProtocolo}" />
+							</p:column>
+
+							<p:column headerText="N. Seq. Evento">
+								<h:outputText value="#{evento.numeroSequencialEvento}" />
+							</p:column>
+
+							<p:column headerText="Data Recebimento">
+								<h:outputText value="#{evento.dataRecebimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ambiente Recebimento">
+								<h:outputText value="#{evento.ambienteRecebimento}" />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:tab>
+
+					<p:tab title="Informações complementares">
+
+						<h:panelGrid columns="1">
+
+							<br />
+
+							<p:outputLabel value="Informações complementares:" />
+
+							<br />
+
+							<p:inputTextarea id="desc" rows="6" cols="66"
+								value="#{consultarNfeMB.nfe.informacoesComplementares}"
+								readonly="true" />
+
+							<br />
+
+						</h:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Financeiro">
+
+						<p:dataTable var="item"
+							value="#{consultarNfeMB.nfe.contasReceber}"
+							emptyMessage="Não há itens." paginator="true" rows="5"
+							rowsPerPageTemplate="5,10">
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Número" />
+								</f:facet>
+								<h:outputText value="#{item.id.numeroCR}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Parcela" />
+								</f:facet>
+								<h:outputText value="#{item.id.parcelaCR}" />
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Emissão" />
+								</f:facet>
+								<h:outputText value="#{item.emissao}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Vencimento" />
+								</f:facet>
+								<h:outputText value="#{item.vencimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Baixa" />
+								</f:facet>
+								<h:outputText value="#{item.baixa}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Valor" />
+								</f:facet>
+								<h:outputText value="#{item.valor}" />
+							</p:column>
+
+							<p:column style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Saldo" />
+								</f:facet>
+								<h:outputText value="#{item.saldo}" />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<h:panelGrid columns="2">
+
+					<p:outputPanel id="panelItens">
+
+						<p:dataTable value="#{consultarNfeMB.itensNTFe}" var="item"
+							paginator="true">
+
+							<f:facet name="header">
+       							Itens
+    						</f:facet>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText />
+							</p:column>
+
+							<p:column style="width:150px">
+								<f:facet name="header">
+									<h:outputText value="Código" />
+								</f:facet>
+								<h:outputText value="#{item.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" style="width:400px">
+								<h:outputText value="#{item.produto.descricao}" />
+							</p:column>
+
+							<p:column headerText="CFOP">
+								<h:outputText value="#{item.cfop}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="QTD" />
+								</f:facet>
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column style="width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Venda" />
+								</f:facet>
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+						<ui:remove>
+							<div style="position: relative; height: 116px; top: 97px;"></div>
+						</ui:remove>
+
+						<div>
+
+							<h:outputText id="output1"
+								value="Valor total: #{consultarNfeMB.nfe.total}"
+								style="float:right;font-weight: bold">
+							</h:outputText>
+
+						</div>
+
+					</p:outputPanel>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

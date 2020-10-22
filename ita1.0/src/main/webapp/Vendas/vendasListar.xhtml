@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Consultar Vendas</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formVen">
+
+				<p:growl id="growl" />
+
+				<p:dataTable id="tabVendas" var="item" value="#{vendasMB.vendas}"
+					emptyMessage="Não há itens." widgetVar="itemTable"
+					filteredValue="#{vendasMB.vendasFiltrados}" paginator="true"
+					rowKey="#{item.codigo}" rowsPerPageTemplate="5,10" rows="5"
+					selectionMode="single">
+
+
+					<f:facet name="header">
+						<div align="right">
+							<h:outputText value="Pesquisar: " />
+							<p:inputText id="globalFilter" onkeyup="PF('itemTable').filter()"
+								style="width:150px" />
+
+						</div>
+					</f:facet>
+
+					<p:column style="width:110px" sortBy="#{item.codigo}"
+						filterBy="#{item.codigo}">
+						<f:facet name="header">
+							<h:outputText value="Código" />
+						</f:facet>
+						<h:outputText value="#{item.codigo}" />
+					</p:column>
+
+					<p:column sortBy="#{item.cliente}" filterBy="#{item.cliente}"
+						style="width:580px">
+						<f:facet name="header">
+							<h:outputText value="Cliente" />
+						</f:facet>
+						<h:outputText value="#{item.cliente}" />
+					</p:column>
+
+					<p:column sortBy="#{item.data}">
+						<f:facet name="header">
+							<h:outputText value="Data/Hora" />
+						</f:facet>
+						<h:outputText value="#{item.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:175px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:splitButton icon="ui-icon-search" value="Vizualizar"
+								oncomplete="PF('itensDialog').show()"
+								update=":formVen:panelItens"
+								action="#{vendasMB.vizualizarItens}">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								<p:menuitem icon="ui-icon-document" ajax="false" value="Compr."
+									action="#{vendasMB.imprimirComprovanteVenda}">
+
+									<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								</p:menuitem>
+
+								<p:menuitem>
+
+									<p:commandLink styleClass="ui-menuitem-link"
+										icon="ui-icon-close" action="#{vendasMB.cancelarVenda}"
+										ajax="false">
+
+										<p:confirm header="Confirmação"
+											message="Deseja cancelar essa venda?" icon="ui-icon-alert" />
+
+										<f:param value="#{item.codigo}" name="itemcodigo" />
+
+										<h:outputText
+											styleClass="ui-menuitem-icon ui-icon ui-icon-close" />
+										<h:outputText styleClass="ui-menuitem-text" value="Cancelar" />
+
+									</p:commandLink>
+
+									<p:confirmDialog global="true" showEffect="fade">
+										<p:commandButton value="Sim" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="Não" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</p:confirmDialog>
+
+								</p:menuitem>
+
+							</p:splitButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:dialog header="Venda" widgetVar="itensDialog" modal="true"
+					showEffect="fade" hideEffect="fade" resizable="false" width="750">
+
+					<p:outputPanel id="panelItens">
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="cli" value="Cliente:" />
+							<p:outputLabel id="cli" value="#{vendasMB.venda.cliente}" />
+
+							<p:outputLabel for="sit" value="Situação:" />
+							<p:outputLabel id="sit" value="#{vendasMB.venda.situacao}" />
+
+							<p:outputLabel for="condPgto" value="Condição de Pagamento:" />
+							<p:outputLabel id="condPgto"
+								value="#{vendasMB.venda.condicaoPagamento}" />
+
+							<br />
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{vendasMB.itensVendas}" var="item"
+							emptyMessage="Não há itens." paginator="true">
+
+							<p:column headerText="Produto">
+								<h:outputText value="#{item.produto}" />
+							</p:column>
+
+							<p:column headerText="Quantidade">
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column headerText="Preço Venda">
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+					</p:outputPanel>
+
+				</p:dialog>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

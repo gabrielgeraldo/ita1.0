@@ -1,0 +1,504 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Preparar\Editar Nota Fiscal Eletrônica</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<p:growl id="messagens" showSummary="false" showDetail="true" />
+
+				<p:tabView id="tabView">
+
+					<p:tab title="Dados gerais">
+
+						<p:panelGrid columns="4" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Número:" />
+							<p:inputText id="numero" style="width:85px"
+								value="#{nfeMB.nfe.numero}" readonly="true">
+							</p:inputText>
+
+							<p:outputLabel for="serie" value="Série:" />
+							<p:selectOneMenu id="serie" value="#{nfeMB.nfe.serie}">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItem itemLabel="1" itemValue="1" />
+								<f:selectItem itemLabel="2" itemValue="2" />
+								<f:selectItem itemLabel="3" itemValue="3" />
+								<f:selectItem itemLabel="4" itemValue="4" />
+								<p:ajax listener="#{nfeMB.selecionaSerie}" update="numero" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="fin" value="Finalidade:" />
+							<p:selectOneMenu id="fin" value="#{nfeMB.nfe.nfFfinalidade}"
+								filterMatchMode="startsWith"
+								converter="omnifaces.GenericEnumConverter">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{nfeMB.nfFinalidade}" var="item"
+									itemLabel="#{item}" itemValue="#{item}" />
+								<p:ajax listener="#{nfeMB.selecionaDevolucao}"
+									update="form:tabView" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="natOpr" value="Natur. Operação:" />
+							<p:selectOneMenu id="natOpr"
+								value="#{nfeMB.nfe.naturezaOperacao}">
+								<f:selectItem itemLabel="Venda" itemValue="VENDA"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Devolução" itemValue="DEVOLUCAO"
+									noSelectionOption="true" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="NF Referência:" for="nfRev"
+								rendered="#{!nfeMB.devolucao}" />
+							<p:autoComplete id="nfRev" dropdown="true" maxResults="10"
+								rendered="#{!nfeMB.devolucao}" value="#{nfeMB.nfe.nfEntrada}"
+								converter="converter-generico"
+								completeMethod="#{nfeMB.completeNFEntrada}" var="item"
+								itemLabel="#{item.numero.toString().concat(' - ').concat(item.serie.toString().concat(' - ').concat(item.fornecedor))}"
+								itemValue="#{item}" forceselection="true" size="40"
+								disabled="#{nfeMB.desabilitaHabilita}" />
+
+							<p:outputLabel value="Cliente:" id="cli"
+								rendered="#{nfeMB.devolucao}" />
+
+							<p:autoComplete id="cli1" dropdown="true" maxResults="10"
+								rendered="#{nfeMB.devolucao}" value="#{nfeMB.nfe.cliente}"
+								converter="converter-generico"
+								completeMethod="#{nfeMB.completeCliente}" var="item"
+								itemLabel="#{item.nome}" itemValue="#{item}" size="40"
+								forceselection="true" disabled="#{nfeMB.desabilitaHabilita}" />
+
+							<p:outputLabel for="condPgto" value="Condição de Pagamento:" />
+							<p:selectOneMenu id="condPgto"
+								disabled="#{nfeMB.desabilitaHabilitaCompoentesDeParcelas}"
+								value="#{nfeMB.nfe.condicaoPagamento}" filter="true"
+								filterMatchMode="startsWith" converter="converter-generico">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{nfeMB.condicoesPagamentos}" />
+								<p:ajax listener="#{nfeMB.renderizaCompoentesDeParcelas}"
+									update="form:outputLabel" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Dados complemetares">
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="tipo" value="Tipo:" />
+							<p:selectOneMenu id="tipo" value="#{nfeMB.nfe.tipo}"
+								filterMatchMode="startsWith"
+								converter="omnifaces.GenericEnumConverter">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{nfeMB.tipos}" var="item"
+									itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="idf"
+								value="Identificador Local Destino Operação:" />
+							<p:selectOneMenu id="idf"
+								converter="omnifaces.GenericEnumConverter"
+								value="#{nfeMB.nfe.nfIdentificadorLocalDestinoOperacao}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems
+									value="#{nfeMB.nfIdentificadorLocalDestinoOperacao}" var="item"
+									itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="op" value="Operação Consumidor Final:" />
+							<p:selectOneMenu id="op"
+								converter="omnifaces.GenericEnumConverter"
+								value="#{nfeMB.nfe.nfOperacaoConsumidorFinal}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{nfeMB.nfOperacaoConsumidorFinal}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="ind" value="Indicador Presença Comprador:" />
+							<p:selectOneMenu id="ind"
+								converter="omnifaces.GenericEnumConverter"
+								value="#{nfeMB.nfe.nfIndicadorPresencaComprador}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{nfeMB.nfIndicadorPresencaComprador}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="fret" value="Modalidade Frete:" />
+							<p:selectOneMenu id="fret"
+								converter="omnifaces.GenericEnumConverter"
+								value="#{nfeMB.nfe.nfModalidadeFrete}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{nfeMB.nfModalidadeFrete}" var="item"
+									itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Informações complementares">
+
+						<h:panelGrid columns="1">
+
+							<br />
+
+							<p:outputLabel value="Informações complementares:" />
+
+							<br />
+
+							<p:inputTextarea id="desc" rows="6" cols="66"
+								value="#{nfeMB.nfe.informacoesComplementares}" />
+
+							<br />
+
+						</h:panelGrid>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton value="Adcionar itens"
+						styleClass="btn-primary btn-block"
+						onclick=" PF('dlgPesquisar').show();"
+						disabled="#{nfeMB.desabilitaHabilita}" />
+
+					<p:spacer width="8" />
+
+					<p:commandButton styleClass="btn-success btn-block"
+						value="Importar Orçamento"
+						onclick=" PF('dlgImportarOrcamento').show();"
+						disabled="#{nfeMB.desabilitaHabilita}" />
+
+				</h:panelGrid>
+
+				<br />
+
+				<p:outputPanel id="outputLabel">
+
+					<h:panelGrid columns="7"
+						rendered="#{nfeMB.renderizaCompoentesDeParcelas}">
+
+						<p:outputLabel id="nunLabel" value="Número Parcelas:" />
+
+						<p:spacer width="8" />
+
+						<p:spinner id="nunImput" value="#{nfeMB.nfe.numeroDeParcelas}"
+							disabled="#{nfeMB.desabilitaHabilitaCompoentesDeParcelas}" />
+
+						<p:spacer width="50" />
+
+						<p:commandButton value="Calcular parcelas"
+							styleClass="btn-primary btn-block"
+							disabled="#{nfeMB.desabilitaHabilitaCompoentesDeParcelas}"
+							actionListener="#{nfeMB.calcularParcelas}" update="form" />
+
+						<p:spacer width="8" />
+
+						<p:commandButton value="Excluir parcelas"
+							styleClass="btn-danger btn-block"
+							disabled="#{nfeMB.desabilitaHabilitaCompoentesDeParcelas}"
+							actionListener="#{nfeMB.excluirParcelas}" update="form" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2"
+						rendered="#{nfeMB.renderizaCompoentesDeParcelas}">
+
+						<p:dataTable var="item" style="width:350px;" editMode="cell"
+							editable="true" value="#{nfeMB.nfe.contasReceber}"
+							emptyMessage="Não há itens.">
+
+							<p:column headerText="N. Parcela">
+								<h:outputText value="#{item.id.parcelaCR}" />
+							</p:column>
+
+							<p:column headerText="Vencimento">
+								<h:outputText value="#{item.vencimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy"
+										timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Saldo">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{item.saldo}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputNumber value="#{item.saldo}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Valor">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{item.valor}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputNumber value="#{item.valor}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+						</p:dataTable>
+
+					</h:panelGrid>
+
+				</p:outputPanel>
+
+				<h:panelGrid columns="2">
+
+					<p:outputPanel id="panelItens">
+
+						<p:dataTable value="#{nfeMB.itensNfe}" var="item" paginator="true"
+							rows="5" emptyMessage="Não há itens." editable="true"
+							editMode="cell" disabled="#{nfeMB.desabilitaHabilita}">
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText />
+							</p:column>
+
+							<p:column style="text-align: center;width:120px">
+								<f:facet name="header">
+									<h:outputText value="Código" />
+								</f:facet>
+								<h:outputText value="#{item.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição">
+								<h:outputText value="#{item.produto.descricao}" />
+							</p:column>
+
+							<p:column headerText="CFOP">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{item.cfop}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{item.cfop}" style="width:100%"
+											converter="converter-generico" filter="true">
+											<f:selectItems value="#{nfeMB.cfop}" var="cfop"
+												itemLabel="#{cfop.codigo.toString().concat(' - ').concat(cfop.descricao.substring(0,22))}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="QTD" />
+								</f:facet>
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Venda" />
+								</f:facet>
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+							<p:column headerText="Opções"
+								style="text-align: center;width:100px">
+
+								<p:commandLink actionListener="#{nfeMB.removerProduto(item)}"
+									update="form:panelItens :form:messagens"
+									disabled="#{nfeMB.desabilitaHabilita}">
+									<i class="fa fa-trash fa-1x" />
+								</p:commandLink>
+
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+						<p:separator />
+
+						<h:inputHidden value="#{nfeMB.nfe.total}" />
+
+						<h:outputText id="output1" value="Valor total: #{nfeMB.nfe.total}"
+							style="float:right;font-weight: bold">
+						</h:outputText>
+
+					</p:outputPanel>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton id="btFimVenda" value="Finalizar"
+						action="#{nfeMB.finalizar}" styleClass="btn-success btn-block"
+						ajax="false" />
+
+					<p:spacer width="8" />
+
+					<p:commandButton styleClass="btn-danger btn-block" ajax="false"
+						rendered="#{not facesContext.externalContext.isUserInRole('CAIXA')}"
+						id="btnCancelar" action="#{nfeMB.cancelar}" immediate="true"
+						value="Cancelar" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+			<p:dialog header="Adicionar produto" widgetVar="dlgPesquisar"
+				modal="true" resizable="false" width="650" styleClass="box-primary">
+
+				<h:form id="formPesquisaProdutos">
+
+					<h:panelGrid columns="3">
+						<p:outputLabel for="tipoPesquisaProduto" value="Pesquisar por:" />
+						<p:spacer width="10" />
+						<p:selectOneRadio id="tipoPesquisaProduto"
+							converter="omnifaces.GenericEnumConverter"
+							value="#{nfeMB.tipoPesquisaProduto}" unselectable="true">
+							<p:ajax event="change" />
+							<f:selectItems value="#{nfeMB.tiposPesquisaProduto}" var="item"
+								itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+
+					<h:panelGrid columns="1"
+						style="margin-top:20px;margin-bottom: 10px">
+
+						<p:outputLabel value="Digita a descrição ou o código do produto:"
+							for="pr" />
+						<p:autoComplete id="pr" dropdown="true" maxResults="10"
+							value="#{nfeMB.itemNFe.produto}" converter="converter-genericop"
+							completeMethod="#{nfeMB.completeProduto}" var="item"
+							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao).concat(' - ').concat(item.precoUnitario)}"
+							itemValue="#{item}" forceselection="true" size="90" />
+
+						<br />
+
+						<p:outputLabel value="Informe o CFOP:" for="cfop" />
+						<p:selectOneMenu id="cfop" value="#{nfeMB.itemNFe.cfop}"
+							converter="converter-generico" filter="true" style="width:95.6%;">
+							<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+							<f:selectItems value="#{nfeMB.cfop}" var="cfop"
+								itemLabel="#{cfop.codigo.toString().concat(' - ').concat(cfop.descricao.substring(0,22))}"
+								itemValue="#{cfop}" />
+						</p:selectOneMenu>
+
+						<br />
+
+						<p:outputLabel for="qtd" value="Quantidade:" />
+						<p:spinner id="qtd" value="#{nfeMB.itemNFe.quantidade}" />
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Adcionar"
+								actionListener="#{nfeMB.adicionar}"
+								styleClass="btn-success btn-block"
+								update=":form:panelItens  :formPesquisaProdutos :form:messagens"
+								oncomplete="handleLoginRequest(xhr, status, args)" />
+
+						</h:panelGrid>
+
+						<br />
+
+					</h:panelGrid>
+
+				</h:form>
+
+				<script type="text/javascript">
+					function handleLoginRequest(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialog) {
+							PF('dlgPesquisar').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('dlgPesquisar').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+
+			</p:dialog>
+
+			<p:dialog header="Importar Orçamento"
+				widgetVar="dlgImportarOrcamento" modal="true" resizable="false"
+				width="650" closable="false" styleClass="box-primary">
+
+				<h:form id="formImportarOrcamento">
+
+					<h:panelGrid columns="1"
+						style="margin-top:20px;margin-bottom: 10px">
+
+						<p:outputLabel value="Digita o número do orçamento" for="pd" />
+						<p:autoComplete id="pd" dropdown="true" maxResults="10"
+							value="#{nfeMB.nfe.orcamento}" converter="converter-generico"
+							completeMethod="#{nfeMB.completeOrcamento}" var="item"
+							itemLabel="#{item.numero.toString().concat(' - ').concat(item.cliente)}"
+							itemValue="#{item}" forceselection="true" size="90" />
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Importar"
+								action="#{nfeMB.importarOrcamento}" ajax="false"
+								styleClass="btn-success btn-block"
+								update=":form:panelItens  :formPesquisaProdutos :form:messagens"
+								oncomplete="handleLoginRequest(xhr, status, args)" />
+
+						</h:panelGrid>
+
+						<br />
+
+					</h:panelGrid>
+
+				</h:form>
+
+				<script type="text/javascript">
+					function handleLoginRequest(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialog) {
+							PF('dlgImportarOrcamento').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('dlgImportarOrcamento').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+
+			</p:dialog>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

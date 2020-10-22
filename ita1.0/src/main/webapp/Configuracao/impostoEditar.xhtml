@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/_modelo.xhtml">
+
+	<ui:define name="titulo">Cadastrar\Editar imposto</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="fundoBranco">
+
+			<h1 class="aw-page-title">Cadastrar \ Editar imposto</h1>
+
+			<h:form>
+
+				<h:inputHidden id="idId" value="#{impostoMB.imposto.codigo}" />
+
+				<p:growl id="messagens" />
+
+				<p:tabView>
+
+					<p:tab title="Dados do Imposto">
+
+						<h:panelGrid columns="2">
+
+							<p:outputLabel for="descricao1" value="Descrição:" />
+							<p:inputText id="descricao1"
+								value="#{impostoMB.imposto.descricao}" style="width: 120%"
+								converter="toUpperCaseConverter">
+							</p:inputText>
+
+						</h:panelGrid>
+
+						<br />
+
+						<p:tabView>
+
+							<p:tab title="ICMS">
+
+								<h:panelGrid columns="2">
+
+									<p:outputLabel for="stIcms" value="Situação Trib. do ICMS:" />
+									<p:selectOneMenu id="stIcms"
+										value="#{impostoMB.imposto.situacaoTribdICMS}"
+										filterMatchMode="startsWith">
+										<f:selectItem itemLabel="" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{impostoMB.situacaoTribdICMS}"
+											var="item" itemLabel="#{item}" itemValue="#{item}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="origProd" value="Origem do Produto:" />
+									<p:selectOneMenu id="origProd"
+										value="#{impostoMB.imposto.origemdoProduto}"
+										filterMatchMode="startsWith">
+										<f:selectItem itemLabel="" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{impostoMB.origemdoProduto}" var="item"
+											itemLabel="#{item}" itemValue="#{item}" />
+									</p:selectOneMenu>
+
+								</h:panelGrid>
+
+								<br />
+
+								<p:accordionPanel>
+
+									<p:tab title="ICMS">
+
+										<h:panelGrid columns="2">
+
+											<p:outputLabel for="modBCICMS" value="Modalidade BC do ICMS:" />
+											<p:selectOneMenu id="modBCICMS"
+												value="#{impostoMB.imposto.modalidadeBCdoICMS}"
+												filterMatchMode="startsWith">
+												<f:selectItem itemLabel="" itemValue=""
+													noSelectionOption="true" />
+												<f:selectItems value="#{impostoMB.modalidadeBCdoICMS}"
+													var="item" itemLabel="#{item}" itemValue="#{item}" />
+											</p:selectOneMenu>
+
+											<p:outputLabel for="percModBCICMS"
+												value="Perc. da BC do ICMS:" />
+											<p:inputNumber id="percModBCICMS"
+												value="#{impostoMB.imposto.percdaBCdoICMS}" symbol="%"
+												symbolPosition="s" emptyValue="zero" />
+
+											<p:outputLabel for="percICMS" value="Perc. do ICMS:" />
+											<p:inputNumber id="percICMS"
+												value="#{impostoMB.imposto.percdoICMS}" symbol="%"
+												symbolPosition="s" emptyValue="zero" />
+
+										</h:panelGrid>
+
+									</p:tab>
+
+									<p:tab title="ICMS Substituição">
+
+										<h:panelGrid columns="2">
+
+											<p:outputLabel for="modBCICMSST" value="Modalidade BC da ST:" />
+											<p:selectOneMenu id="modBCICMSST"
+												value="#{impostoMB.imposto.modalidadeBCdaST}"
+												filterMatchMode="startsWith">
+												<f:selectItem itemLabel="" itemValue=""
+													noSelectionOption="true" />
+												<f:selectItems value="#{impostoMB.modalidadeBCdaST}"
+													var="item" itemLabel="#{item}" itemValue="#{item}" />
+											</p:selectOneMenu>
+
+											<p:outputLabel for="percAcresBCdaST"
+												value="Perc. Acres. BC da ST:" />
+											<p:inputNumber id="percAcresBCdaST"
+												value="#{impostoMB.imposto.percAcresBCdaST}" symbol="%"
+												symbolPosition="s" emptyValue="zero" />
+
+											<p:outputLabel for="percRedBCdaST"
+												value="Perc. Red. BC da ST:" />
+											<p:inputNumber id="percRedBCdaST"
+												value="#{impostoMB.imposto.percRedBCdaST}" symbol="%"
+												symbolPosition="s" emptyValue="zero" />
+
+											<p:outputLabel for="percBCdaST" value="Perc. BC da ST:" />
+											<p:inputNumber id="percBCdaST"
+												value="#{impostoMB.imposto.percBCdaST}" symbol="%"
+												symbolPosition="s" emptyValue="zero" />
+
+											<p:outputLabel for="percdoICMSdaST"
+												value="Perc. do ICMS da ST:" />
+											<p:inputNumber id="percdoICMSdaST"
+												value="#{impostoMB.imposto.percdoICMSdaST}" symbol="%"
+												symbolPosition="s" emptyValue="zero" />
+
+											<p:outputLabel for="aliqICMSAdescontarNaoDestacadopeloSN"
+												value="Aliq.ICMS a descontar, não destacado pelo SN:" />
+											<p:inputNumber id="aliqICMSAdescontarNaoDestacadopeloSN"
+												value="#{impostoMB.imposto.aliqICMSAdescontarNaoDestacadopeloSN}"
+												symbol="%" symbolPosition="s" emptyValue="zero" />
+
+										</h:panelGrid>
+
+									</p:tab>
+
+								</p:accordionPanel>
+
+							</p:tab>
+
+							<p:tab title="IPI">
+
+							</p:tab>
+
+							<p:tab title="PIS">
+
+							</p:tab>
+
+							<p:tab title="COFINS">
+
+							</p:tab>
+
+							<p:tab title="ISSQN">
+
+							</p:tab>
+
+							<p:tab title="Outras informações">
+
+							</p:tab>
+
+						</p:tabView>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton ajax="false" id="btnSalvar" image="ui-icon-disk"
+						action="#{impostoMB.acaoSalvar}" value="Salvar" />
+
+					<p:commandButton ajax="false" id="btnCancelar"
+						action="#{impostoMB.acaoCancelar}" immediate="true"
+						value="Cancelar" icon="ui-icon-closethick" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

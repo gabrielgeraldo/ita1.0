@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Venda</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="formVenda">
+
+				<p:growl id="growl" showSummary="false" showDetail="true"
+					closable="true" sticky="true" />
+
+				<br />
+
+				<h:panelGrid id="grid" columns="14">
+
+					<p:focus context="codigo" />
+
+					<p:outputLabel for="codigo" value="Código:" />
+
+					<p:spacer width="10" />
+
+					<p:inputText id="codigo" value="#{vendaMB.produtoEscolhido}"
+						converter="toUpperCaseConverter"
+						validatorMessage="Verifique o código. Caracteres permitidos: [A-Z|0-9]">
+						<f:validateRegex pattern="(^[a-zA-Z0-9]+$)?" />
+					</p:inputText>
+
+					<p:spacer width="10" />
+
+					<p:commandButton value="Adcionar item"
+						id="botaoAdicionarProdutoPeloCodigo"
+						update=":formVenda:tabelaItensVenda :formVenda:grid :formVenda:growl"
+						actionListener="#{vendaMB.adicionarProdutoPeloCodigo}"
+						styleClass="btn-primary btn-block" />
+
+					<p:spacer width="10" />
+
+					<p:outputLabel value="Cliente:" for="cli" />
+
+					<p:spacer width="10" />
+
+					<p:autoComplete id="cli" dropdown="true" maxResults="10"
+						value="#{vendaMB.venda.cliente}" converter="converter-generico"
+						completeMethod="#{vendaMB.completeCliente}" var="item"
+						itemLabel="#{item.nome}" itemValue="#{item}" forceselection="true"
+						size="50" />
+
+				</h:panelGrid>
+
+				<br />
+
+				<h:panelGrid columns="5">
+
+					<p:commandButton value="Pesquisar produto"
+						styleClass="btn-primary btn-block"
+						onclick=" PF('dlgPesquisar').show();"
+						update=":formFimVenda:panelFimVenda" />
+
+					<p:spacer width="15" />
+
+					<p:outputLabel for="condPgto" value="Condição de Pagamento:" />
+
+					<p:spacer width="10" />
+
+					<p:selectOneMenu id="condPgto"
+						value="#{vendaMB.venda.condicaoPagamento}" filter="true"
+						filterMatchMode="startsWith" converter="converter-generico">
+						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{vendaMB.condicoesPagamentos}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<br />
+
+				<h:panelGrid columns="2" cellpadding="5">
+
+					<p:outputPanel id="tabelaItensVenda">
+
+						<p:dataTable id="panel" value="#{vendaMB.itensVenda}" var="item"
+							paginator="true" rows="5" emptyMessage="Não há itens.">
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText />
+							</p:column>
+
+							<p:column style="text-align: center;width:150px">
+								<f:facet name="header">
+									<h:outputText value="Código" />
+								</f:facet>
+								<h:outputText value="#{item.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição">
+								<h:outputText value="#{item.produto.descricao}" />
+							</p:column>
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="QTD" />
+								</f:facet>
+								<h:outputText value="#{item.quantidade}" />
+							</p:column>
+
+							<p:column style="text-align: center;width:80px">
+								<f:facet name="header">
+									<h:outputText value="Preço Venda" />
+								</f:facet>
+								<h:outputText value="#{item.precoVenda}" />
+							</p:column>
+
+							<p:column headerText="Opções"
+								style="text-align: center;width:100px">
+
+								<p:commandLink actionListener="#{vendaMB.removerProduto(item)}"
+									update=":formVenda">
+
+									<i class="fa fa-trash fa-1x" />
+
+								</p:commandLink>
+
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+
+						<p:separator />
+
+						<h:outputText id="outputTextTotal"
+							value="Valor total: #{vendaMB.venda.total}"
+							style="float:right;font-weight: bold">
+						</h:outputText>
+
+					</p:outputPanel>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="1">
+
+					<p:commandButton id="btFimVenda" value="Finalizar"
+						action="#{vendaMB.finalizarVenda}"
+						styleClass="btn-success btn-block" update=":formVenda"
+						onclick="PF('statusDialog').show();" ajax="false"
+						oncomplete="handleLoginRequestStatus(xhr, status, args)" />
+
+					<ui:remove>
+						<p:commandButton value="Finalizar"
+							onclick=" PF('dlgFinVenda').show();"
+							update=":formFimVenda:panelFimVenda"
+							styleClass="btn-success btn-block" />
+					</ui:remove>
+
+				</h:panelGrid>
+
+			</h:form>
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<div style="padding: 15px">
+
+					<div align="center">
+						<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+
+					</div>
+				</div>
+				<script type="text/javascript">
+					function handleLoginRequestStatus(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialogStatus) {
+							PF('statusDialog').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('statusDialog').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+			</p:dialog>
+
+			<p:dialog header="Adicionar produto" widgetVar="dlgPesquisar"
+				modal="true" resizable="false" width="650" styleClass="box-primary">
+
+				<h:form id="formPesquisaProdutos">
+
+					<h:panelGrid columns="1">
+
+						<p:outputLabel value="Digita a descrição do produto:" for="pr" />
+						<p:autoComplete id="pr" dropdown="true" maxResults="10"
+							value="#{vendaMB.itemVenda.produto}"
+							converter="converter-genericop"
+							completeMethod="#{vendaMB.completeProduto}" var="item"
+							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}"
+							itemValue="#{item}" forceselection="true" size="90" />
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Adcionar"
+								id="adicionarProdutoPorPesquisa"
+								actionListener="#{vendaMB.adicionarProdutoPorPesquisa}"
+								styleClass="btn-success btn-block"
+								update=":formVenda:tabelaItensVenda :formVenda:growl :formPesquisaProdutos" />
+
+						</h:panelGrid>
+
+						<br />
+
+					</h:panelGrid>
+
+				</h:form>
+
+			</p:dialog>
+
+			<p:dialog header="Finalizar venda" widgetVar="dlgFinVenda"
+				modal="true" resizable="false" width="650" styleClass="box-primary">
+
+				<h:form id="formFimVenda">
+
+					<p:messages id="msgFimVenda" closable="true" />
+
+					<p:outputPanel id="panelFimVenda">
+
+						<h:panelGrid id="gridFimVenda" columns="1">
+
+
+
+						</h:panelGrid>
+
+						<br />
+
+					</p:outputPanel>
+
+					<h:panelGrid columns="2">
+
+						<p:commandButton id="btFimVenda" value="Finalizar" ajax="true"
+							action="#{vendaMB.finalizarVenda}"
+							styleClass="btn-success btn-block" update=":formVenda"
+							oncomplete="handleLoginRequestFimVenda(xhr, status, args)" />
+
+					</h:panelGrid>
+
+					<br />
+
+				</h:form>
+
+				<script type="text/javascript">
+					function handleLoginRequestFimVenda(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialog) {
+							PF('dlgFinVenda').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('dlgFinVenda').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
+
+			</p:dialog>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

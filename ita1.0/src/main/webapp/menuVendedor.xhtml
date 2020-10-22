@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<h:body>
+
+		<h:form>
+
+			<div id='cssmenu' style="width: 210px;">
+				<br />
+				<ul>
+
+					<li><h:commandLink action="/home.xhtml?faces-redirect=true"
+							style="word-spacing: 10px;">
+							<i class="fa fa-align-justify" /> Dashboard </h:commandLink></li>
+
+					<li class='active has-sub'><a href='#'> Atualizações </a>
+						<ul>
+
+							<li class='has-sub'><a href='#' style="word-spacing: 10px;">
+									<i class="fa fa-files-o" /> Pedidos
+							</a>
+								<ul>
+
+									<li><h:commandLink action="#{pedido_vendaMB.novo}"
+											style="word-spacing: 3px;">
+											<i class="fa fa-file-text-o" /> Novo Pedido</h:commandLink></li>
+
+								</ul></li>
+
+
+						</ul></li>
+
+					<li><h:commandLink style="word-spacing: 10px;">
+							<i class="fa fa-list" /> Sobre </h:commandLink></li>
+
+					<li><h:commandLink action="#{logonMB.logout()}" ajax="false"
+							style="word-spacing: 10px;">
+							<i class="fa fa-sign-out" /> Sair </h:commandLink></li>
+
+				</ul>
+			</div>
+
+		</h:form>
+
+	</h:body>
+
+</ui:composition>

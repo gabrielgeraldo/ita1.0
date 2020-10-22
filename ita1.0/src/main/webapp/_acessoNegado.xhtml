@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/_modelo.xhtml">
+
+	<ui:define name="titulo">Acesso Negado</ui:define>
+
+	<ui:define name="conteudo">
+
+		<p:dialog closable="false" draggable="true" modal="true"
+			resizable="false" header="Acesso Negado!" widgetVar="dlgFinVenda"
+			appendTo="@(body)" visible="true">
+
+			<p>Prezado Usuário,</p>
+
+			<p>Você não possui permissão para acessar esta página.</p>
+
+			<br></br>
+
+			<h:form id="f">
+
+				<br></br>
+
+				<div align="center">
+
+					<h:commandButton ajax="false" action="#{logonMB.logout()}"
+						value="Clique aqui para se autenticar novamente." />
+
+				</div>
+
+			</h:form>
+
+			<br></br>
+
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="vendaDiariaNFe" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b32da86-5da8-4d19-8fbf-334a59745ca3">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Data Adapter ita"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="VENDA_DATA_INI" class="java.sql.Timestamp"/>
+	<parameter name="VENDA_DATA_FIM" class="java.sql.Timestamp"/>
+	<queryString>
+		<![CDATA[SELECT DATE( DATA),
+	SUM( TOTAL) AS TOTAL
+FROM nfe
+WHERE DATE(DATA) BETWEEN $P{VENDA_DATA_INI} AND $P{VENDA_DATA_FIM} 
+GROUP BY DATE( DATA)]]>
+	</queryString>
+	<field name="date" class="java.sql.Date"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="179" y="24" width="200" height="30" uuid="a46a26e5-7f5f-46fb-a9a8-b5b6e0b2af6a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="20" isBold="true" isItalic="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Total NF-e por data]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="38" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="0" width="169" height="30" uuid="5be1b139-478c-4eec-8035-1a7c46a65534"/>
+				<textElement>
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="0" width="165" height="30" uuid="4d7f4d9b-3d76-46e2-acdc-faec1e0316db"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="169" height="30" uuid="3d5e0379-03a9-441a-9965-3835be98c8af"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="379" y="0" width="165" height="30" uuid="aeb0a4fa-4911-4d76-b06a-f2f1de819c61"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

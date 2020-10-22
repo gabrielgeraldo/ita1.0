@@ -1,0 +1,507 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Configuração</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<p:growl id="messagens" />
+
+				<p:tabView>
+
+					<p:tab title="Sistema">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="amb" value="Ambiente:" />
+							<p:selectOneMenu id="amb" value="#{configuracaoMB.ambiente}">
+								<f:selectItem itemLabel="Produção" itemValue="1" />
+								<f:selectItem itemLabel="Homologação" itemValue="2" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="senhaCert" value="Senha Certificado:" />
+							<p:inputText id="senhaCert" value="#{configuracaoMB.senhaCert}">
+							</p:inputText>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Empresa">
+
+						<p:tabView>
+
+							<p:tab title="Dados da Empresa">
+
+								<h:panelGrid columns="2">
+
+									<p:outputLabel for="cnpj" value="CNPJ:" />
+									<p:outputLabel id="cnpj" value="#{configuracaoMB.cnpj}"
+										style="font-weight: bold">
+									</p:outputLabel>
+
+									<p:outputLabel for="insc" value="Incrição Estadual:" />
+									<p:outputLabel id="insc"
+										value="#{configuracaoMB.inscricaoEstadual}"
+										style="font-weight: bold">
+									</p:outputLabel>
+
+									<p:outputLabel for="raz" value="Razao Social:" />
+									<p:outputLabel id="raz" value="#{configuracaoMB.razaoSocial}"
+										style="font-weight: bold">
+									</p:outputLabel>
+
+									<p:outputLabel for="nfan" value="Nome Fantasia:" />
+									<p:outputLabel id="nfan" value="#{configuracaoMB.nomeFantasia}"
+										style="font-weight: bold">
+									</p:outputLabel>
+
+								</h:panelGrid>
+
+							</p:tab>
+
+							<p:tab title="Endereço">
+								<ui:remove>
+									<h:panelGrid columns="2">
+
+										<p:outputLabel for="end" value="Endereço:" />
+										<p:inputText id="end" style="width:350px"
+											converter="toUpperCaseConverter"
+											value="#{configuracaoMB.endereco}">
+										</p:inputText>
+
+										<p:outputLabel for="nun" value="Número:" />
+										<p:inputMask id="nun" style="width:85px"
+											value="#{configuracaoMB.numero}"
+											converter="toUpperCaseConverter" mask="9?9999999">
+										</p:inputMask>
+
+										<p:outputLabel for="uf" value="UF:" />
+										<p:inputText id="uf" style="width:45px"
+											value="#{configuracaoMB.uf}" converter="toUpperCaseConverter">
+										</p:inputText>
+
+										<p:outputLabel for="mun" value="Município:" />
+										<p:inputText id="mun" style="width:250px"
+											value="#{configuracaoMB.municipio}"
+											converter="toUpperCaseConverter">
+										</p:inputText>
+
+										<p:outputLabel for="bairro" value="Bairro:" />
+										<p:inputText id="bairro" value="#{configuracaoMB.bairro}"
+											converter="toUpperCaseConverter">
+										</p:inputText>
+
+										<p:outputLabel for="cep" value="CEP:" />
+										<p:inputMask id="cep" style="width:100px"
+											value="#{configuracaoMB.cep}" mask="99999-999">
+										</p:inputMask>
+
+										<p:outputLabel for="com" value="Complemento:" />
+										<p:inputText id="com" style="width:300px"
+											value="#{configuracaoMB.complemento}"
+											converter="toUpperCaseConverter">
+										</p:inputText>
+
+									</h:panelGrid>
+								</ui:remove>
+
+							</p:tab>
+
+							<p:tab title="Contato">
+
+							</p:tab>
+
+						</p:tabView>
+
+					</p:tab>
+
+					<p:tab title="Venda">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="tpImpVenda" value="Tipo De Impressão:" />
+							<p:selectOneMenu id="tpImpVenda"
+								value="#{configuracaoMB.tpImpVenda}">
+								<f:selectItem itemLabel="Imprimir no browser" itemValue="1" />
+								<f:selectItem itemLabel="Sem impressão" itemValue="2" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+
+					</p:tab>
+
+					<p:tab title="NF-e">
+
+						<br />
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:dataTable var="item" value="#{configuracaoMB.numerosNfe}"
+								editable="true" style="width:300px">
+
+								<f:facet name="header">
+           						Número/Série NF-e
+       						</f:facet>
+
+								<p:ajax event="rowEdit" listener="#{configuracaoMB.onRowEdit}"
+									update=":form:messagens" />
+
+								<p:column headerText="Série">
+									<h:outputText value="#{item.chave}" />
+								</p:column>
+
+								<p:column headerText="Anterior">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{item.numeroAnterior}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{item.numeroAnterior}" style="width:96%" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column headerText="Atual">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{item.numeroAtual}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{item.numeroAtual}" style="width:96%" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column headerText="Próximo">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{item.proximoNumero}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{item.proximoNumero}" style="width:96%" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column style="width:32px">
+									<p:rowEditor />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="NFC-e">
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="idCsc" value="ID:" />
+							<p:inputText id="idCsc"
+								value="#{configuracaoMB.idCodigoSegurancaContribuinte}">
+							</p:inputText>
+
+							<p:outputLabel for="csc" value="Cód. Seg. Contrib.:" />
+							<p:inputText id="csc"
+								value="#{configuracaoMB.codigoSegurancaContribuinte}"
+								converter="toUpperCaseConverter" style="width: 300px">
+							</p:inputText>
+
+							<p:outputLabel for="tpImp" value="Tipo De Impressão:" />
+							<p:selectOneMenu id="tpImp" value="#{configuracaoMB.tpImp}">
+								<f:selectItem itemLabel="Imprimir no browser" itemValue="1" />
+								<f:selectItem itemLabel="Impressora padrão" itemValue="2" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<br />
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:dataTable var="item" value="#{configuracaoMB.numerosNfce}"
+								editable="true" style="width:300px">
+
+								<f:facet name="header">
+           						Número/Série NFC-e
+       						</f:facet>
+
+								<p:ajax event="rowEdit" listener="#{configuracaoMB.onRowEdit}"
+									update=":form:messagens" />
+
+								<p:column headerText="Série">
+									<h:outputText value="#{item.chave}" />
+								</p:column>
+
+								<p:column headerText="Anterior">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{item.numeroAnterior}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{item.numeroAnterior}" style="width:96%" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column headerText="Atual">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{item.numeroAtual}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{item.numeroAtual}" style="width:96%" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column headerText="Próximo">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{item.proximoNumero}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{item.proximoNumero}" style="width:96%" />
+										</f:facet>
+									</p:cellEditor>
+
+								</p:column>
+
+								<p:column style="width:32px">
+									<p:rowEditor />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<ui:remove>
+
+						<p:tab title="Orçamento">
+
+							<br />
+
+							<p:panelGrid columns="2" layout="grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+								<p:dataTable var="item"
+									value="#{configuracaoMB.numerosPedidoVenda}" editable="true"
+									style="width:300px">
+
+									<f:facet name="header">
+           						Código/Orçamento
+       						</f:facet>
+
+									<p:ajax event="rowEdit" listener="#{configuracaoMB.onRowEdit}"
+										update=":form:messagens" />
+
+									<p:column headerText="Série">
+										<h:outputText value="#{item.chave}" />
+									</p:column>
+
+									<p:column headerText="Anterior">
+
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{item.numeroAnterior}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{item.numeroAnterior}"
+													style="width:96%" />
+											</f:facet>
+										</p:cellEditor>
+
+									</p:column>
+
+									<p:column headerText="Atual">
+
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{item.numeroAtual}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{item.numeroAtual}" style="width:96%" />
+											</f:facet>
+										</p:cellEditor>
+
+									</p:column>
+
+									<p:column headerText="Próximo">
+
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{item.proximoNumero}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{item.proximoNumero}" style="width:96%" />
+											</f:facet>
+										</p:cellEditor>
+
+									</p:column>
+
+									<p:column style="width:32px">
+										<p:rowEditor />
+									</p:column>
+
+								</p:dataTable>
+
+							</p:panelGrid>
+
+						</p:tab>
+
+					</ui:remove>
+
+					<p:tab title="SQL">
+
+						<p:inputTextarea rows="10" cols="50"
+							completeMethod="#{configuracaoMB.sql}" queryDelay="750"
+							minQueryLength="4" />
+
+					</p:tab>
+
+					<p:tab title="Imposto">
+
+						<br />
+
+						<h:panelGrid columns="2">
+
+							<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+							<p:outputLabel style="font-weight: bold"
+								value="Atenção! Se o imposto estiver configurado no produto, as configurações abaixo NÂO terão efeito." />
+
+						</h:panelGrid>
+
+						<br />
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="imposto" value="Imposto:" />
+							<p:selectOneMenu id="imposto" value="#{configuracaoMB.imposto}">
+								<f:selectItem itemLabel="Sistema" itemValue="1" />
+								<f:selectItem itemLabel="Produto" itemValue="2" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="csosn" value="CSOSN:" />
+							<p:selectOneMenu id="csosn"
+								value="#{configuracaoMB.configuracao.csosn}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" />
+								<f:selectItem
+									itemLabel="101 – Tributada pelo Simples Nacional com permissão de crédito"
+									itemValue="101" noSelectionOption="true" />
+								<f:selectItem
+									itemLabel="102 – Tributada pelo Simples Nacional sem permissão de crédito"
+									itemValue="102" noSelectionOption="true" />
+								<f:selectItem
+									itemLabel="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+									itemValue="500" noSelectionOption="true" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:tabView>
+
+							<p:tab
+								title="101 – Tributada pelo Simples Nacional com permissão de crédito">
+
+								<p:panelGrid columns="2" layout="grid">
+
+									<p:outputLabel for="pCredSN"
+										value="Percentual aplicável no cálculo do crédito:" />
+									<p:inputNumber id="pCredSN"
+										value="#{configuracaoMB.configuracao.pCredSN}" />
+
+									<p:outputLabel for="vCredICMSSN"
+										value="Valor do ICMS que pode ser aproveitado:" />
+									<p:inputNumber id="vCredICMSSN"
+										value="#{configuracaoMB.configuracao.vCredICMSSN}" />
+
+								</p:panelGrid>
+
+							</p:tab>
+
+							<p:tab
+								title="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação">
+
+								<p:panelGrid columns="2" layout="grid">
+
+									<p:outputLabel for="vBCSTRet"
+										value="Base de Cálculo do ICMS ST:" />
+									<p:inputNumber id="vBCSTRet"
+										value="#{configuracaoMB.configuracao.vBCSTRet}" />
+
+									<p:outputLabel for="vICMSSTRet"
+										value="Informar o valor do ICMS ST retido:" />
+									<p:inputNumber id="vICMSSTRet"
+										value="#{configuracaoMB.configuracao.vICMSSTRet}" />
+
+									<p:outputLabel for="pST" value="Percentual aliquota ICMSST:" />
+									<p:inputNumber id="pST"
+										value="#{configuracaoMB.configuracao.pST}" />
+
+								</p:panelGrid>
+
+							</p:tab>
+
+						</p:tabView>
+
+					</p:tab>
+
+				</p:tabView>
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton ajax="false" id="btnSalvar"
+						styleClass="btn-success btn-block"
+						action="#{configuracaoMB.salvar}" value="Salvar" update="form" />
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

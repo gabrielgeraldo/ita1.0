@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/_modelo.xhtml">
+
+	<ui:define name="titulo">Falha durante o processamento</ui:define>
+
+	<ui:define name="conteudo">
+
+		<p:dialog closable="false" draggable="true" modal="true"
+			resizable="false" header="Falha!" widgetVar="dlgFinVenda"
+			appendTo="@(body)" visible="true">
+
+			<p>Prezado Usuário,</p>
+			<p>Lamentamos a ocorrência de uma falha no processamento desta
+				requisição.</p>
+			<p>Por favor entre em contato com o suporte técnico, ou tente
+				novamente mais tarde.</p>
+
+			<br></br>
+
+			<b>Mensagem: </b>
+			<h:outputText value="#{pfExceptionHandler.message} " escape="false" />
+			<br />
+			<br />
+
+			<p:scrollPanel mode="native" style="width:450px;height:200px">
+				<b>Pilha de Erro : </b>
+
+				<h:outputText value="#{pfExceptionHandler.formattedStackTrace}"
+					escape="false" />
+			</p:scrollPanel>
+
+			<h:form id="flogin">
+
+				<br></br>
+
+				<ui:remove>
+					<h:commandLink action="#{logonMB.logout()}">Clique aqui para se autenticar novamente.</h:commandLink>
+				</ui:remove>
+
+				<br></br>
+
+				<div align="center">
+
+					<h:commandButton ajax="false" action="#{logonMB.logout()}"
+						value="Clique aqui para se autenticar novamente." />
+
+				</div>
+
+			</h:form>
+
+			<br></br>
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
+</html>

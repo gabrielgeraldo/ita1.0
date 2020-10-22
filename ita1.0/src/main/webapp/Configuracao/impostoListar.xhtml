@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/_modelo.xhtml">
+
+	<ui:define name="titulo">Impostos</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="fundoBranco">
+
+			<h1 class="aw-page-title">Impostos</h1>
+
+			<h:form id="formCadImpostos">
+
+				<p:growl id="messages" />
+
+				<p:dataTable id="tabImpostos" var="item"
+					value="#{impostoMB.impostos}" emptyMessage="Não há itens."
+					widgetVar="itemTable"
+					filteredValue="#{impostoMB.impostosFiltrados}" paginator="true"
+					rowKey="#{item.codigo}" rowsPerPageTemplate="5,10" rows="10"
+					selectionMode="single">
+
+					<p:column sortBy="#{item.descricao}" filterBy="#{item.descricao}">
+						<f:facet name="header">
+							<h:outputText value="Descrição" />
+						</f:facet>
+						<h:outputText value="#{item.descricao}" />
+					</p:column>
+
+					<p:column style="width:120px">
+
+						<f:facet name="header">
+							<h:outputText value="Ações" />
+						</f:facet>
+
+						<div align="center">
+
+							<p:splitButton value="Alterar" icon="ui-icon-disk"
+								action="#{impostoMB.alterarImposto}" update="formCadImposto"
+								ajax="false">
+
+								<f:param value="#{item.codigo}" name="itemcodigo" />
+
+								<p:menuitem>
+
+									<p:commandLink styleClass="ui-menuitem-link"
+										icon="ui-icon-close" action="#{impostoMB.excluirImposto}"
+										update="formCadImposto" ajax="false">
+
+										<p:confirm header="Confirmação"
+											message="Deseja excluir este registro?" icon="ui-icon-alert" />
+
+										<f:param value="#{item.codigo}" name="itemcodigo" />
+
+										<h:outputText
+											styleClass="ui-menuitem-icon ui-icon ui-icon-close" />
+										<h:outputText styleClass="ui-menuitem-text" value="Excluir" />
+
+									</p:commandLink>
+
+									<p:confirmDialog global="true" showEffect="fade">
+										<p:commandButton value="Sim" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="Não" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</p:confirmDialog>
+
+								</p:menuitem>
+
+							</p:splitButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<ui:remove>
+
+						<p:commandButton ajax="false" type="push" value="Novo Imposto"
+							action="#{impostoMB.acaoAbrirInclusao}" immediate="true"
+							image="ui-icon-document" />
+
+					</ui:remove>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
