@@ -75,7 +75,7 @@ public class MBContasPagar {
 
 	public String novoTitulo() {
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasPagar(new ContasPagar());
 		this.setContasPagarPK(new ContasPagarPK());
 
@@ -94,7 +94,7 @@ public class MBContasPagar {
 		 * getNumero(), this.getContasPagar().getFornecedor());
 		 * 
 		 * if (objetoDoBanco != null) { JSFUtil.retornarMensagemAviso(null,
-		 * "Outro título com o mesmo número/fornecedor já existe no sistema.",
+		 * "Outro tï¿½tulo com o mesmo nï¿½mero/fornecedor jï¿½ existe no sistema.",
 		 * null); return null; } }
 		 */
 
@@ -104,7 +104,7 @@ public class MBContasPagar {
 		// limpa a lista
 		this.contasPagarLista = null;
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasPagar(new ContasPagar());
 
 		return "/Financeiro/financeiroListarCP";
@@ -119,10 +119,10 @@ public class MBContasPagar {
 		this.contasPagarDAO.remove(objetoDoBanco);
 
 		if (this.contasPagarDAO.lerPorId(objetoDoBanco.getId()) == null) {
-			JSFUtil.retornarMensagemInfo(null, "Excluído com sucesso.", null);
+			JSFUtil.retornarMensagemInfo(null, "Excluï¿½do com sucesso.", null);
 		}
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasPagar(new ContasPagar());
 		// limpa a lista
 		this.contasPagarLista = null;
@@ -133,7 +133,7 @@ public class MBContasPagar {
 
 	public String cancelar() {
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasPagar(new ContasPagar());
 
 		return "/Financeiro/financeiroListarCP";

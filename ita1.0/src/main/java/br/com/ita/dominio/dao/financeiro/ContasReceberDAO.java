@@ -111,7 +111,7 @@ public class ContasReceberDAO extends JpaDAO<ContasReceber> implements Serializa
 			System.out.println(e.getMessage());
 			System.out.println(e.getStackTrace());
 
-			JSFUtil.retornarMensagemFatal(null, "Erro de concorrência. Esse registro já foi alterado anteriormente.",
+			JSFUtil.retornarMensagemFatal(null, "Erro de concorrï¿½ncia. Esse registro jï¿½ foi alterado anteriormente.",
 					null);
 
 		} catch (Exception e) {
@@ -171,7 +171,7 @@ public class ContasReceberDAO extends JpaDAO<ContasReceber> implements Serializa
 		criteria.setMaxResults(50);
 
 		if (filtro.getNumero() != null) {
-			criteria.add(Restrictions.eq("numero", filtro.getNumero()));
+			criteria.add(Restrictions.eq("id.numeroCR", filtro.getNumero()));
 		}
 
 		if (filtro.getDataParaConsulta() == DataParaConsulta.EMISSAO) {

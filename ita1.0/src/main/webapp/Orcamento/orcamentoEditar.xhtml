@@ -187,7 +187,8 @@
 							<f:facet name="footer">
 								<p:commandButton value="Login" action="#{orcamentoMB.finalizar}"
 									update=":formOrcamento" styleClass="btn-success btn-block"
-									oncomplete="handleLoginRequest(xhr, status, args)" />
+									ajax="false"
+									oncomplete="handleLoginRequestFinalizar(xhr, status, args)" />
 							</f:facet>
 						</h:panelGrid>
 
@@ -199,7 +200,7 @@
 
 			<p:dialog header="Adicionar produto" widgetVar="dlgPesquisar"
 				modal="true" resizable="false" width="1200" height="550"
-				closeOnEscape="true" styleClass="box-solid box-primary">
+				closeOnEscape="true">
 
 				<h:form id="formPesquisaProdutos">
 
@@ -280,8 +281,7 @@
 							value="#{orcamentoMB.produtos}" emptyMessage="Não há itens."
 							widgetVar="itemTable"
 							filteredValue="#{orcamentoMB.produtosFiltrados}"
-							rowKey="#{item.codigo}" selectionMode="single"
-							styleClass="box-solid box-primary">
+							rowKey="#{item.codigo}" selectionMode="single">
 
 							<f:facet name="header">
 								<h:outputText value="Produtos filtrados (Max. 50 itens)." />
@@ -350,7 +350,7 @@
 								<div align="center">
 
 									<p:commandButton value="X"
-										actionListener="#{orcamentoMB.adicionar}"
+										actionListener="#{orcamentoMB.adicionar}" ajax="false"
 										update=":formOrcamento:panelItens  :formPesquisaProdutos :formOrcamento:messagens"
 										oncomplete="handleLoginRequest(xhr, status, args)">
 
@@ -371,7 +371,7 @@
 				</h:form>
 
 				<script type="text/javascript">
-					function handleLoginRequest(xhr, status, args) {
+					function handleLoginRequestFinalizar(xhr, status, args) {
 						if (args.validationFailed || !args.fecharDialog) {
 							PF('dlgPesquisar').jq.effect("shake", {
 								times : 5

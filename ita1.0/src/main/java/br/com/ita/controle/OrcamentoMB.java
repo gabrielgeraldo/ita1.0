@@ -27,7 +27,6 @@ import javax.ws.rs.core.Context;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.primefaces.PrimeFaces;
-import org.primefaces.context.RequestContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import br.com.ita.controle.util.JSFUtil;
@@ -335,14 +334,13 @@ public class OrcamentoMB implements Serializable {
 		return "/Orcamento/orcamentoListar";
 	}
 
-	@SuppressWarnings("deprecation")
 	public void adicionar() {
 
 		String codigo = JSFUtil.getParametro("itemcodigo");
 
 		Produto produto = this.daoProduto.lerPorId(codigo);
 
-		// -------------------- M�todo adicionar.
+		// -------------------- Metodo adicionar.
 		int posicaoEncntrada = -1;
 
 		for (int i = 0; i < itensOrcamento.size() && posicaoEncntrada < 0; i++) {
@@ -373,7 +371,7 @@ public class OrcamentoMB implements Serializable {
 					.multiply(new BigDecimal(itensOrcamento.get(j).getQuantidade()))));
 
 		}
-		// -------------------- M�todo adicionar.
+		// -------------------- Metodo adicionar.
 
 		this.setItemOrcamento(new ItemOrcamento());
 		itemOrcamento.setQuantidade(1);
@@ -381,8 +379,9 @@ public class OrcamentoMB implements Serializable {
 		this.produtos = null;
 
 		boolean fecharDialog = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialog", fecharDialog);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialog", fecharDialog);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 		JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
 

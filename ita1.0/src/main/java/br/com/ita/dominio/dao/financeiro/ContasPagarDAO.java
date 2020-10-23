@@ -113,7 +113,7 @@ public class ContasPagarDAO extends JpaDAO<ContasPagar> implements Serializable 
 			System.out.println(e.getMessage());
 			System.out.println(e.getStackTrace());
 
-			JSFUtil.retornarMensagemFatal(null, "Erro de concorrência. Esse registro já foi alterado anteriormente.",
+			JSFUtil.retornarMensagemFatal(null, "Erro de concorrï¿½ncia. Esse registro jï¿½ foi alterado anteriormente.",
 					null);
 
 		} catch (Exception e) {
@@ -173,7 +173,7 @@ public class ContasPagarDAO extends JpaDAO<ContasPagar> implements Serializable 
 		criteria.setMaxResults(50);
 
 		if (filtro.getNumero() != null) {
-			criteria.add(Restrictions.eq("numero", filtro.getNumero()));
+			criteria.add(Restrictions.eq("id.numeroCP", filtro.getNumero()));
 		}
 
 		if (filtro.getDataParaConsulta() == DataParaConsulta.EMISSAO) {
@@ -211,6 +211,54 @@ public class ContasPagarDAO extends JpaDAO<ContasPagar> implements Serializable 
 
 		return criteria.list();
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ContasPagar> buscaContasPagarPorMes(String mesAno, FiltroContasPagar filtro) {
+
+		List<ContasPagar> lista = null;
+
+		if (filtro.getStatusTitulo() == StatusTitulo.TODOS) {
+
+			String hql = "from ContasPagar cp where to_char(cp.vencimento, 'MM/YYYY') = :mesAno";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		if (filtro.getStatusTitulo() == StatusTitulo.EMABERTO) {
+
+			String hql = "from ContasPagar cp where to_char(cp.vencimento, 'MM/YYYY') = :mesAno and cp.saldo > 0";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		if (filtro.getStatusTitulo() == StatusTitulo.BAIXADO) {
+
+			String hql = "from ContasPagar cp where to_char(cp.vencimento, 'MM/YYYY') = :mesAno and cp.saldo = 0";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		if (filtro.getStatusTitulo() == StatusTitulo.BAIXADOPARCIAL) {
+
+			String hql = "from ContasPagar cp where to_char(cp.vencimento, 'MM/YYYY') = :mesAno and cp.saldo > 0 and cp.saldo < cp.valor";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		return lista;
 	}
 
 }
