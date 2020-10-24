@@ -18,8 +18,12 @@ import org.primefaces.model.charts.pie.PieChartModel;
 
 import br.com.ita.dominio.StatusTitulo;
 import br.com.ita.dominio.dao.filtros.FiltroContasPagar;
+import br.com.ita.dominio.dao.filtros.FiltroContasReceber;
 import br.com.ita.dominio.dao.financeiro.ContasPagarDAO;
+import br.com.ita.dominio.dao.financeiro.ContasReceberDAO;
+import br.com.ita.dominio.dao.financeiro.MovimentacaoBancariaDAO;
 import br.com.ita.dominio.financeiro.ContasPagar;
+import br.com.ita.dominio.financeiro.ContasReceber;
 
 @Named("homeMB")
 @ViewScoped
@@ -34,43 +38,73 @@ public class HomeMB implements Serializable {
 
 	private Date data = new Date();
 
-	private PieChartModel pieModel;
+	private PieChartModel pieModelContasPagar;
 
 	@Inject
-	private FiltroContasPagar filtro;
+	private FiltroContasPagar filtroCP;
 
-	private int qtdAberto, qtdBaixado, qtdBaixadoPacial;
+	private int qtdAbertoCP, qtdBaixadoCP, qtdBaixadoPacialCP;
 
 	private BigDecimal totalPagar;
 
+	private PieChartModel pieModelContasReceber;
+
+	private int qtdAbertoCR, qtdBaixadoCR, qtdBaixadoPacialCR;
+
+	@Inject
+	private ContasReceberDAO contasReceberDAO;
+
+	@Inject
+	private FiltroContasReceber filtroCR;
+
+	private List<ContasReceber> contasReceberLista = null;
+
+	private BigDecimal totalReceber;
+
+	private BigDecimal totalEntrada;
+
+	private BigDecimal totalSaida;
+
+	@Inject
+	private MovimentacaoBancariaDAO movimentacaoBancariaDAO;
+
 	@PostConstruct
 	public void init() {
-		createPieModel();
+		createPieModelContasPagar();
 		calculaTotalPagar();
+		createPieModelContasReceber();
+		calculaTotalReceber();
+
+		totalEntrada = movimentacaoBancariaDAO.getTotalEntrada(getData()) != null
+				? movimentacaoBancariaDAO.getTotalEntrada(getData()) : new BigDecimal("0.00");
+
+		totalSaida = movimentacaoBancariaDAO.getTotalSaida(getData()) != null
+				? movimentacaoBancariaDAO.getTotalSaida(getData()) : new BigDecimal("0.00");
+
 	}
 
-	private void createPieModel() {
+	private void createPieModelContasPagar() {
 
-		pieModel = new PieChartModel();
+		pieModelContasPagar = new PieChartModel();
 		ChartData data = new ChartData();
 
 		PieChartDataSet dataSet = new PieChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		this.setFiltro(new FiltroContasPagar());
-		this.filtro.setStatusTitulo(StatusTitulo.EMABERTO);
-		values.add(this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro).size());
-		qtdAberto = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro).size();
+		this.setFiltroCP(new FiltroContasPagar());
+		this.filtroCP.setStatusTitulo(StatusTitulo.EMABERTO);
+		values.add(this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP).size());
+		qtdAbertoCP = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP).size();
 
-		this.setFiltro(new FiltroContasPagar());
-		this.filtro.setStatusTitulo(StatusTitulo.BAIXADO);
-		values.add(this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro).size());
-		qtdBaixado = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro).size();
+		this.setFiltroCP(new FiltroContasPagar());
+		this.filtroCP.setStatusTitulo(StatusTitulo.BAIXADO);
+		values.add(this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP).size());
+		qtdBaixadoCP = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP).size();
 
-		this.setFiltro(new FiltroContasPagar());
-		this.filtro.setStatusTitulo(StatusTitulo.BAIXADOPARCIAL);
-		values.add(this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro).size());
-		qtdBaixadoPacial = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro).size();
+		this.setFiltroCP(new FiltroContasPagar());
+		this.filtroCP.setStatusTitulo(StatusTitulo.BAIXADOPARCIAL);
+		values.add(this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP).size());
+		qtdBaixadoPacialCP = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP).size();
 
 		dataSet.setData(values);
 
@@ -87,7 +121,49 @@ public class HomeMB implements Serializable {
 		labels.add("B. parcial");
 		data.setLabels(labels);
 
-		pieModel.setData(data);
+		pieModelContasPagar.setData(data);
+
+	}
+
+	private void createPieModelContasReceber() {
+
+		pieModelContasReceber = new PieChartModel();
+		ChartData data = new ChartData();
+
+		PieChartDataSet dataSet = new PieChartDataSet();
+		List<Number> values = new ArrayList<>();
+
+		this.setFiltroCR(new FiltroContasReceber());
+		this.filtroCR.setStatusTitulo(StatusTitulo.EMABERTO);
+		values.add(this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR).size());
+		qtdAbertoCR = this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR).size();
+
+		this.setFiltroCR(new FiltroContasReceber());
+		this.filtroCR.setStatusTitulo(StatusTitulo.BAIXADO);
+		values.add(this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR).size());
+		qtdBaixadoCR = this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR).size();
+
+		this.setFiltroCR(new FiltroContasReceber());
+		this.filtroCR.setStatusTitulo(StatusTitulo.BAIXADOPARCIAL);
+		values.add(this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR).size());
+		qtdBaixadoPacialCR = this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR).size();
+
+		dataSet.setData(values);
+
+		List<String> bgColors = new ArrayList<>();
+		bgColors.add("rgb(199, 14, 14)");
+		bgColors.add("rgb(20, 128, 36)");
+		bgColors.add("rgb(240, 157, 2)");
+		dataSet.setBackgroundColor(bgColors);
+
+		data.addChartDataSet(dataSet);
+		List<String> labels = new ArrayList<>();
+		labels.add("Em aberto + B. parcial");
+		labels.add("Baixado");
+		labels.add("B. parcial");
+		data.setLabels(labels);
+
+		pieModelContasReceber.setData(data);
 
 	}
 
@@ -95,14 +171,30 @@ public class HomeMB implements Serializable {
 
 		this.setTotalPagar(new BigDecimal("0.00"));
 
-		this.setFiltro(new FiltroContasPagar());
-		this.filtro.setStatusTitulo(StatusTitulo.EMABERTO);
+		this.setFiltroCP(new FiltroContasPagar());
+		this.filtroCP.setStatusTitulo(StatusTitulo.EMABERTO);
 
-		List<ContasPagar> lista = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro);
+		List<ContasPagar> lista = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP);
 
 		for (int i = 0; i < lista.size(); i++) {
 
 			totalPagar = totalPagar.add(lista.get(i).getSaldo());
+
+		}
+	}
+
+	public void calculaTotalReceber() {
+
+		this.setTotalReceber(new BigDecimal("0.00"));
+
+		this.setFiltroCR(new FiltroContasReceber());
+		this.filtroCR.setStatusTitulo(StatusTitulo.EMABERTO);
+
+		List<ContasReceber> lista = this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR);
+
+		for (int i = 0; i < lista.size(); i++) {
+
+			totalReceber = totalReceber.add(lista.get(i).getSaldo());
 
 		}
 	}
@@ -119,9 +211,9 @@ public class HomeMB implements Serializable {
 
 	public List<ContasPagar> getContasPagarLista() {
 		if (this.contasPagarLista == null) {
-			this.setFiltro(new FiltroContasPagar());
-			this.filtro.setStatusTitulo(StatusTitulo.TODOS);
-			this.contasPagarLista = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtro);
+			this.setFiltroCP(new FiltroContasPagar());
+			this.filtroCP.setStatusTitulo(StatusTitulo.TODOS);
+			this.contasPagarLista = this.contasPagarDAO.buscaContasPagarPorMes(getData(), this.filtroCP);
 		}
 		return contasPagarLista;
 	}
@@ -138,44 +230,44 @@ public class HomeMB implements Serializable {
 		this.contasPagarDAO = contasPagarDAO;
 	}
 
-	public PieChartModel getPieModel() {
-		return pieModel;
+	public PieChartModel getPieModelContasPagar() {
+		return pieModelContasPagar;
 	}
 
-	public void setPieModel(PieChartModel pieModel) {
-		this.pieModel = pieModel;
+	public void setPieModelContasPagar(PieChartModel pieModelContasPagar) {
+		this.pieModelContasPagar = pieModelContasPagar;
 	}
 
-	public FiltroContasPagar getFiltro() {
-		return filtro;
+	public FiltroContasPagar getFiltroCP() {
+		return filtroCP;
 	}
 
-	public void setFiltro(FiltroContasPagar filtro) {
-		this.filtro = filtro;
+	public void setFiltroCP(FiltroContasPagar filtroCP) {
+		this.filtroCP = filtroCP;
 	}
 
-	public int getQtdAberto() {
-		return qtdAberto;
+	public int getQtdAbertoCP() {
+		return qtdAbertoCP;
 	}
 
-	public void setQtdAberto(int qtdAberto) {
-		this.qtdAberto = qtdAberto;
+	public void setQtdAbertoCP(int qtdAbertoCP) {
+		this.qtdAbertoCP = qtdAbertoCP;
 	}
 
-	public int getQtdBaixado() {
-		return qtdBaixado;
+	public int getQtdBaixadoCP() {
+		return qtdBaixadoCP;
 	}
 
-	public void setQtdBaixado(int qtdBaixado) {
-		this.qtdBaixado = qtdBaixado;
+	public void setQtdBaixadoCP(int qtdBaixadoCP) {
+		this.qtdBaixadoCP = qtdBaixadoCP;
 	}
 
-	public int getQtdBaixadoPacial() {
-		return qtdBaixadoPacial;
+	public int getQtdBaixadoPacialCP() {
+		return qtdBaixadoPacialCP;
 	}
 
-	public void setQtdBaixadoPacial(int qtdBaixadoPacial) {
-		this.qtdBaixadoPacial = qtdBaixadoPacial;
+	public void setQtdBaixadoPacialCP(int qtdBaixadoPacialCP) {
+		this.qtdBaixadoPacialCP = qtdBaixadoPacialCP;
 	}
 
 	public BigDecimal getTotalPagar() {
@@ -184,6 +276,101 @@ public class HomeMB implements Serializable {
 
 	public void setTotalPagar(BigDecimal totalPagar) {
 		this.totalPagar = totalPagar;
+	}
+
+	public PieChartModel getPieModelContasReceber() {
+		return pieModelContasReceber;
+	}
+
+	public void setPieModelContasReceber(PieChartModel pieModelContasReceber) {
+		this.pieModelContasReceber = pieModelContasReceber;
+	}
+
+	public int getQtdAbertoCR() {
+		return qtdAbertoCR;
+	}
+
+	public void setQtdAbertoCR(int qtdAbertoCR) {
+		this.qtdAbertoCR = qtdAbertoCR;
+	}
+
+	public int getQtdBaixadoCR() {
+		return qtdBaixadoCR;
+	}
+
+	public void setQtdBaixadoCR(int qtdBaixadoCR) {
+		this.qtdBaixadoCR = qtdBaixadoCR;
+	}
+
+	public int getQtdBaixadoPacialCR() {
+		return qtdBaixadoPacialCR;
+	}
+
+	public void setQtdBaixadoPacialCR(int qtdBaixadoPacialCR) {
+		this.qtdBaixadoPacialCR = qtdBaixadoPacialCR;
+	}
+
+	public FiltroContasReceber getFiltroCR() {
+		return filtroCR;
+	}
+
+	public void setFiltroCR(FiltroContasReceber filtroCR) {
+		this.filtroCR = filtroCR;
+	}
+
+	public ContasReceberDAO getContasReceberDAO() {
+		return contasReceberDAO;
+	}
+
+	public List<ContasReceber> getContasReceberLista() {
+
+		if (this.contasReceberLista == null) {
+			this.setFiltroCR(new FiltroContasReceber());
+			this.filtroCR.setStatusTitulo(StatusTitulo.TODOS);
+			this.contasReceberLista = this.contasReceberDAO.buscaContasReceberPorMes(getData(), this.filtroCR);
+		}
+
+		return contasReceberLista;
+	}
+
+	public void setContasReceberDAO(ContasReceberDAO contasReceberDAO) {
+		this.contasReceberDAO = contasReceberDAO;
+	}
+
+	public void setContasReceberLista(List<ContasReceber> contasReceberLista) {
+		this.contasReceberLista = contasReceberLista;
+	}
+
+	public BigDecimal getTotalReceber() {
+		return totalReceber;
+	}
+
+	public void setTotalReceber(BigDecimal totalReceber) {
+		this.totalReceber = totalReceber;
+	}
+
+	public BigDecimal getTotalEntrada() {
+		return totalEntrada;
+	}
+
+	public BigDecimal getTotalSaida() {
+		return totalSaida;
+	}
+
+	public void setTotalEntrada(BigDecimal totalEntrada) {
+		this.totalEntrada = totalEntrada;
+	}
+
+	public void setTotalSaida(BigDecimal totalSaida) {
+		this.totalSaida = totalSaida;
+	}
+
+	public MovimentacaoBancariaDAO getMovimentacaoBancariaDAO() {
+		return movimentacaoBancariaDAO;
+	}
+
+	public void setMovimentacaoBancariaDAO(MovimentacaoBancariaDAO movimentacaoBancariaDAO) {
+		this.movimentacaoBancariaDAO = movimentacaoBancariaDAO;
 	}
 
 }

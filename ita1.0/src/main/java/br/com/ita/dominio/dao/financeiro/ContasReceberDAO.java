@@ -211,4 +211,52 @@ public class ContasReceberDAO extends JpaDAO<ContasReceber> implements Serializa
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ContasReceber> buscaContasReceberPorMes(String mesAno, FiltroContasReceber filtro) {
+
+		List<ContasReceber> lista = null;
+
+		if (filtro.getStatusTitulo() == StatusTitulo.TODOS) {
+
+			String hql = "from ContasReceber cr where to_char(cr.vencimento, 'MM/YYYY') = :mesAno";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		if (filtro.getStatusTitulo() == StatusTitulo.EMABERTO) {
+
+			String hql = "from ContasReceber cr where to_char(cr.vencimento, 'MM/YYYY') = :mesAno and cr.saldo > 0";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		if (filtro.getStatusTitulo() == StatusTitulo.BAIXADO) {
+
+			String hql = "from ContasReceber cr where to_char(cr.vencimento, 'MM/YYYY') = :mesAno and cr.saldo = 0";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		if (filtro.getStatusTitulo() == StatusTitulo.BAIXADOPARCIAL) {
+
+			String hql = "from ContasReceber cr where to_char(cr.vencimento, 'MM/YYYY') = :mesAno and cr.saldo > 0 and cr.saldo < cr.valor";
+			Query query = this.getEntityManager().createQuery(hql);
+			query.setParameter("mesAno", mesAno);
+
+			lista = query.getResultList();
+
+		}
+
+		return lista;
+	}
+
 }
