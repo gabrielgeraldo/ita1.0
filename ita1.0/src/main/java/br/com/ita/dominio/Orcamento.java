@@ -35,16 +35,16 @@ public class Orcamento implements BaseEntity, Serializable {
 	private Cliente cliente;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@NotNull(message = "A data � de preenchimento obrigat�rio.")
+	@NotNull(message = "A data é de preenchimento obrigatório.")
 	private Date data = new Date();
 
-	@NotNull(message = "O total � de preenchimento obrigat�rio.")
-	@DecimalMin(value = "0.01", message = "O total dever� ser superior a 0.00")
+	@NotNull(message = "O total é de preenchimento obrigatério.")
+	@DecimalMin(value = "0.01", message = "O total deverá ser superior a 0.00")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal total;
 
 	@ManyToOne
-	@NotNull(message = "O usu�rio � de preenchimento obrigat�rio.")
+	@NotNull(message = "O usuário é de preenchimento obrigatório.")
 	private Usuario usuario;
 
 	@Transient

@@ -75,9 +75,11 @@ public class OrcamentoDAO extends JpaDAO<Orcamento> implements Serializable {
 
 		} catch (Exception e) {
 
-			// O Hibernate faz o rollback da n�mera��o.
 			this.desfazerTransacao();
-			System.out.println(e);
+
+			System.out.println("Erro ao salvar orçamento: " + e);
+
+			JSFUtil.retornarMensagemErro(null, "Erro ao salvar orçamento: " + e.getMessage(), null);
 
 		}
 
@@ -97,9 +99,9 @@ public class OrcamentoDAO extends JpaDAO<Orcamento> implements Serializable {
 
 			try {
 
-				Integer numero = Integer.valueOf(orcamento);
+				Long codigo = Long.parseLong(orcamento);
 
-				criteria.add(Restrictions.eq("numero", numero));
+				criteria.add(Restrictions.eq("codigo", codigo));
 
 			} catch (Exception e) {
 

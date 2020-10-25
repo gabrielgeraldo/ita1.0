@@ -35,29 +35,29 @@ public class NFEntrada implements BaseEntity, Serializable {
 	private Long codigo;
 
 	@Column(length = 9, nullable = false)
-	@NotNull(message = "O n˙mero È de preenchimento obrigatÛrio.")
+	@NotNull(message = "O n√∫mero √© de preenchimento obrigat√≥rio.")
 	private Integer numero;
 
 	@Column(length = 3, nullable = false)
-	@NotNull(message = "A sÈrie È de preenchimento obrigatÛrio.")
+	@NotNull(message = "A s√©rie √© de preenchimento obrigat√≥rio.")
 	private Integer serie;
 
 	@ManyToOne
-	@NotNull(message = "O fornecedor È de preenchimento obrigatÛrio.")
+	@NotNull(message = "O fornecedor √© de preenchimento obrigat√≥rio.")
 	private Fornecedor fornecedor;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@NotNull(message = "A emiss„o È de preenchimento obrigatÛrio.")
+	@NotNull(message = "A emiss√£o √© de preenchimento obrigat√≥rio.")
 	private Date emissao;
 
-	@NotNull(message = "O total È de preenchimento obrigatÛrio.")
-	@DecimalMin(value = "0.01", message = "O total dever· ser superior a 0.00")
+	@NotNull(message = "O total √© de preenchimento obrigat√≥rio.")
+	@DecimalMin(value = "0.01", message = "O total dever√° ser superior a 0.00")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal total;
 
 	@Column(length = 44)
-	@NotNull(message = "A chave È de preenchimento obrigatÛrio.")
-	@Size(min = 44, max = 44, message = "A chave deve ter 44 dÌgitos.")
+	@NotNull(message = "A chave √© de preenchimento obrigat√≥rio.")
+	@Size(min = 44, max = 44, message = "A chave deve ter 44 d√≠gitos.")
 	private String chave;
 
 	@OneToMany(mappedBy = "nfEntrada", cascade = CascadeType.ALL)

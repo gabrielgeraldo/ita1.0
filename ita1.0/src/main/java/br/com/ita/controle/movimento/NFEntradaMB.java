@@ -17,9 +17,9 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.io.IOUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFIndicadorIEDestinatario;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaProcessada;
@@ -82,7 +82,7 @@ public class NFEntradaMB implements Serializable {
 	@Inject
 	private ItemNFEntradaDAO daoItemNFEntrada;
 
-	@NotNull(message = "O novo preÁo de custo È de preenchimento obrigatÛrio.")
+	@NotNull(message = "O novo pre√ßo de custo √© de preenchimento obrigat√°rio.")
 	private BigDecimal novoPrecoCusto;
 
 	@Inject
@@ -169,7 +169,7 @@ public class NFEntradaMB implements Serializable {
 
 	public void removerProduto(ItemNFEntrada itemNFEntrada) {
 
-		// -------------------- MÈtodo remover.
+		// -------------------- M√©todo remover.
 		int posicaoEncntrada = -1;
 
 		for (int i = 0; i < itensNFEntrada.size() && posicaoEncntrada < 0; i++) {
@@ -190,7 +190,7 @@ public class NFEntradaMB implements Serializable {
 					.multiply(new BigDecimal(itensNFEntrada.get(j).getQuantidade()))));
 
 		}
-		// -------------------- MÈtodo remover.
+		// -------------------- M√©todo remover.
 	}
 
 	public String finalizar() {
@@ -199,7 +199,7 @@ public class NFEntradaMB implements Serializable {
 
 			NFEntrada objetoDoBanco = this.daoNFEntrada.lerPorChave(this.getNfEntrada().getChave());
 			if (objetoDoBanco != null) {
-				JSFUtil.retornarMensagemAviso(null, "Outra NF com a mesma chave j· existe no sistema.", null);
+				JSFUtil.retornarMensagemAviso(null, "Outra NF com a mesma chave j√° existe no sistema.", null);
 				return null;
 			}
 
@@ -207,7 +207,7 @@ public class NFEntradaMB implements Serializable {
 					this.getNfEntrada().getSerie(), this.getNfEntrada().getFornecedor());
 			if (objetoDoBanco2 != null) {
 				JSFUtil.retornarMensagemAviso(null,
-						"Outra NF com a mesmo n˙mero/sÈrie/fornecedor j· existe no sistema.", null);
+						"Outra NF com a mesmo n√∫mero/s√©rie/fornecedor j√° existe no sistema.", null);
 				return null;
 			}
 
@@ -243,18 +243,17 @@ public class NFEntradaMB implements Serializable {
 
 	public String cancelar() {
 
-		// limpar o objeto da p·gina
+		// limpar o objeto da p√°gina
 		this.setNfEntrada(new NFEntrada());
 
 		return "/NFEntrada/nfEntradaListar";
 	}
 
-	@SuppressWarnings("deprecation")
 	public void adicionar() {
 
 		Produto produto = itemNFEntrada.getProduto();
 
-		// -------------------- MÈtodo adicionar.
+		// -------------------- M√©todo adicionar.
 		int posicaoEncntrada = -1;
 
 		for (int i = 0; i < itensNFEntrada.size() && posicaoEncntrada < 0; i++) {
@@ -285,15 +284,16 @@ public class NFEntradaMB implements Serializable {
 					.multiply(new BigDecimal(itensNFEntrada.get(j).getQuantidade()))));
 
 		}
-		// -------------------- MÈtodo adicionar.
+		// -------------------- M√©todo adicionar.
 
 		this.novoPrecoCusto = null;
 		this.setItemNFEntrada(new ItemNFEntrada());
 		itemNFEntrada.setQuantidade(1);
 
 		boolean fecharDialog = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialog", fecharDialog);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialog", fecharDialog);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 		JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
 
@@ -351,10 +351,10 @@ public class NFEntradaMB implements Serializable {
 		this.daoNFEntrada.excluirNFEntrada(objetoDoBanco, this.itensNFEntrada);
 
 		if (this.daoNFEntrada.lerPorId(objetoDoBanco.getCodigo()) == null) {
-			JSFUtil.retornarMensagemInfo(null, "ExcluÌdo com sucesso.", null);
+			JSFUtil.retornarMensagemInfo(null, "Exclu√≠do com sucesso.", null);
 		}
 
-		// limpar o objeto da p·gina
+		// limpar o objeto da p√°gina
 		this.setNfEntrada(new NFEntrada());
 		// limpa a lista
 		this.notasNFEntrada = null;
@@ -364,7 +364,7 @@ public class NFEntradaMB implements Serializable {
 	}
 
 	public void upload(FileUploadEvent event) {
-
+		
 		this.setNfEntrada(new NFEntrada());
 		this.setItensNFEntrada(new ArrayList<ItemNFEntrada>());
 
@@ -373,7 +373,7 @@ public class NFEntradaMB implements Serializable {
 		UploadedFile file = event.getFile();
 		InputStream input = null;
 		try {
-			input = file.getInputstream();
+			input = file.getInputStream();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			JSFUtil.retornarMensagemErro(null, e.getMessage(), null);
@@ -405,7 +405,7 @@ public class NFEntradaMB implements Serializable {
 					nota.getNota().getInfo().getEmitente().getRazaoSocial());
 
 			if (fornecedor == null) {
-				System.out.println("Fornecedor n„o cadastrado!");
+				System.out.println("Fornecedor n√£o cadastrado!");
 				try {
 					System.out.println("Cadastrando fornecedor...");
 					fornecedor = new Fornecedor();
@@ -463,7 +463,7 @@ public class NFEntradaMB implements Serializable {
 
 			Categoria categoria = daoCategoria.lerPorDescricao("CATEGORIA PADRAO");
 			if (categoria == null) {
-				System.out.println("Categoria n„o cadastrada!");
+				System.out.println("Categoria n√£o cadastrada!");
 				try {
 					System.out.println("Cadastrando categoria...");
 					categoria = new Categoria();
@@ -484,12 +484,12 @@ public class NFEntradaMB implements Serializable {
 					Produto produto = daoProduto
 							.lerPorId(nota.getNota().getInfo().getItens().get(i).getProduto().getCodigo());
 					if (produto == null) {
-						System.out.println("Produto (cÛdigo): "
+						System.out.println("Produto (c√≥digo): "
 								+ nota.getNota().getInfo().getItens().get(i).getProduto().getCodigo()
-								+ " n„o cadastrador");
+								+ " n√£o cadastrador");
 
 						try {
-							System.out.println("Cadastrando produto (cÛdigo): "
+							System.out.println("Cadastrando produto (c√≥digo): "
 									+ nota.getNota().getInfo().getItens().get(i).getProduto().getCodigo() + "...");
 							produto = new Produto();
 							produto.setCategoria(daoCategoria.lerPorDescricao("CATEGORIA PADRAO"));
@@ -533,9 +533,9 @@ public class NFEntradaMB implements Serializable {
 					}
 				}
 
-				// VERIFICA SE TODOS OS PRODUTOS REALMENTE EST√O
+				// VERIFICA SE TODOS OS PRODUTOS REALMENTE EST√ÉO
 				// CADASTRADOS.
-				// NESSE PONTO O FORNECEDOR E A CATEGORIA JA EST√O
+				// NESSE PONTO O FORNECEDOR E A CATEGORIA JA EST√ÉO
 				// CADASTRADOS
 				boolean todosOsProdutosCadastrados = true;
 				for (int x = 0; x < nota.getNota().getInfo().getItens().size(); x++) {
@@ -549,7 +549,7 @@ public class NFEntradaMB implements Serializable {
 				}
 
 				if (todosOsProdutosCadastrados) {
-					// System.out.println("Todos os dados necess·rios foram
+					// System.out.println("Todos os dados necess√°rios foram
 					// cadastrador!");
 
 					this.setNfEntrada(new NFEntrada());

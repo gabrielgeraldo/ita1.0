@@ -14,7 +14,7 @@ import javax.inject.Named;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.xml.sax.SAXException;
 
 import br.com.ita.controle.config.Config;
@@ -86,7 +86,7 @@ public class nfceMB implements Serializable {
 
 	private String ambienteConfigurado;
 
-	// SEM ESSE CONTRUTOR É APRESENTADO ERRO AO ADICIONAR UM PRODUTO.
+	// SEM ESSE CONTRUTOR ï¿½ APRESENTADO ERRO AO ADICIONAR UM PRODUTO.
 	@PostConstruct
 	public void init() {
 		this.novaNfce();
@@ -138,7 +138,7 @@ public class nfceMB implements Serializable {
 		if (produtoEscolhido != null) {
 			produto = daoProduto.lerPorId(produtoEscolhido);
 		} else {
-			JSFUtil.retornarMensagemErro(null, "Produto não cadastrado.", null);
+			JSFUtil.retornarMensagemErro(null, "Produto nÃ£o cadastrado.", null);
 		}
 
 		if (produto != null) {
@@ -173,7 +173,7 @@ public class nfceMB implements Serializable {
 			this.setItemNfce(new ItemNTFCe());
 
 		} else if (produto == null && produtoEscolhido != null) {
-			JSFUtil.retornarMensagemErro(null, "Produto não cadastrado.", null);
+			JSFUtil.retornarMensagemErro(null, "Produto nÃ£o cadastrado.", null);
 		}
 
 		this.produtoEscolhido = null;
@@ -221,12 +221,11 @@ public class nfceMB implements Serializable {
 
 	}
 
-	@SuppressWarnings({ "deprecation" })
 	public void importarOrcamento() {
 
 		if (nfce.getOrcamento() == null) {
 
-			JSFUtil.retornarMensagemAviso(null, "Orçamento não selecionado.", null);
+			JSFUtil.retornarMensagemAviso(null, "OrÃ§amento nÃ£o selecionado.", null);
 
 		} else {
 
@@ -254,8 +253,9 @@ public class nfceMB implements Serializable {
 			this.setDesabilitaHabilita(true);
 
 			boolean fecharDialog = true;
-			RequestContext context = RequestContext.getCurrentInstance();
-			context.addCallbackParam("fecharDialog", fecharDialog);
+			// RequestContext context = RequestContext.getCurrentInstance();
+			// context.addCallbackParam("fecharDialog", fecharDialog);
+			PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 			JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
 
@@ -281,7 +281,6 @@ public class nfceMB implements Serializable {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public String finalizarNTFCe() {
 
 		if (nfce.getTotal().equals(new BigDecimal("0.00"))) {
@@ -299,22 +298,24 @@ public class nfceMB implements Serializable {
 
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			JSFUtil.retornarMensagemErro(null, "Verifique a configuração dos impostos.", null);
+			JSFUtil.retornarMensagemErro(null, "Verifique a configuraï¿½ï¿½o dos impostos.", null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JSFUtil.retornarMensagemErro(null, "Erro durante a Trasmissão: " + e.getMessage(), null);
+			JSFUtil.retornarMensagemErro(null, "Erro durante a Trasmissï¿½o: " + e.getMessage(), null);
 
 		} finally {
 
 			boolean fecharDialogStatus = true;
-			RequestContext context = RequestContext.getCurrentInstance();
-			context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+			// RequestContext context = RequestContext.getCurrentInstance();
+			// context.addCallbackParam("fecharDialogStatus",
+			// fecharDialogStatus);
+			PrimeFaces.current().ajax().addCallbackParam("fecharDialogStatus", fecharDialogStatus);
 
 		}
 
-		// Atenção testar os Exception abaixo. se houver erro ao salvar nfce não
-		// capitura exeção.
+		// Atenï¿½ï¿½o testar os Exception abaixo. se houver erro ao salvar nfce nï¿½o
+		// capitura exeï¿½ï¿½o.
 
 		// TUDO OK, NOTA TRANSMITIDA.
 		if (nfce.getStatus() != null && nfce.getStatus().equals("100")) {
@@ -333,13 +334,13 @@ public class nfceMB implements Serializable {
 				e.printStackTrace();
 
 				System.out.println("--------------------------------------------------------------------------");
-				System.out.println("Erro durante a impressão da DANFE: " + nfce.getChave());
+				System.out.println("Erro durante a impressï¿½o da DANFE: " + nfce.getChave());
 				System.out.println("--------------------------------------------------------------------------");
 
-				ItaMail.mail("Erro durante a impressão da DANFE: " + Config.propertiesLoader().getProperty("cnpj")
+				ItaMail.mail("Erro durante a impressï¿½o da DANFE: " + Config.propertiesLoader().getProperty("cnpj")
 						+ ", " + Config.propertiesLoader().getProperty("codClient"), "NFC-e:" + nfce.getChave());
 
-				JSFUtil.retornarMensagemErro(null, "Erro durante a impressão da DANFE: " + e.getMessage(), null);
+				JSFUtil.retornarMensagemErro(null, "Erro durante a impressï¿½o da DANFE: " + e.getMessage(), null);
 			}
 
 			// ARMANEZANDO XML.
@@ -390,7 +391,7 @@ public class nfceMB implements Serializable {
 			}
 
 		} else {
-			// Não foi possivel Imprimir Danfe, armazenar XMl e salvarNFC-e."
+			// Nï¿½o foi possivel Imprimir Danfe, armazenar XMl e salvarNFC-e."
 			JSFUtil.retornarMensagemErro(null, nfce.getRejeicaoMotivo(), null);
 		}
 

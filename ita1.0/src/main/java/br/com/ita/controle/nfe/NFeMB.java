@@ -11,7 +11,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import com.fincatto.documentofiscal.nfe400.classes.NFFinalidade;
 import com.fincatto.documentofiscal.nfe400.classes.NFModalidadeFrete;
@@ -190,12 +190,11 @@ public class NFeMB implements Serializable {
 		return this.daoOrcamento.autoCompleteOrcamento(orcamento);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void adicionar() {
 
 		Produto produto = itemNFe.getProduto();
 
-		// -------------------- M�todo adicionar.
+		// -------------------- Método adicionar.
 		int posicaoEncntrada = -1;
 
 		for (int i = 0; i < itensNfe.size() && posicaoEncntrada < 0; i++) {
@@ -226,25 +225,25 @@ public class NFeMB implements Serializable {
 					.add(itensNfe.get(j).getPrecoVenda().multiply(new BigDecimal(itensNfe.get(j).getQuantidade()))));
 
 		}
-		// -------------------- M�todo adicionar.
+		// -------------------- Método adicionar.
 
 		this.setItemNFe(new ItemNTFe());
 		itemNFe.setQuantidade(1);
 
 		boolean fecharDialog = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialog", fecharDialog);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialog", fecharDialog);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 		JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
 
 	}
 
-	@SuppressWarnings({ "deprecation" })
 	public void importarOrcamento() {
 
 		if (nfe.getOrcamento() == null) {
 
-			JSFUtil.retornarMensagemAviso(null, "Or�amento n�o selecionado.", null);
+			JSFUtil.retornarMensagemAviso(null, "Orçamento não selecionado.", null);
 
 		} else {
 
@@ -274,8 +273,9 @@ public class NFeMB implements Serializable {
 			this.desabilitaHabilita = true;
 
 			boolean fecharDialog = true;
-			RequestContext context = RequestContext.getCurrentInstance();
-			context.addCallbackParam("fecharDialog", fecharDialog);
+			// RequestContext context = RequestContext.getCurrentInstance();
+			// context.addCallbackParam("fecharDialog", fecharDialog);
+			PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 			JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
 

@@ -29,11 +29,11 @@ public class NTFCe implements BaseEntity, Serializable {
 	private Long codigo;
 
 	@Column(length = 9, nullable = false)
-	@NotNull(message = "Número não definido.")
+	@NotNull(message = "NÃºmero nÃ£o definido.")
 	private Integer numero;
 
 	@Column(length = 3, nullable = false)
-	@NotNull(message = "Série não definida.")
+	@NotNull(message = "SÃ©rie nÃ£o definida.")
 	private Integer serie;
 
 	@ManyToOne
@@ -43,7 +43,7 @@ public class NTFCe implements BaseEntity, Serializable {
 	@NotNull
 	private Date data = new Date();
 
-	@NotNull(message = "O total é de preenchimento obrigatório.")
+	@NotNull(message = "O total Ã© de preenchimento obrigatÃ³rio.")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal total;
 
@@ -72,7 +72,7 @@ public class NTFCe implements BaseEntity, Serializable {
 	private Orcamento orcamento;
 
 	@ManyToOne
-	@NotNull(message = "A condição de pagamento é de preenchimento obrigatório.")
+	@NotNull(message = "A condiÃ§Ã£o de pagamento Ã© de preenchimento obrigatÃ³rio.")
 	private CondicaoPagamento condicaoPagamento;
 
 	public Long getCodigo() {

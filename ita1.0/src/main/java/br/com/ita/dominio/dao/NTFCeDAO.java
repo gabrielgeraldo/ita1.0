@@ -9,6 +9,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.util.JpaDAO;
 import br.com.ita.dominio.ItemNTFCe;
 import br.com.ita.dominio.Produto;
@@ -38,7 +39,8 @@ public class NTFCeDAO extends JpaDAO<NTFCe> implements Serializable {
 				this.abrirTransacao();
 
 			NTFCe vendaSalva = this.getEntityManager().merge(venda);
-			// System.out.println("Codigo da venda salva: " + vendaSalva.getCodigo());
+			// System.out.println("Codigo da venda salva: " +
+			// vendaSalva.getCodigo());
 
 			for (ItemNTFCe item : itensNTFCe) {
 				item.setNfce(vendaSalva);
@@ -52,10 +54,11 @@ public class NTFCeDAO extends JpaDAO<NTFCe> implements Serializable {
 
 			}
 
-			// Se for uma nova NF-e: atualiza o número.
+			// Se for uma nova NF-e: atualiza o nï¿½mero.
 			if (venda.getCodigo() == null) {
 
-				// System.out.println("----- Atualizando númeração da NFC-e -----");
+				// System.out.println("----- Atualizando nï¿½meraï¿½ï¿½o da NFC-e
+				// -----");
 				ControleNumerosDAO daoNumeracao = new ControleNumerosDAO();
 
 				daoNumeracao.atualizaNumeroPorTabelaEChave("nfce", venda.getSerie().toString());
@@ -71,7 +74,9 @@ public class NTFCeDAO extends JpaDAO<NTFCe> implements Serializable {
 
 			this.desfazerTransacao();
 
-			System.out.println("Falha ao finalizar NTFCe: " + e);
+			System.out.println("Erro ao salvar nfce: " + e);
+
+			JSFUtil.retornarMensagemErro(null, "Erro ao salvar NFC-e: " + e.getMessage(), null);
 		}
 
 	}

@@ -260,7 +260,7 @@
 						<p:autoComplete id="pd" dropdown="true" maxResults="10"
 							value="#{nfceMB.nfce.orcamento}" converter="converter-generico"
 							completeMethod="#{nfceMB.completeOrcamento}" var="item"
-							itemLabel="#{item.numero.toString().concat(' - ').concat(item.cliente)}"
+							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.cliente)}"
 							itemValue="#{item}" forceselection="true" size="90" />
 
 						<br />

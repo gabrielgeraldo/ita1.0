@@ -14,7 +14,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import com.fincatto.documentofiscal.nfe400.classes.evento.NFEnviaEventoRetorno;
 import com.fincatto.documentofiscal.nfe400.classes.evento.NFEventoRetorno;
@@ -113,7 +113,7 @@ public class ConsultarNFCeMB implements Serializable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JSFUtil.retornarMensagemAviso("XML não encontrado. A DANFE não será impressa.", null, null);
+			JSFUtil.retornarMensagemAviso("XML nï¿½o encontrado. A DANFE nï¿½o serï¿½ impressa.", null, null);
 		}
 
 	}
@@ -137,7 +137,7 @@ public class ConsultarNFCeMB implements Serializable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JSFUtil.retornarMensagemAviso("XML não encontrado. O downloand não será realizado.", null, null);
+			JSFUtil.retornarMensagemAviso("XML nï¿½o encontrado. O downloand nï¿½o serï¿½ realizado.", null, null);
 		}
 
 	}
@@ -154,7 +154,6 @@ public class ConsultarNFCeMB implements Serializable {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public String cancelar() {
 
 		try {
@@ -181,7 +180,7 @@ public class ConsultarNFCeMB implements Serializable {
 				// System.out.println("Ambiente: " +
 				// ret.getInfoEventoRetorno().getAmbiente().getCodigo());
 
-				// Se concelamento autorizado, a nota será atualizada no bd.
+				// Se concelamento autorizado, a nota serï¿½ atualizada no bd.
 				if (ret.getInfoEventoRetorno().getCodigoStatus().toString().equals("135")) {
 
 					eventoNFCe.setNfce(nfce);
@@ -239,8 +238,9 @@ public class ConsultarNFCeMB implements Serializable {
 		}
 
 		boolean fecharDialogStatus = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialogStatus", fecharDialogStatus);
 
 		return null;
 	}

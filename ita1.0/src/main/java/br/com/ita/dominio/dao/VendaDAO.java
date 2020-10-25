@@ -36,7 +36,8 @@ public class VendaDAO extends JpaDAO<Venda> implements Serializable {
 				this.abrirTransacao();
 
 			vendaSalva = this.getEntityManager().merge(venda);
-			// System.out.println("Codigo da venda salva: " + vendaSalva.getCodigo());
+			// System.out.println("Codigo da venda salva: " +
+			// vendaSalva.getCodigo());
 
 			for (ItemVenda item : itensVenda) {
 				item.setVenda(vendaSalva);
@@ -59,7 +60,7 @@ public class VendaDAO extends JpaDAO<Venda> implements Serializable {
 
 			this.desfazerTransacao();
 
-			System.out.println("Falha ao finalizar venda: " + e);
+			System.out.println("Erro ao salvar venda: " + e);
 
 			JSFUtil.retornarMensagemErro(null, "Erro ao salvar venda: " + e.getMessage(), null);
 

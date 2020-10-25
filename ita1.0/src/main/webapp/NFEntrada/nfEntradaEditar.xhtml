@@ -78,7 +78,7 @@
 
 							<p:fileUpload label="XML" update="formPrepDialog"
 								disabled="#{nfEntradaMB.bloqueaCampos}"
-								fileUploadListener="#{nfEntradaMB.upload}" auto="true"
+								listener="#{nfEntradaMB.upload}" auto="true"
 								allowTypes="/(\.|\/)(xml)$/"
 								invalidFileMessage="Arquivo inválido" />
 

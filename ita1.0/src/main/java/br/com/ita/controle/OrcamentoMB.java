@@ -99,8 +99,8 @@ public class OrcamentoMB implements Serializable {
 	@Inject
 	private UsuarioDAO daoUsuario;
 
-	@NotEmpty(message = "A senha � de preenchimento obrigat�rio.")
-	@NotNull(message = "A senha � de preenchimento obrigat�rio.")
+	@NotEmpty(message = "A senha é de preenchimento obrigatório.")
+	@NotNull(message = "A senha é de preenchimento obrigatório.")
 	private String senha;
 
 	@Context
@@ -127,8 +127,6 @@ public class OrcamentoMB implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// System.out.println(props.getProperty("razaoSocial"));
 
 		return props.getProperty("razaoSocial");
 	}
@@ -234,7 +232,7 @@ public class OrcamentoMB implements Serializable {
 
 	public void removerProduto(ItemOrcamento itemOrcamento) {
 
-		// -------------------- M�todo remover.
+		// -------------------- Método remover.
 		int posicaoEncntrada = -1;
 
 		for (int i = 0; i < itensOrcamento.size() && posicaoEncntrada < 0; i++) {
@@ -255,7 +253,7 @@ public class OrcamentoMB implements Serializable {
 					.multiply(new BigDecimal(itensOrcamento.get(j).getQuantidade()))));
 
 		}
-		// -------------------- M�todo remover.
+		// -------------------- Método remover.
 
 	}
 
@@ -264,7 +262,7 @@ public class OrcamentoMB implements Serializable {
 		boolean loggedIn = false;
 
 		if (!this.orcamento.getUsuario().getSenha().equals(this.senha)) {
-			JSFUtil.retornarMensagemAviso(null, "Senha inv�lida!", null);
+			JSFUtil.retornarMensagemAviso(null, "Senha inválida!", null);
 			loggedIn = true;
 			return null;
 		}
@@ -283,8 +281,6 @@ public class OrcamentoMB implements Serializable {
 			orcamento.setTotal(new BigDecimal("0.00"));
 
 			itensOrcamento = new ArrayList<ItemOrcamento>();
-
-			JSFUtil.retornarMensagemInfo(null, "Salvo/Alterado com sucesso.", null);
 
 			if (!conversacao.isTransient()) {
 				conversacao.end();
@@ -400,7 +396,7 @@ public class OrcamentoMB implements Serializable {
 		this.daoOrcamento.excluirOrcamento(objetoDoBanco, this.itensOrcamento);
 
 		if (this.daoOrcamento.lerPorId(objetoDoBanco.getCodigo()) == null) {
-			JSFUtil.retornarMensagemInfo(null, "Exclu�do com sucesso.", null);
+			JSFUtil.retornarMensagemInfo(null, "Excluído com sucesso.", null);
 		}
 
 		// limpar o objeto da p�gina

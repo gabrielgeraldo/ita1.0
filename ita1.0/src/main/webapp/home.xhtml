@@ -19,13 +19,15 @@
 				<!-- small box -->
 				<div class="small-box bg-aqua">
 					<div class="inner">
-						<h3>R$: #{homeMB.totalEntrada}</h3>
+						<h3>
+							<font size="6">R$: #{homeMB.totalEntrada}</font>
+						</h3>
 
 						<p>Total entrada - #{homeMB.data}</p>
 					</div>
-					<a href="#" class="small-box-footer"> Rel. Mov. bancária <i
-						class="fa fa-arrow-circle-right"></i>
-					</a>
+					<a href="#" class="small-box-footer"><font size="4">Relatório
+							Mov. bancária <i class="fa fa-arrow-circle-right"></i>
+					</font></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -33,16 +35,18 @@
 				<!-- small box -->
 				<div class="small-box bg-yellow">
 					<div class="inner">
-						<h3>R$: #{homeMB.totalSaida}</h3>
+						<h3>
+							<font size="6">R$: #{homeMB.totalSaida}</font>
+						</h3>
 
 						<p>Total saída - #{homeMB.data}</p>
 					</div>
 					<div class="icon">
 						<i class="ion ion-person-add"></i>
 					</div>
-					<a href="#" class="small-box-footer"> Rel. Mov. bancária <i
-						class="fa fa-arrow-circle-right"></i>
-					</a>
+					<a href="#" class="small-box-footer"><font size="4">Relatório
+							Mov. bancária <i class="fa fa-arrow-circle-right"></i>
+					</font></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -50,16 +54,18 @@
 				<!-- small box -->
 				<div class="small-box bg-green">
 					<div class="inner">
-						<h3>R$: #{homeMB.totalReceber}</h3>
+						<h3>
+							<font size="6">R$: #{homeMB.totalReceber}</font>
+						</h3>
 
 						<p>Total a receber - #{homeMB.data}</p>
 					</div>
 					<div class="icon">
 						<i class="ion ion-stats-bars"></i>
 					</div>
-					<a href="#" class="small-box-footer"> Mais informações <i
-						class="fa fa-arrow-circle-right"></i>
-					</a>
+					<a href="#" class="small-box-footer"><font size="4">Mais
+							informações <i class="fa fa-arrow-circle-right"></i>
+					</font></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -67,16 +73,18 @@
 				<!-- small box -->
 				<div class="small-box bg-red">
 					<div class="inner">
-						<h3>R$: #{homeMB.totalPagar}</h3>
+						<h3>
+							<font size="6">R$: #{homeMB.totalPagar}</font>
+						</h3>
 
 						<p>Total a pagar - #{homeMB.data}</p>
 					</div>
 					<div class="icon">
 						<i class="ion ion-pie-graph"></i>
 					</div>
-					<a href="#" class="small-box-footer"> Mais informações <i
-						class="fa fa-arrow-circle-right"></i>
-					</a>
+					<a href="#" class="small-box-footer"><font size="4">Mais
+							informações <i class="fa fa-arrow-circle-right"></i>
+					</font></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -89,8 +97,9 @@
 		<div class="col-md-8">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					<h3 class="box-title">Contas a pagar - Vencimento:
-						#{homeMB.data}</h3>
+					<h3 class="box-title">
+						<font size="3">Contas a pagar - Vencimento: #{homeMB.data}</font>
+					</h3>
 
 					<div class="box-tools pull-right">
 						<button type="button" class="btn btn-box-tool"
@@ -106,7 +115,7 @@
 				<!-- /.box-header -->
 				<div class="box-body">
 					<div class="table-responsive">
-						<font size="3">
+						<font size="2">
 							<table class="table no-margin">
 								<thead>
 									<tr>
@@ -124,7 +133,7 @@
 											<td><a><p:commandLink action="#{baixaCPMB.listar}"
 														title="Clique para baixar">#{item.id.numeroCP}</p:commandLink></a></td>
 											<td>#{item.id.parcelaCP}</td>
-											<td>#{item.id.fornecedor}</td>
+											<td>#{item.id.fornecedor.toString().substring(0,20)}</td>
 											<c:if test="#{item.saldo > 0 and item.baixa == null}">
 												<td><span class="label label-danger">Em aberto</span></td>
 											</c:if>
@@ -165,7 +174,9 @@
 		<div class="col-md-4">
 			<div class="box box-default">
 				<div class="box-header with-border">
-					<h3 class="box-title">Contas a pagar - #{homeMB.data}</h3>
+					<h3 class="box-title">
+						<font size="3">Contas a pagar - #{homeMB.data}</font>
+					</h3>
 
 					<div class="box-tools pull-right">
 						<button type="button" class="btn btn-box-tool"
@@ -197,15 +208,15 @@
 				<div class="box-footer no-padding">
 					<ul class="nav nav-pills nav-stacked">
 						<li>
-							<a href="#"><font size="3">Em aberto + Baixado parcial</font>
+							<a href="#"><font size="2">Em aberto + Baixado parcial</font>
 								<span class="pull-right text-red">#{homeMB.qtdAbertoCP}</span></a>
 						</li>
 						<li>
-							<a href="#"><font size="3">Baixado</font> <span
+							<a href="#"><font size="2">Baixado</font> <span
 								class="pull-right text-green">#{homeMB.qtdBaixadoCP}</span></a>
 						</li>
 						<li>
-							<a href="#"><font size="3">Baixado parcial</font> <span
+							<a href="#"><font size="2">Baixado parcial</font> <span
 								class="pull-right text-yellow">#{homeMB.qtdBaixadoPacialCP}</span></a>
 						</li>
 					</ul>
@@ -217,7 +228,9 @@
 		<div class="col-md-4">
 			<div class="box box-default">
 				<div class="box-header with-border">
-					<h3 class="box-title">Contas a receber - #{homeMB.data}</h3>
+					<h3 class="box-title">
+						<font size="3">Contas a receber - #{homeMB.data}</font>
+					</h3>
 
 					<div class="box-tools pull-right">
 						<button type="button" class="btn btn-box-tool"
@@ -250,15 +263,15 @@
 				<div class="box-footer no-padding">
 					<ul class="nav nav-pills nav-stacked">
 						<li>
-							<a href="#"><font size="3">Em aberto + Baixado parcial</font>
+							<a href="#"><font size="2">Em aberto + Baixado parcial</font>
 								<span class="pull-right text-red">#{homeMB.qtdAbertoCR}</span></a>
 						</li>
 						<li>
-							<a href="#"><font size="3">Baixado</font> <span
+							<a href="#"><font size="2">Baixado</font> <span
 								class="pull-right text-green">#{homeMB.qtdBaixadoCR}</span></a>
 						</li>
 						<li>
-							<a href="#"><font size="3">Baixado parcial</font> <span
+							<a href="#"><font size="2">Baixado parcial</font> <span
 								class="pull-right text-yellow">#{homeMB.qtdBaixadoPacialCR}</span></a>
 						</li>
 					</ul>
@@ -272,8 +285,10 @@
 		<div class="col-md-8">
 			<div class="box box-info">
 				<div class="box-header with-border">
-					<h3 class="box-title">Contas a receber - Vencimento:
-						#{homeMB.data}</h3>
+					<h3 class="box-title">
+						<font size="3">Contas a receber - Vencimento:
+							#{homeMB.data}</font>
+					</h3>
 
 					<div class="box-tools pull-right">
 						<button type="button" class="btn btn-box-tool"
@@ -289,7 +304,7 @@
 				<!-- /.box-header -->
 				<div class="box-body">
 					<div class="table-responsive">
-						<font size="3">
+						<font size="2">
 							<table class="table no-margin">
 								<thead>
 									<tr>
@@ -307,7 +322,7 @@
 											<td><a><p:commandLink action="#{baixaCRMB.listar}"
 														title="Clique para baixar">#{item.id.numeroCR}</p:commandLink></a></td>
 											<td>#{item.id.parcelaCR}</td>
-											<td>#{item.id.cliente}</td>
+											<td>#{item.id.cliente.toString().substring(0,20)}</td>
 											<c:if test="#{item.saldo > 0 and item.baixa == null}">
 												<td><span class="label label-danger">Em aberto</span></td>
 											</c:if>
