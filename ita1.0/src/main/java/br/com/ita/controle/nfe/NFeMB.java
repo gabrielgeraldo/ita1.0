@@ -395,7 +395,7 @@ public class NFeMB implements Serializable {
 
 		if (this.nfe.getNfFfinalidade() != NFFinalidade.DEVOLUCAO_OU_RETORNO && this.nfe.getCliente() == null) {
 
-			JSFUtil.retornarMensagemErro(null, "O cliente � de preenchimento obrigat�rio.", null);
+			JSFUtil.retornarMensagemErro(null, "O cliente é de preenchimento obrigatório.", null);
 
 			return null;
 
@@ -403,7 +403,7 @@ public class NFeMB implements Serializable {
 
 		if (this.nfe.getNfFfinalidade() == NFFinalidade.DEVOLUCAO_OU_RETORNO && this.nfe.getNfEntrada() == null) {
 
-			JSFUtil.retornarMensagemErro(null, "A Nota fiscal de entrada � de preenchimento obrigat�rio.", null);
+			JSFUtil.retornarMensagemErro(null, "A Nota fiscal de entrada é de preenchimento obrigatório.", null);
 
 			return null;
 
@@ -445,7 +445,7 @@ public class NFeMB implements Serializable {
 
 			System.out.println(e);
 
-			JSFUtil.retornarMensagemFatal(null, "Erro ao salvar/alterar.", null);
+			JSFUtil.retornarMensagemErro(null, "Erro ao salvar/alterar NF-e: " + e.getMessage(), null);
 
 			return null;
 

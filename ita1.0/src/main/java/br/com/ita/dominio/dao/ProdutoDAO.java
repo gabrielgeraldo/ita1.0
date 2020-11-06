@@ -63,10 +63,17 @@ public class ProdutoDAO extends JpaDAO<Produto> implements Serializable {
 		Criteria criteria = session.createCriteria(Produto.class);
 
 		criteria.setMaxResults(50);
-		
+
 		if (filtro.getTipoPesquisaProduto() == TipoPesquisaProduto.CODIGO) {
 			if (StringUtils.isNotEmpty(filtro.getCodigo())) {
-				criteria.add(Restrictions.ilike("codigo", filtro.getCodigo(), MatchMode.ANYWHERE));
+				criteria.add(Restrictions.ilike("codigo", filtro.getCodigo(), MatchMode.START));
+			}
+
+		}
+
+		if (filtro.getTipoPesquisaProduto() == TipoPesquisaProduto.CODIGOBARRAS) {
+			if (StringUtils.isNotEmpty(filtro.getCodigoBarras())) {
+				criteria.add(Restrictions.ilike("codigoBarras", filtro.getCodigoBarras(), MatchMode.START));
 			}
 
 		}

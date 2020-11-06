@@ -41,7 +41,6 @@
 
 							<p:outputLabel for="condicPgto" value="Forma de Pagamento:" />
 							<p:selectOneMenu id="condicPgto"
-								converter="omnifaces.GenericEnumConverter"
 								value="#{condicaoPagamentoMB.condicaoPagamento.formaPagamento}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -51,7 +50,6 @@
 
 							<p:outputLabel for="meioPgto" value="Meio de Pagamento:" />
 							<p:selectOneMenu id="meioPgto"
-								converter="omnifaces.GenericEnumConverter"
 								value="#{condicaoPagamentoMB.condicaoPagamento.meioPagamento}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />

@@ -29,11 +29,11 @@ public class Fornecedor implements BaseEntity, Serializable {
 	private Long codigo;
 
 	@Column(length = 1, nullable = false, columnDefinition = "VARCHAR(1) default 'x'")
-	@NotNull(message = "O tipo é de preenchimento obrigatório.")
+	@NotNull(message = "O tipo Ã© de preenchimento obrigatÃ³rio.")
 	private String tipo;
 
 	@Column(length = 18)
-	@NotNull(message = "O CNPJ/CPF é de preenchimento obrigatório.")
+	@NotNull(message = "O CNPJ/CPF Ã© de preenchimento obrigatÃ³rio.")
 	@Size(min = 4, max = 18, message = "O CNPJ/CPF deve ter entre 4 e 18 caracteres.")
 	private String cgc;
 
@@ -42,17 +42,17 @@ public class Fornecedor implements BaseEntity, Serializable {
 	private String inscricaoEstadual;
 
 	@Column(length = 70, nullable = false)
-	@NotNull(message = "A razão social é de preenchimento obrigatório.")
-	@Size(min = 4, max = 70, message = "A razão social deve ter entre 4 e 70 caracteres.")
+	@NotNull(message = "A razÃ£o social Ã© de preenchimento obrigatÃ³rio.")
+	@Size(min = 4, max = 70, message = "A razÃ£o social deve ter entre 4 e 70 caracteres.")
 	private String razaoSocial;
 
 	@Column(length = 70, nullable = false)
-	@NotNull(message = "O nome fantasia é de preenchimento obrigatório.")
+	@NotNull(message = "O nome fantasia Ã© de preenchimento obrigatÃ³rio.")
 	@Size(min = 4, max = 70, message = "O nome fantasia deve ter entre 4 e 70 caracteres.")
 	private String nomeFantasia;
 
 	@Column(length = 15, nullable = false)
-	@NotNull(message = "O telefone é de preenchimento obrigatório.")
+	@NotNull(message = "O telefone Ã© de preenchimento obrigatÃ³rio.")
 	@Size(min = 4, max = 15, message = "O telefone deve ter entre 4 e 15 digitos.")
 	private String telefone;
 
@@ -60,49 +60,49 @@ public class Fornecedor implements BaseEntity, Serializable {
 	private String celular;
 
 	@Column(length = 40, nullable = false)
-	@NotNull(message = "O e-mail é de preenchimento obrigatório.")
-	@Size(min = 0, max = 40, message = "O e-mail deve ter no máximo 40 caracteres.")
-	@Email(message = "Digite um e-mail válido.")
+	@NotNull(message = "O e-mail Ã© de preenchimento obrigatÃ³rio.")
+	@Size(min = 0, max = 40, message = "O e-mail deve ter no mÃ¡ximo 40 caracteres.")
+	@Email(message = "Digite um e-mail vï¿½lido.")
 	private String email;
 
 	@Column(length = 40)
-	@Size(min = 0, max = 40, message = "O compo obs. deve ter no máximo 40 caracteres.")
+	@Size(min = 0, max = 40, message = "O compo obs. deve ter no mï¿½ximo 40 caracteres.")
 	private String obs;
 
 	@Column(length = 35, nullable = false)
-	@NotNull(message = "O endereço é de preenchimento obrigatório.")
-	@Size(min = 4, max = 35, message = "O endereço deve ter entre 4 e 35 caracteres.")
+	@NotNull(message = "O endereÃ§o Ã© de preenchimento obrigatÃ³rio.")
+	@Size(min = 4, max = 35, message = "O endereÃ§o deve ter entre 4 e 35 caracteres.")
 	private String endereco;
 
 	@Column(length = 15, nullable = false)
-	@NotNull(message = "O número é de preenchimento obrigatório.")
-	@Size(min = 1, max = 15, message = "O número deve ter entre 1 e 15 digitos.")
+	@NotNull(message = "O nÃºmero Ã© de preenchimento obrigatÃ³rio.")
+	@Size(min = 1, max = 15, message = "O nÃºmero deve ter entre 1 e 15 digitos.")
 	private String numero;
 
 	@ManyToOne
-	@NotNull(message = "O estado é de preenchimento obrigatório.")
+	@NotNull(message = "O estado Ã© de preenchimento obrigatÃ³rio.")
 	private Estado estado;
 
 	@ManyToOne
-	@NotNull(message = "O município é de preenchimento obrigatório.")
+	@NotNull(message = "O municÃ­pio Ã© de preenchimento obrigatÃ³rio.")
 	private Municipio municipio;
 
 	@Column(length = 35, nullable = false)
-	@NotNull(message = "O bairro é de preenchimento obrigatório.")
+	@NotNull(message = "O bairro Ã© de preenchimento obrigatÃ³rio.")
 	@Size(min = 4, max = 35, message = "O bairro deve ter entre 4 e 35 caracteres.")
 	private String bairro;
 
 	@Column(length = 25, nullable = false)
-	@NotNull(message = "O CEP é de preenchimento obrigatório.")
+	@NotNull(message = "O CEP Ã© de preenchimento obrigatÃ³rio.")
 	private String cep;
 
 	@Column(length = 65, nullable = false)
-	@NotNull(message = "O complemento é de preenchimento obrigatório.")
-	@Size(min = 0, max = 65, message = "O campo complemento deve ter no máximo 65 caracteres.")
+	@NotNull(message = "O complemento Ã© de preenchimento obrigatÃ³rio.")
+	@Size(min = 0, max = 65, message = "O campo complemento deve ter no mÃ¡ximo 65 caracteres.")
 	private String complemento;
 
 	@Column(length = 1, nullable = false, columnDefinition = "VARCHAR(1) default 2")
-	@NotNull(message = "O indicador IE destinatario é de preenchimento obrigatório.")
+	@NotNull(message = "O indicador IE destinatario Ã© de preenchimento obrigatÃ³rio.")
 	private NFIndicadorIEDestinatario nfIndicadorIEDestinatario;
 
 	public Long getCodigo() {

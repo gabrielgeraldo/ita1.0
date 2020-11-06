@@ -26,32 +26,32 @@ public class Produto implements BaseEntityP, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@NotEmpty(message = "O código é de preenchimento obrigatório.")
+	@NotEmpty(message = "O cï¿½digo ï¿½ de preenchimento obrigatï¿½rio.")
 	private String codigo;
 
 	@Column(length = 65, nullable = false)
-	@NotNull(message = "A descrição é de preenchimento obrigatório.")
-	@Size(min = 4, max = 65, message = "A descrição deve ter entre 4 e 65 caracteres.")
+	@NotNull(message = "A descriï¿½ï¿½o ï¿½ de preenchimento obrigatï¿½rio.")
+	@Size(min = 4, max = 65, message = "A descriï¿½ï¿½o deve ter entre 4 e 65 caracteres.")
 	private String descricao;
 
 	@ManyToOne
-	@NotNull(message = "O fornecedor é de preenchimento obrigatório.")
+	@NotNull(message = "O fornecedor ï¿½ de preenchimento obrigatï¿½rio.")
 	private Fornecedor fornecedor;
 
 	@ManyToOne
-	@NotNull(message = "A categoria é de preenchimento obrigatório.")
+	@NotNull(message = "A categoria ï¿½ de preenchimento obrigatï¿½rio.")
 	private Categoria categoria;
 
 	@Column(precision = 7, scale = 2, nullable = false)
-	@NotNull(message = "O preço de custo é de preenchimento obrigatório.")
+	@NotNull(message = "O preï¿½o de custo ï¿½ de preenchimento obrigatï¿½rio.")
 	private BigDecimal precoCusto;
 
 	@Column(precision = 7, scale = 2, nullable = false)
-	@NotNull(message = "O preço de unitário é de preenchimento obrigatório.")
+	@NotNull(message = "O preï¿½o de unitï¿½rio ï¿½ de preenchimento obrigatï¿½rio.")
 	private BigDecimal precoUnitario;
 
 	@Column(nullable = false)
-	@NotNull(message = "A quantidade em estoque é de preenchimento obrigatório.")
+	@NotNull(message = "A quantidade em estoque ï¿½ de preenchimento obrigatï¿½rio.")
 	private int qtdEstq;
 
 	// @ManyToOne
@@ -59,7 +59,7 @@ public class Produto implements BaseEntityP, Serializable {
 
 	@Column(length = 2, nullable = false)
 	@Size(min = 0, max = 2, message = "A unidade comercia deve ter entre 0 e 2 caracteres.")
-	@NotNull(message = "A unidade comercia é de preenchimento obrigatório.")
+	@NotNull(message = "A unidade comercia ï¿½ de preenchimento obrigatï¿½rio.")
 	private String unidadeComercial;
 
 	@Column(length = 3)
@@ -81,11 +81,11 @@ public class Produto implements BaseEntityP, Serializable {
 	private BigDecimal pST;
 
 	@Column(length = 7)
-	@Size(min = 0, max = 7, message = "O código CEST deve ter 7 dígitos.")
+	@Size(min = 0, max = 7, message = "O cï¿½digo CEST deve ter 7 dï¿½gitos.")
 	private String Cest;
 
 	@Column(length = 15)
-	@Size(min = 0, max = 15, message = "O código de barras deve ter entre 0 e 15 caracteres.")
+	@Size(min = 0, max = 15, message = "O cï¿½digo de barras deve ter entre 0 e 15 caracteres.")
 	private String codigoBarras;
 
 	public String getCodigo() {

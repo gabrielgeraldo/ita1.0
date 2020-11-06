@@ -28,7 +28,7 @@ public class Venda implements BaseEntity, Serializable {
 	private Long codigo;
 
 	@ManyToOne
-	@NotNull(message = "A condiÁ„o de pagamento È de preenchimento obrigatÛrio.")
+	@NotNull(message = "A condi√ß√£o de pagamento √© de preenchimento obrigat√≥rio.")
 	private CondicaoPagamento condicaoPagamento;
 
 	@ManyToOne
@@ -38,12 +38,12 @@ public class Venda implements BaseEntity, Serializable {
 	@NotNull
 	private Date data = new Date();
 
-	@NotNull(message = "O total È de preenchimento obrigatÛrio.")
+	@NotNull(message = "O total √© de preenchimento obrigat√≥rio.")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal total;
 
 	@Column(length = 15)
-	@NotNull(message = "SituaÁ„o n„o definida.")
+	@NotNull(message = "Situa√ß√£o n√£o definida.")
 	private String situacao;
 
 	public Long getCodigo() {

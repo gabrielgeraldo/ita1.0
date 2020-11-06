@@ -2,7 +2,7 @@ package br.com.ita.dominio;
 
 public enum TipoPesquisaProduto {
 
-	CODIGO("Código"), DESCRICAO("Descrição");
+	CODIGO("Código"), CODIGOBARRAS("Código de barras"), DESCRICAO("Descrição");
 
 	private String descricao;
 

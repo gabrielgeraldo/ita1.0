@@ -12,6 +12,8 @@ public class FiltroProduto implements Serializable {
 
 	private String descricao;
 
+	private String codigoBarras;
+
 	private TipoPesquisaProduto tipoPesquisaProduto;
 
 	public String getCodigo() {
@@ -36,6 +38,14 @@ public class FiltroProduto implements Serializable {
 
 	public void setTipoPesquisaProduto(TipoPesquisaProduto tipoPesquisaProduto) {
 		this.tipoPesquisaProduto = tipoPesquisaProduto;
+	}
+
+	public String getCodigoBarras() {
+		return codigoBarras;
+	}
+
+	public void setCodigoBarras(String codigoBarras) {
+		this.codigoBarras = codigoBarras;
 	}
 
 	@Override

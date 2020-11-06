@@ -44,12 +44,12 @@ public class NFeDAO extends JpaDAO<NTFe> implements Serializable {
 			// System.out.println("Codigo da NF-e que foi gravada: " +
 			// nfeSaidaSalva.getCodigo());
 
-			// Deletando os itens antes de utilizá-los.
-			// Só exclui os itens se não for uma nova venda.
+			// Deletando os itens antes de utilizï¿½-los.
+			// Sï¿½ exclui os itens se nï¿½o for uma nova venda.
 			if (nfe.getCodigo() != null) {
 
 				// System.out.println("Deletando os itens antes de
-				// utilizá-los.");
+				// utilizï¿½-los.");
 
 				// Deletandos os itens antes do merge.
 				ItemNFeDAO dao = new ItemNFeDAO();
@@ -58,15 +58,15 @@ public class NFeDAO extends JpaDAO<NTFe> implements Serializable {
 			}
 
 			// ATUALIZANDO A TABELA DE PEDIDOs COM A NOTA.
-			//if (nfe.getPedidoVenda() != null) {
+			// if (nfe.getPedidoVenda() != null) {
 
-				// System.out.println("Atualizando o PV com a NF-e.");
+			// System.out.println("Atualizando o PV com a NF-e.");
 
-				//PedidoVenda pv = nfe.getPedidoVenda();
-				//pv.setNfe(nfe);
+			// PedidoVenda pv = nfe.getPedidoVenda();
+			// pv.setNfe(nfe);
 
-				//this.getEntityManager().merge(pv);
-			//}
+			// this.getEntityManager().merge(pv);
+			// }
 
 			for (ItemNTFe item : itensNFeSaida) {
 				item.setNfe(nfeSaidaSalva);
@@ -82,10 +82,10 @@ public class NFeDAO extends JpaDAO<NTFe> implements Serializable {
 
 			}
 
-			// Se for uma nova NF-e, atualiza o número.
+			// Se for uma nova NF-e, atualiza o nï¿½mero.
 			if (nfe.getCodigo() == null) {
 
-				// System.out.println("Atualizando númeração da NF-e");
+				// System.out.println("Atualizando nï¿½meraï¿½ï¿½o da NF-e");
 				ControleNumerosDAO daoNumeracao = new ControleNumerosDAO();
 
 				daoNumeracao.atualizaNumeroPorTabelaEChave("nfe", nfe.getSerie().toString());
@@ -105,7 +105,7 @@ public class NFeDAO extends JpaDAO<NTFe> implements Serializable {
 			System.out.println(e.getMessage());
 			System.out.println(e.getStackTrace());
 
-			JSFUtil.retornarMensagemFatal(null, "Erro ao salvar/alterar.", null);
+			JSFUtil.retornarMensagemErro(null, "Erro ao salvar/alterar NF-e: " + e.getMessage(), null);
 
 		}
 
@@ -183,7 +183,7 @@ public class NFeDAO extends JpaDAO<NTFe> implements Serializable {
 
 		criteria.setMaxResults(50);
 
-		// Só trás as nfs sem protocolo.
+		// Sï¿½ trï¿½s as nfs sem protocolo.
 		criteria.add(Restrictions.isNotNull("numProtocolo"));
 
 		if (filtro.getNumero() != null) {

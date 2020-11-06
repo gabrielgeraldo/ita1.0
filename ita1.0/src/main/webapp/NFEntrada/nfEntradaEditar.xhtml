@@ -137,6 +137,14 @@
 										<h:outputText value="#{item.produto.codigo}" />
 									</p:column>
 
+									<p:column style="text-align: center;width:120px">
+										<f:facet name="header">
+											<h:outputText value="Código de barras" />
+										</f:facet>
+										<h:outputText value="#{item.produto.codigoBarras}" />
+									</p:column>
+
+
 									<p:column headerText="Descrição">
 										<h:outputText value="#{item.produto.descricao}" />
 									</p:column>

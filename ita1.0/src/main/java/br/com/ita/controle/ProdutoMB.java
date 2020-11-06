@@ -2,6 +2,7 @@ package br.com.ita.controle;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +15,7 @@ import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.dominio.Categoria;
 import br.com.ita.dominio.Fornecedor;
 import br.com.ita.dominio.Produto;
+import br.com.ita.dominio.TipoPesquisaProduto;
 import br.com.ita.dominio.dao.CategoriaDAO;
 import br.com.ita.dominio.dao.FornecedorDAO;
 import br.com.ita.dominio.dao.ProdutoDAO;
@@ -57,8 +59,12 @@ public class ProdutoMB implements Serializable {
 
 	private BigDecimal margemLucro = new BigDecimal(0);
 
+	private List<TipoPesquisaProduto> tiposPesquisaProduto = null;
+
 	@PostConstruct
 	public void init() {
+
+		this.filtro.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
 
 		cont = daoProduto.contaRegistros();
 
@@ -75,16 +81,15 @@ public class ProdutoMB implements Serializable {
 
 		// resultado = valor + (valor*porcentagem)/100;
 
-		//this.produto.setPrecoUnitario(this.produto.getPrecoUnitario()
-				//.add(this.margemLucro.multiply(this.produto.getPrecoUnitario()).divide(new BigDecimal("100"))));
+		// this.produto.setPrecoUnitario(this.produto.getPrecoUnitario()
+		// .add(this.margemLucro.multiply(this.produto.getPrecoUnitario()).divide(new
+		// BigDecimal("100"))));
 
 	}
 
 	public void consultar() {
 
 		this.produtos = daoProduto.consultar(filtro);
-
-		this.setFiltro(new FiltroProduto());
 
 	}
 
@@ -115,12 +120,12 @@ public class ProdutoMB implements Serializable {
 	}
 
 	public String salvar() {
-		
+
 		if (this.getProduto() != null) {
 			Produto objetoDoBanco = this.daoProduto.lerPorId(this.getProduto().getCodigo());
 
 			if (objetoDoBanco != null) {
-				JSFUtil.retornarMensagemAviso(null, "Outro produto com o mesmo código já existe no sistema.", null);
+				JSFUtil.retornarMensagemAviso(null, "Outro produto com o mesmo cï¿½digo jï¿½ existe no sistema.", null);
 				return null;
 			}
 		}
@@ -130,7 +135,7 @@ public class ProdutoMB implements Serializable {
 		// limpa a lista
 		this.produtos = null;
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setProduto(new Produto());
 
 		cont = daoProduto.contaRegistros();
@@ -150,7 +155,7 @@ public class ProdutoMB implements Serializable {
 		// limpa a lista
 		this.produtos = null;
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setProduto(new Produto());
 
 		cont = daoProduto.contaRegistros();
@@ -173,10 +178,10 @@ public class ProdutoMB implements Serializable {
 		this.daoProduto.remove(objetoDoBanco);
 
 		if (this.daoProduto.lerPorId(objetoDoBanco.getCodigo()) == null) {
-			JSFUtil.retornarMensagemInfo(null, "Excluído com sucesso.", null);
+			JSFUtil.retornarMensagemInfo(null, "Excluï¿½do com sucesso.", null);
 		}
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setProduto(new Produto());
 
 		// limpa a lista
@@ -192,7 +197,7 @@ public class ProdutoMB implements Serializable {
 
 	public String cancelar() {
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setProduto(new Produto());
 
 		return "/Produto/produtoListar";
@@ -326,6 +331,20 @@ public class ProdutoMB implements Serializable {
 
 	public void setMargemLucro(BigDecimal margemLucro) {
 		this.margemLucro = margemLucro;
+	}
+
+	public List<TipoPesquisaProduto> getTiposPesquisaProduto() {
+
+		if (this.tiposPesquisaProduto == null)
+			// nÃ£o estava funcionando.
+			// this.tiposPesquisaProduto = Arrays.asList(TipoPesquisaProduto.values());
+			this.tiposPesquisaProduto = Arrays.asList(TipoPesquisaProduto.DESCRICAO);
+
+		return tiposPesquisaProduto;
+	}
+
+	public void setTiposPesquisaProduto(List<TipoPesquisaProduto> tiposPesquisaProduto) {
+		this.tiposPesquisaProduto = tiposPesquisaProduto;
 	}
 
 }

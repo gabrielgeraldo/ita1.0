@@ -176,14 +176,7 @@ public class OrcamentoMB implements Serializable {
 
 	public void consultarProduto() {
 
-		// this.produtosFiltrados = null;
-		// this.produtos = null;
-
 		this.produtos = daoProduto.consultar(filtroProduto);
-
-		// this.setFiltroProduto(new FiltroProduto());
-
-		// this.filtroProduto.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
 
 	}
 

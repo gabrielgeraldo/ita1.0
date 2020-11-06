@@ -13,17 +13,11 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import com.fincatto.documentofiscal.nfe400.classes.evento.NFEnviaEventoRetorno;
 import com.fincatto.documentofiscal.nfe400.classes.evento.NFEventoRetorno;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
-
-/*
-import com.fincatto.nfe310.classes.evento.NFEnviaEventoRetorno;
-import com.fincatto.nfe310.classes.evento.NFEventoRetorno;
-import com.fincatto.nfe310.webservices.WSFacade;
-*/
 
 import br.com.ita.controle.util.DanfeUtil;
 import br.com.ita.controle.util.JSFUtil;
@@ -110,7 +104,7 @@ public class ConsultarNfeMB implements Serializable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JSFUtil.retornarMensagemAviso("XML não encontrado. A DANFE não será impressa.", null, null);
+			JSFUtil.retornarMensagemAviso("XML nï¿½o encontrado. A DANFE nï¿½o serï¿½ impressa.", null, null);
 		}
 
 	}
@@ -134,7 +128,7 @@ public class ConsultarNfeMB implements Serializable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JSFUtil.retornarMensagemAviso("XML não encontrado. O downloand não será realizado.", null, null);
+			JSFUtil.retornarMensagemAviso("XML nï¿½o encontrado. O downloand nï¿½o serï¿½ realizado.", null, null);
 		}
 
 	}
@@ -151,10 +145,9 @@ public class ConsultarNfeMB implements Serializable {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public String cancelar() {
 
-		// Verificar se a nota está autorizada para poder cancelar
+		// Verificar se a nota estï¿½ autorizada para poder cancelar
 		if (this.nfe.getStatus().equals("100")) {
 
 			try {
@@ -180,7 +173,7 @@ public class ConsultarNfeMB implements Serializable {
 					// System.out.println("Ambiente: " +
 					// ret.getInfoEventoRetorno().getAmbiente().getCodigo());
 
-					// Se concelamento autorizado, a nota será atualizada no bd.
+					// Se concelamento autorizado, a nota serï¿½ atualizada no bd.
 					if (ret.getInfoEventoRetorno().getCodigoStatus().toString().equals("135")) {
 
 						eventoNFe.setNfe(nfe);
@@ -239,13 +232,14 @@ public class ConsultarNfeMB implements Serializable {
 
 		} else {
 
-			JSFUtil.retornarMensagemAviso("Esta NF-e não pode ser cancelada.", null, null);
+			JSFUtil.retornarMensagemAviso("Esta NF-e nï¿½o pode ser cancelada.", null, null);
 
 		}
 
 		boolean fecharDialogStatus = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialogStatus", fecharDialogStatus);
 
 		return null;
 	}
@@ -261,7 +255,6 @@ public class ConsultarNfeMB implements Serializable {
 		return "/NFe/nfeCorrigir";
 	}
 
-	@SuppressWarnings("deprecation")
 	public String corrigir() {
 
 		try {
@@ -288,7 +281,7 @@ public class ConsultarNfeMB implements Serializable {
 				// System.out.println("Ambiente: " +
 				// ret.getInfoEventoRetorno().getAmbiente().getCodigo());
 
-				// Se correção autorizada, a nota será atualizada no bd.
+				// Se correï¿½ï¿½o autorizada, a nota serï¿½ atualizada no bd.
 				if (ret.getInfoEventoRetorno().getCodigoStatus().toString().equals("135")) {
 
 					eventoNFe.setNfe(nfe);
@@ -345,8 +338,9 @@ public class ConsultarNfeMB implements Serializable {
 		}
 
 		boolean fecharDialogStatus = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialogStatus", fecharDialogStatus);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialogStatus", fecharDialogStatus);
 
 		return null;
 

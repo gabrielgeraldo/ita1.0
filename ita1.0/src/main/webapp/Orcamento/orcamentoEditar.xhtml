@@ -216,7 +216,7 @@
 								var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
 						</p:selectOneRadio>
 
-						<p:spacer width="30" />
+						<p:spacer width="25" />
 
 						<p:outputLabel for="qtd" value="Quantidade:" />
 						<p:spacer width="10" />
@@ -235,6 +235,16 @@
 							<p:ajax event="keyup" update="formPesquisaProdutos:tabProdutos"
 								listener="#{orcamentoMB.consultarProduto}" />
 						</p:inputText>
+						<p:inputText id="codBarras" style="width: 300px"
+							rendered="#{orcamentoMB.filtroProduto.tipoPesquisaProduto eq 'CODIGOBARRAS'}"
+							value="#{orcamentoMB.filtroProduto.codigoBarras}"
+							placeholder="Digite aqui o código de barras..."
+							validatorMessage="Verifique o código de barras. Caracteres permitidos: [0-9]"
+							autocomplete="off">
+							<f:validateRegex pattern="(^[0-9]+$)?" />
+							<p:ajax event="keyup" update="formPesquisaProdutos:tabProdutos"
+								listener="#{orcamentoMB.consultarProduto}" />
+						</p:inputText>
 						<p:inputText id="desc" style="width: 300px"
 							rendered="#{orcamentoMB.filtroProduto.tipoPesquisaProduto eq 'DESCRICAO'}"
 							value="#{orcamentoMB.filtroProduto.descricao}"
@@ -246,32 +256,6 @@
 					</h:panelGrid>
 
 					<br />
-
-					<ui:remove>
-
-						<div class="ui-g ui-fluid">
-							<div class="ui-g-12 ui-md-4">
-								<div class="ui-inputgroup">
-									<p:inputText id="cod"
-										rendered="#{orcamentoMB.filtroProduto.tipoPesquisaProduto eq 'CODIGO'}"
-										value="#{orcamentoMB.filtroProduto.codigo}"
-										placeholder="Digite aqui o código..."
-										validatorMessage="Verifique o código. Caracteres permitidos: [A-Z|0-9]">
-										<f:validateRegex pattern="(^[a-zA-Z0-9]+$)?" />
-									</p:inputText>
-									<p:inputText id="desc"
-										rendered="#{orcamentoMB.filtroProduto.tipoPesquisaProduto eq 'DESCRICAO'}"
-										value="#{orcamentoMB.filtroProduto.descricao}"
-										placeholder="Digite aqui a descrição..." />
-									<p:commandButton icon="fa fa-search"
-										styleClass="btn-primary btn-block"
-										update="formPesquisaProdutos"
-										action="#{orcamentoMB.consultarProduto}" />
-								</div>
-							</div>
-						</div>
-
-					</ui:remove>
 
 					<h:panelGrid columns="1"
 						style="margin-top:20px;margin-bottom: 10px">
@@ -291,6 +275,13 @@
 									<h:outputText value="Código" />
 								</f:facet>
 								<h:outputText value="#{item.codigo}" />
+							</p:column>
+
+							<p:column style="width:120px" sortBy="#{item.codigoBarras}">
+								<f:facet name="header">
+									<h:outputText value="Código de barras" />
+								</f:facet>
+								<h:outputText value="#{item.codigoBarras}" />
 							</p:column>
 
 							<p:column style="width:400px" sortBy="#{item.descricao}">

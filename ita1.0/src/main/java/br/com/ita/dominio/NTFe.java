@@ -46,52 +46,52 @@ public class NTFe implements BaseEntity, Serializable {
 	private Long codigo;
 
 	@Column(length = 9, nullable = false)
-	@NotNull(message = "O número é de preenchimento obrigatório.")
+	@NotNull(message = "O nÃºmero Ã© de preenchimento obrigatÃ³rio.")
 	private Integer numero;
 
 	@Column(length = 3, nullable = false)
-	@NotNull(message = "A série é de preenchimento obrigatório.")
+	@NotNull(message = "A sÃ©rie Ã© de preenchimento obrigatÃ³rio.")
 	private Integer serie;
 
 	@ManyToOne
-	// @NotNull(message = "O cliente é de preenchimento obrigatório.")
+	// @NotNull(message = "O cliente ï¿½ de preenchimento obrigatï¿½rio.")
 	private Cliente cliente;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@NotNull(message = "A data é de preenchimento obrigatório.")
+	@NotNull(message = "A data Ã© de preenchimento obrigatÃ³rio.")
 	private Date data = new Date();
 
-	@NotNull(message = "O total é de preenchimento obrigatório.")
-	@DecimalMin(value = "0.01", message = "O total deverá ser superior a 0.00")
+	@NotNull(message = "O total Ã© de preenchimento obrigatÃ³rio.")
+	@DecimalMin(value = "0.01", message = "O total deverÃ¡ ser superior a 0.00")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal total;
 
 	@Column(length = 15)
-	@NotNull(message = "A natureza da operação é de preenchimento obrigatório.")
+	@NotNull(message = "A natureza da operÃ§Ã£o Ã© de preenchimento obrigatÃ³rio.")
 	private String naturezaOperacao;
 
 	@Column(length = 2)
-	@NotNull(message = "A finalidade é de preenchimento obrigatório.")
+	@NotNull(message = "A finalidade Ã© de preenchimento obrigatÃ³rio.")
 	private NFFinalidade nfFfinalidade;
 
 	@Column(length = 2)
-	@NotNull(message = "O tipo é de preenchimento obrigatório.")
+	@NotNull(message = "O tipo Ã© de preenchimento obrigatÃ³rio.")
 	private NFTipo tipo;
 
 	@Column(length = 2)
-	@NotNull(message = "O Identificador local destino operação é de preenchimento obrigatório.")
+	@NotNull(message = "O Identificador local destino operaÃ§Ã£o Ã© de preenchimento obrigatÃ³rio.")
 	private NFIdentificadorLocalDestinoOperacao nfIdentificadorLocalDestinoOperacao;
 
 	@Column(length = 2)
-	@NotNull(message = "A operação consumidor final é de preenchimento obrigatório.")
+	@NotNull(message = "A operaÃ§Ã£o consumidor final Ã© de preenchimento obrigatÃ³rio.")
 	private NFOperacaoConsumidorFinal nfOperacaoConsumidorFinal;
 
 	@Column(length = 2)
-	@NotNull(message = "O Indicador presença comprador é de preenchimento obrigatório.")
+	@NotNull(message = "O Indicador presenÃ§a comprador Ã© de preenchimento obrigatÃ³rio.")
 	private NFIndicadorPresencaComprador nfIndicadorPresencaComprador;
 
 	@Column(length = 2)
-	@NotNull(message = "A modalidade de frete é de preenchimento obrigatório.")
+	@NotNull(message = "A modalidade de frete Ã© de preenchimento obrigatÃ³rio.")
 	private NFModalidadeFrete nfModalidadeFrete;
 
 	@Column(length = 44)
@@ -119,7 +119,7 @@ public class NTFe implements BaseEntity, Serializable {
 	private Orcamento orcamento;
 
 	@ManyToOne
-	@NotNull(message = "A condição de pagamento é de preenchimento obrigatório.")
+	@NotNull(message = "A condiÃ§Ã£o de pagamento Ã© de preenchimento obrigatÃ³rio.")
 	private CondicaoPagamento condicaoPagamento;
 
 	@OneToMany(mappedBy = "nfe", cascade = CascadeType.ALL)
@@ -129,7 +129,7 @@ public class NTFe implements BaseEntity, Serializable {
 	private int numeroDeParcelas = 1;
 
 	@Column(length = 145)
-	@Size(min = 0, max = 145, message = "O campo informações complementares deve ter no máximo 145 caracteres.")
+	@Size(min = 0, max = 145, message = "O campo informaï¿½ï¿½es complementares deve ter no mï¿½ximo 145 caracteres.")
 	private String informacoesComplementares;
 
 	public Long getCodigo() {

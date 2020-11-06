@@ -22,33 +22,53 @@
 
 				<p:growl id="messagens" showSummary="false" showDetail="true" />
 
-				<div class="ui-g ui-fluid">
-					<div class="ui-g-12 ui-md-4">
-						<div class="ui-inputgroup">
-							<p:inputText id="desc" value="#{produtoMB.filtro.descricao}"
-								placeholder="Digite aqui a descrição..." />
-							<p:commandButton
-								update=":formCadProduto:tabProdutos :formCadProduto:desc"
-								action="#{produtoMB.consultar}" icon="fa fa-search"
-								styleClass="btn-primary btn-block" />
-						</div>
-					</div>
-				</div>
+				<br />
 
-				<ui:remove>
-					<h:panelGrid columns="4">
+				<h:panelGrid columns="9">
 
-						<p:outputLabel value="Descrição:" />
+					<p:outputLabel for="tipoPesquisaProduto" value="Pesquisar por:" />
+					<p:spacer width="10" />
+					<p:selectOneRadio id="tipoPesquisaProduto"
+						converter="omnifaces.GenericEnumConverter"
+						value="#{produtoMB.filtro.tipoPesquisaProduto}"
+						unselectable="true">
+						<p:ajax event="change" update="formCadProduto" />
+						<f:selectItems value="#{produtoMB.tiposPesquisaProduto}"
+							var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneRadio>
 
-						<p:inputText id="desc" value="#{produtoMB.filtro.descricao}"
-							style="width: 300px" />
+					<p:spacer width="25" />
 
-						<p:commandButton value="Consultar"
-							update=":formCadProduto:tabProdutos :formCadProduto:desc"
-							action="#{produtoMB.consultar}" image="ui-icon-search" />
+					<p:inputText id="cod" style="width: 300px"
+						rendered="#{produtoMB.filtro.tipoPesquisaProduto eq 'CODIGO'}"
+						value="#{produtoMB.filtro.codigo}"
+						placeholder="Digite aqui o código..."
+						validatorMessage="Verifique o código. Caracteres permitidos: [A-Z|0-9]"
+						autocomplete="off">
+						<f:validateRegex pattern="(^[a-zA-Z0-9]+$)?" />
+						<p:ajax event="keyup" update="formCadProduto:tabProdutos"
+							listener="#{produtoMB.consultar}" />
+					</p:inputText>
+					<p:inputText id="codBarras" style="width: 300px"
+						rendered="#{produtoMB.filtro.tipoPesquisaProduto eq 'CODIGOBARRAS'}"
+						value="#{produtoMB.filtro.codigoBarras}"
+						placeholder="Digite aqui o código de barras..."
+						validatorMessage="Verifique o código de barras. Caracteres permitidos: [0-9]"
+						autocomplete="off">
+						<f:validateRegex pattern="(^[0-9]+$)?" />
+						<p:ajax event="keyup" update="formCadProduto:tabProdutos"
+							listener="#{produtoMB.consultar}" />
+					</p:inputText>
+					<p:inputText id="desc" style="width: 300px"
+						rendered="#{produtoMB.filtro.tipoPesquisaProduto eq 'DESCRICAO'}"
+						value="#{produtoMB.filtro.descricao}"
+						placeholder="Digite aqui a descrição..." autocomplete="off">
+						<p:ajax event="keyup" update="formCadProduto:tabProdutos"
+							listener="#{produtoMB.consultar}" />
+					</p:inputText>
 
-					</h:panelGrid>
-				</ui:remove>
+				</h:panelGrid>
+
 
 				<t:saveState value="#{produtoMB.produtos}" />
 
@@ -71,12 +91,18 @@
 					paginator="true" rowKey="#{item.codigo}" rowsPerPageTemplate="5,10"
 					rows="5" selectionMode="single" reflow="true">
 
-					<p:column style="width:120px" sortBy="#{item.codigo}"
-						filterBy="#{item.codigo}">
+					<p:column style="width:120px" sortBy="#{item.codigo}">
 						<f:facet name="header">
 							<h:outputText value="Código" />
 						</f:facet>
 						<h:outputText value="#{item.codigo}" />
+					</p:column>
+
+					<p:column style="width:120px" sortBy="#{item.codigoBarras}">
+						<f:facet name="header">
+							<h:outputText value="Código de barras" />
+						</f:facet>
+						<h:outputText value="#{item.codigoBarras}" />
 					</p:column>
 
 					<p:column style="width:400px" sortBy="#{item.descricao}">

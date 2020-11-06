@@ -12,7 +12,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import br.com.ita.controle.config.Config;
 import br.com.ita.controle.util.DanfeUtil;
@@ -85,7 +85,7 @@ public class EfetuarVendaMB implements Serializable {
 		if (produtoEscolhido != null) {
 			produto = daoProduto.lerPorId(produtoEscolhido);
 		} else {
-			JSFUtil.retornarMensagemErro(null, "Produto não cadastrado.", null);
+			JSFUtil.retornarMensagemErro(null, "Produto nï¿½o cadastrado.", null);
 		}
 
 		if (produto != null) {
@@ -120,7 +120,7 @@ public class EfetuarVendaMB implements Serializable {
 			this.setItemVenda(new ItemVenda());
 
 		} else if (produto == null && produtoEscolhido != null) {
-			JSFUtil.retornarMensagemErro(null, "Produto não cadastrado.", null);
+			JSFUtil.retornarMensagemErro(null, "Produto nï¿½o cadastrado.", null);
 		}
 
 		this.produtoEscolhido = null;
@@ -197,7 +197,6 @@ public class EfetuarVendaMB implements Serializable {
 		return "/EfetuarVenda/efetuarVenda?faces-redirect=true";
 	}
 
-	@SuppressWarnings("deprecation")
 	public String finalizarVenda() {
 
 		if (venda.getTotal().equals(new BigDecimal("0.00"))) {
@@ -211,7 +210,7 @@ public class EfetuarVendaMB implements Serializable {
 		Venda vendaSalva = daoVenda.salvarVenda(venda, itensVenda);
 
 		if (vendaSalva != null && vendaSalva.getCodigo() != null)
-			JSFUtil.retornarMensagemInfo(null, "Venda finalizada com sucesso! Código: " + vendaSalva.getCodigo(), null);
+			JSFUtil.retornarMensagemInfo(null, "Venda finalizada com sucesso! CÃ³digo: " + vendaSalva.getCodigo(), null);
 
 		if (Config.propertiesLoader().getProperty("tpImpVenda").equals("1")) {
 
@@ -259,8 +258,9 @@ public class EfetuarVendaMB implements Serializable {
 		this.iniciarVenda();
 
 		boolean fecharDialog = true;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.addCallbackParam("fecharDialog", fecharDialog);
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialog", fecharDialog);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 		return "/EfetuarVenda/efetuarVenda";
 

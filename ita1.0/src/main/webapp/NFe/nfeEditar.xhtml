@@ -45,8 +45,7 @@
 
 							<p:outputLabel for="fin" value="Finalidade:" />
 							<p:selectOneMenu id="fin" value="#{nfeMB.nfe.nfFfinalidade}"
-								filterMatchMode="startsWith"
-								converter="omnifaces.GenericEnumConverter">
+								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
 								<f:selectItems value="#{nfeMB.nfFinalidade}" var="item"
 									itemLabel="#{item}" itemValue="#{item}" />
@@ -104,8 +103,7 @@
 
 							<p:outputLabel for="tipo" value="Tipo:" />
 							<p:selectOneMenu id="tipo" value="#{nfeMB.nfe.tipo}"
-								filterMatchMode="startsWith"
-								converter="omnifaces.GenericEnumConverter">
+								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
 								<f:selectItems value="#{nfeMB.tipos}" var="item"
 									itemLabel="#{item}" itemValue="#{item}" />
@@ -114,7 +112,6 @@
 							<p:outputLabel for="idf"
 								value="Identificador Local Destino Operação:" />
 							<p:selectOneMenu id="idf"
-								converter="omnifaces.GenericEnumConverter"
 								value="#{nfeMB.nfe.nfIdentificadorLocalDestinoOperacao}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -125,7 +122,6 @@
 
 							<p:outputLabel for="op" value="Operação Consumidor Final:" />
 							<p:selectOneMenu id="op"
-								converter="omnifaces.GenericEnumConverter"
 								value="#{nfeMB.nfe.nfOperacaoConsumidorFinal}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -135,7 +131,6 @@
 
 							<p:outputLabel for="ind" value="Indicador Presença Comprador:" />
 							<p:selectOneMenu id="ind"
-								converter="omnifaces.GenericEnumConverter"
 								value="#{nfeMB.nfe.nfIndicadorPresencaComprador}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -144,9 +139,7 @@
 							</p:selectOneMenu>
 
 							<p:outputLabel for="fret" value="Modalidade Frete:" />
-							<p:selectOneMenu id="fret"
-								converter="omnifaces.GenericEnumConverter"
-								value="#{nfeMB.nfe.nfModalidadeFrete}"
+							<p:selectOneMenu id="fret" value="#{nfeMB.nfe.nfModalidadeFrete}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
 								<f:selectItems value="#{nfeMB.nfModalidadeFrete}" var="item"
@@ -378,7 +371,6 @@
 						<p:outputLabel for="tipoPesquisaProduto" value="Pesquisar por:" />
 						<p:spacer width="10" />
 						<p:selectOneRadio id="tipoPesquisaProduto"
-							converter="omnifaces.GenericEnumConverter"
 							value="#{nfeMB.tipoPesquisaProduto}" unselectable="true">
 							<p:ajax event="change" />
 							<f:selectItems value="#{nfeMB.tiposPesquisaProduto}" var="item"
@@ -459,7 +451,7 @@
 						<p:autoComplete id="pd" dropdown="true" maxResults="10"
 							value="#{nfeMB.nfe.orcamento}" converter="converter-generico"
 							completeMethod="#{nfeMB.completeOrcamento}" var="item"
-							itemLabel="#{item.numero.toString().concat(' - ').concat(item.cliente)}"
+							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.cliente)}"
 							itemValue="#{item}" forceselection="true" size="90" />
 
 						<br />
