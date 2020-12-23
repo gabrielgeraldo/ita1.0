@@ -81,7 +81,7 @@
 
 				<h:panelGrid columns="8">
 
-					<p:commandButton value="Pesquisar produto"
+					<p:commandButton value="Adicionar itens"
 						styleClass="btn-primary btn-block"
 						onclick=" PF('dlgPesquisar').show();"
 						disabled="#{nfceMB.desabilitaHabilita}" />
@@ -91,7 +91,7 @@
 					<p:commandButton styleClass="btn-success btn-block"
 						value="Importar Orcamento"
 						onclick=" PF('dlgImportarOrcamento').show();"
-						disabled="#{nfeMB.desabilitaHabilita}" />
+						disabled="#{nfceMB.desabilitaHabilita}" />
 
 					<p:spacer width="15" />
 
@@ -176,13 +176,29 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="1">
+				<h:panelGrid columns="11">
+
+					<p:outputLabel for="valorPagamento" value="Valor Pagamento:" />
+
+					<p:spacer width="8" />
+
+					<p:inputNumber id="valorPagamento"
+						value="#{nfceMB.nfce.valorPagamento}" />
+
+					<p:spacer width="10" />
 
 					<p:commandButton id="btFimVenda" value="Finalizar"
 						action="#{nfceMB.finalizarNTFCe}"
 						styleClass="btn-success btn-block" update=":formVenda"
 						onclick="PF('statusDialog').show();" ajax="false"
 						oncomplete="handleLoginRequestStatus(xhr, status, args)" />
+
+					<p:spacer width="30" />
+
+					<p:commandButton id="imprimir" value="Imprimir NFC-e"
+						styleClass="btn-primary btn-block"
+						action="#{consultarNFCeMB.acaoConsultar}" immediate="true">
+					</p:commandButton>
 
 				</h:panelGrid>
 
@@ -216,23 +232,40 @@
 
 				<h:form id="formPesquisaProdutos">
 
-					<h:panelGrid columns="1">
+					<h:panelGrid columns="3">
+						<p:outputLabel for="tipoPesquisaProduto" value="Pesquisar por:" />
+						<p:spacer width="10" />
+						<p:selectOneRadio id="tipoPesquisaProduto"
+							value="#{nfceMB.tipoPesquisaProduto}" unselectable="true">
+							<p:ajax event="change" />
+							<f:selectItems value="#{nfceMB.tiposPesquisaProduto}" var="item"
+								itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneRadio>
+					</h:panelGrid>
 
-						<p:outputLabel value="Digita a descrição do produto:" for="pr" />
+					<h:panelGrid columns="1"
+						style="margin-top:20px;margin-bottom: 10px">
+
+						<p:outputLabel value="Digita a descrição ou o código do produto:"
+							for="pr" />
 						<p:autoComplete id="pr" dropdown="true" maxResults="10"
 							value="#{nfceMB.itemNfce.produto}"
 							converter="converter-genericop"
 							completeMethod="#{nfceMB.completeProduto}" var="item"
-							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}"
-							itemValue="#{item}" forceselection="true" size="90" />
+							itemLabel="#{item.toString()}" itemValue="#{item}"
+							forceselection="true" size="90" />
+
+						<br />
+
+						<p:outputLabel for="qtd" value="Quantidade:" />
+						<p:spinner id="qtd" value="#{nfceMB.itemNfce.quantidade}" />
 
 						<br />
 
 						<h:panelGrid columns="2">
 
 							<p:commandButton value="Adcionar"
-								id="adicionarProdutoPorPesquisa"
-								actionListener="#{nfceMB.adicionarProdutoPorPesquisa}"
+								actionListener="#{nfceMB.adicionar}"
 								styleClass="btn-success btn-block"
 								update=":formVenda:tabelaItensVenda :formVenda:growl :formPesquisaProdutos"
 								oncomplete="handleLoginRequest(xhr, status, args)" />
@@ -244,6 +277,19 @@
 					</h:panelGrid>
 
 				</h:form>
+
+				<script type="text/javascript">
+					function handleLoginRequest(xhr, status, args) {
+						if (args.validationFailed || !args.fecharDialog) {
+							PF('dlgPesquisar').jq.effect("shake", {
+								times : 5
+							}, 100);
+						} else {
+							PF('dlgPesquisar').hide();
+							$('#loginLink').fadeOut();
+						}
+					}
+				</script>
 
 			</p:dialog>
 
@@ -260,8 +306,8 @@
 						<p:autoComplete id="pd" dropdown="true" maxResults="10"
 							value="#{nfceMB.nfce.orcamento}" converter="converter-generico"
 							completeMethod="#{nfceMB.completeOrcamento}" var="item"
-							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.cliente)}"
-							itemValue="#{item}" forceselection="true" size="90" />
+							itemLabel="#{item.toString()}" itemValue="#{item}"
+							forceselection="true" size="90" />
 
 						<br />
 

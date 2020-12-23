@@ -4,8 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import br.com.ita.controle.util.DanfeUtil;
 import br.com.ita.controle.util.JSFUtil;
@@ -14,25 +15,56 @@ import br.com.ita.dominio.ItemVenda;
 import br.com.ita.dominio.Venda;
 import br.com.ita.dominio.dao.ItemVendaDAO;
 import br.com.ita.dominio.dao.VendaDAO;
+import br.com.ita.dominio.dao.filtros.FiltroVenda;
 
-@ManagedBean(name = "vendasMB")
+@Named("vendasMB")
 @RequestScoped
 public class VendasMB {
 
-	private Venda venda = new Venda();
+	@Inject
+	private Venda venda;
 
-	private VendaDAO daoVenda = new VendaDAO();
-	private ItemVendaDAO daoItemVenda = new ItemVendaDAO();
+	@Inject
+	private VendaDAO daoVenda;
+
+	@Inject
+	private ItemVendaDAO daoItemVenda;
 
 	private List<Venda> vendas = null;
+
 	private List<Venda> vendasFiltrados = null;
 
 	private List<ItemVenda> itensVendas = null;
 
 	private VendaService vendaService = null;
 
+	@Inject
+	private FiltroVenda filtro;
+
+	public void consultar() {
+
+		this.vendas = daoVenda.consultar(filtro);
+
+		this.setFiltro(new FiltroVenda());
+
+	}
+
 	public String acaoListar() {
 		return "/Vendas/vendasListar?faces-redirect=true";
+	}
+
+	public String vizualizar() {
+
+		Long codigo = JSFUtil.getParametroLong("itemcodigo");
+
+		Venda objetoDoBanco = this.daoVenda.lerPorId(codigo);
+		this.setVenda(new Venda());
+		this.setVenda(objetoDoBanco);
+
+		this.itensVendas = this.daoItemVenda.buscaItens(this.venda);
+
+		return "/Vendas/vendaVizualizar";
+
 	}
 
 	public void imprimirComprovanteVenda() {
@@ -98,7 +130,7 @@ public class VendasMB {
 
 		if (venda.getSituacao().equals("CANCELADA")) {
 
-			JSFUtil.retornarMensagemAviso("Esta venda já está cancelada!", null, null);
+			JSFUtil.retornarMensagemAviso("Esta venda jï¿½ estï¿½ cancelada!", null, null);
 
 			return "/Vendas/vendasListar";
 		}
@@ -146,14 +178,6 @@ public class VendasMB {
 	}
 
 	public List<Venda> getVendas() {
-
-		if (this.vendas == null) {
-
-			this.daoVenda = new VendaDAO();
-			this.vendas = this.daoVenda.lerTodos();
-
-		}
-
 		return this.vendas;
 	}
 
@@ -191,6 +215,14 @@ public class VendasMB {
 
 	public void setVendaService(VendaService vendaService) {
 		this.vendaService = vendaService;
+	}
+
+	public FiltroVenda getFiltro() {
+		return filtro;
+	}
+
+	public void setFiltro(FiltroVenda filtro) {
+		this.filtro = filtro;
 	}
 
 }

@@ -17,7 +17,11 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 public class DanfeUtil {
 
@@ -59,7 +63,7 @@ public class DanfeUtil {
 			// JRXmlDataSource configurado)
 			JasperPrint jp = JasperFillManager.fillReport(relatorio, mapa, xml);
 			// Utilizando o JasperView, uma classe desktop do jasper para
-			// visualização dos relatorios
+			// visualizaï¿½ï¿½o dos relatorios
 
 			// Tema form java
 			// try {
@@ -80,7 +84,7 @@ public class DanfeUtil {
 
 			// exportando arquivo para formulario java.
 			// JasperViewer jv = new JasperViewer(jp, false);
-			// jv.setTitle("VISUALIZADOR DE DOCUMENTO FISCAL ELETRÔNICA");
+			// jv.setTitle("VISUALIZADOR DE DOCUMENTO FISCAL ELETRï¿½NICA");
 			// jv.setIconImage(imagemTituloJanela.getImage());
 			// jv.setVisible(true);
 
@@ -90,8 +94,8 @@ public class DanfeUtil {
 					.getResponse();
 			res.setContentType("application/pdf");
 
-			// Código abaixo gerar o relatório e disponibiliza diretamente na
-			// página
+			// Cï¿½digo abaixo gerar o relatï¿½rio e disponibiliza diretamente na
+			// pï¿½gina
 			res.setHeader("Content-Disposition", "inline;filename=Relatorio.pdf");
 
 			try {
@@ -129,16 +133,12 @@ public class DanfeUtil {
 
 			JasperPrint jp = JasperFillManager.fillReport(relatorio, mapa, xml);
 
-			// MOSTRA O RELATORIO EM PDF NO BROWSER.
 			byte[] b = JasperExportManager.exportReportToPdf(jp);
+
 			HttpServletResponse res = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
 					.getResponse();
 			res.setContentType("application/pdf");
-
-			// Código abaixo gerar o relatório e disponibiliza diretamente
-			// na
-			// página
-			res.setHeader("Content-Disposition", "inline;filename=Relatorio.pdf");
+			res.setHeader("Content-Disposition", "inline;;filename=Relatorio.pdf");
 
 			try {
 				res.getOutputStream().write(b);
@@ -148,6 +148,45 @@ public class DanfeUtil {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * @param args
+	 *            the command line arguments Fonte:
+	 *            http://www.javac.com.br/jc/posts/list/2471.page
+	 */
+	@SuppressWarnings({ "unchecked" }) // VERIFICAR.
+	public static void gravaComprovanteVenda(String Xml, Long codigoVenda) throws FileNotFoundException, IOException {
+
+		String stringComEstruturaDoXML = Xml;
+
+		try {
+
+			InputStream stream = new ByteArrayInputStream(stringComEstruturaDoXML.getBytes("utf-8"));
+
+			String relatorio = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/report/compVenda.jasper");
+
+			JRXmlDataSource xml = new JRXmlDataSource(stream, "/");
+			@SuppressWarnings("rawtypes")
+			HashMap mapa = new HashMap();
+
+			JasperPrint jp = JasperFillManager.fillReport(relatorio, mapa, xml);
+
+			JRPdfExporter exporter = new JRPdfExporter();
+			exporter.setExporterInput(new SimpleExporterInput(jp));
+			exporter.setExporterOutput(
+					new SimpleOutputStreamExporterOutput("c:\\ita\\temp\\compVenda" + codigoVenda + ".pdf"));
+			SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+			configuration.setMetadataAuthor("Petter"); // why not set some
+														// config as we like
+			exporter.setConfiguration(configuration);
+			exporter.exportReport();
 
 		} catch (JRException e) {
 			e.printStackTrace();
@@ -193,9 +232,9 @@ public class DanfeUtil {
 						.getResponse();
 				res.setContentType("application/pdf");
 
-				// Código abaixo gerar o relatório e disponibiliza diretamente
+				// Cï¿½digo abaixo gerar o relatï¿½rio e disponibiliza diretamente
 				// na
-				// página
+				// pï¿½gina
 				res.setHeader("Content-Disposition", "inline;filename=Relatorio.pdf");
 
 				try {
@@ -242,7 +281,7 @@ public class DanfeUtil {
 				// JRXmlDataSource configurado)
 				JasperPrint jp = JasperFillManager.fillReport(relatorio, mapa, xml);
 				// Utilizando o JasperView, uma classe desktop do jasper para
-				// visualização dos relatorios
+				// visualizaï¿½ï¿½o dos relatorios
 
 				// Tema form java
 				// try {
@@ -263,7 +302,7 @@ public class DanfeUtil {
 
 				// exportando arquivo para formulario java.
 				// JasperViewer jv = new JasperViewer(jp, false);
-				// jv.setTitle("VISUALIZADOR DE DOCUMENTO FISCAL ELETRÔNICA");
+				// jv.setTitle("VISUALIZADOR DE DOCUMENTO FISCAL ELETRï¿½NICA");
 				// jv.setIconImage(imagemTituloJanela.getImage());
 				// jv.setVisible(true);
 
@@ -274,8 +313,8 @@ public class DanfeUtil {
 				 * FacesContext.getCurrentInstance().getExternalContext()
 				 * .getResponse(); res.setContentType("application/pdf");
 				 * 
-				 * // Código abaixo gerar o relatório e disponibiliza
-				 * diretamente na // página res.setHeader("Content-Disposition",
+				 * // Cï¿½digo abaixo gerar o relatï¿½rio e disponibiliza
+				 * diretamente na // pï¿½gina res.setHeader("Content-Disposition",
 				 * "inline;filename=Relatorio.pdf");
 				 * 
 				 * try { res.getOutputStream().write(b);

@@ -251,7 +251,8 @@ public class Produto implements BaseEntityP, Serializable {
 
 	@Override
 	public String toString() {
-		return descricao;
+		// return descricao;
+		return codigo + " - " + codigoBarras + " - " + descricao + " - " + precoUnitario;
 	}
 
 }

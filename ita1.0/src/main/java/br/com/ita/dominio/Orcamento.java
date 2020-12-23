@@ -2,6 +2,7 @@ package br.com.ita.dominio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +126,19 @@ public class Orcamento implements BaseEntity, Serializable {
 
 	@Override
 	public String toString() {
-		return "Orcamento [codigo=" + codigo + "]";
+
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+		String dataFormatada = formatador.format(data);
+
+		final String cli;
+
+		if (cliente != null)
+			cli = cliente.toString();
+		else
+			cli = "Cliente não identificado";
+
+		return codigo + " - " + cli + " - " + dataFormatada + " - " + total;
+
 	}
 
 }

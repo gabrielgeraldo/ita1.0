@@ -1,11 +1,8 @@
 package br.com.ita.dominio.dao.filtros;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class FiltroOrcamento implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class FiltroVenda {
 
 	private Long codigo;
 
@@ -17,20 +14,20 @@ public class FiltroOrcamento implements Serializable {
 		return codigo;
 	}
 
-	public Date getDataInicio() {
-		return dataInicio;
-	}
-
-	public Date getDataFim() {
-		return dataFim;
-	}
-
 	public void setCodigo(Long codigo) {
 		this.codigo = codigo;
 	}
 
+	public Date getDataInicio() {
+		return dataInicio;
+	}
+
 	public void setDataInicio(Date dataInicio) {
 		this.dataInicio = dataInicio;
+	}
+
+	public Date getDataFim() {
+		return dataFim;
 	}
 
 	public void setDataFim(Date dataFim) {

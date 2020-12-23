@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -74,6 +75,11 @@ public class NTFCe implements BaseEntity, Serializable {
 	@ManyToOne
 	@NotNull(message = "A condição de pagamento é de preenchimento obrigatório.")
 	private CondicaoPagamento condicaoPagamento;
+
+	@NotNull(message = "O valor pagamento é de preenchimento obrigatório.")
+	@DecimalMin(value = "0.01", message = "O valor pagamento deverá ser superior a 0.00")
+	@Column(precision = 7, scale = 2, nullable = false, columnDefinition = "decimal(7,2) default 0")
+	private BigDecimal valorPagamento;
 
 	public Long getCodigo() {
 		return codigo;
@@ -193,6 +199,14 @@ public class NTFCe implements BaseEntity, Serializable {
 
 	public void setCondicaoPagamento(CondicaoPagamento condicaoPagamento) {
 		this.condicaoPagamento = condicaoPagamento;
+	}
+
+	public BigDecimal getValorPagamento() {
+		return valorPagamento;
+	}
+
+	public void setValorPagamento(BigDecimal valorPagamento) {
+		this.valorPagamento = valorPagamento;
 	}
 
 	@Override

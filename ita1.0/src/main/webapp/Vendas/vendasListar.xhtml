@@ -5,7 +5,8 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
 
 <ui:composition template="#{layoutMB.template}">
 
@@ -17,45 +18,96 @@
 
 		<p:panel styleClass="card no-border" style="min-height: 100px">
 
-			<h:form id="formVen">
+			<h:form id="form">
 
 				<p:growl id="growl" />
 
-				<p:dataTable id="tabVendas" var="item" value="#{vendasMB.vendas}"
-					emptyMessage="Não há itens." widgetVar="itemTable"
+				<h:panelGrid columns="1">
+
+					<p:commandButton id="novaVenda" value="Nova venda"
+						styleClass="btn-primary btn-block"
+						action="#{vendaMB.iniciarVenda}" immediate="true">
+					</p:commandButton>
+
+				</h:panelGrid>
+
+				<br />
+
+				<p:panelGrid columns="10" layout="grid">
+
+					<p:outputLabel for="dtini" value="Data início:" />
+
+					<p:calendar id="dtini" value="#{vendasMB.filtro.dataInicio}"
+						pattern="dd/MM/yyyy HH:mm" size="16" locale="pt" />
+
+					<h:outputText value="Até" />
+
+					<p:outputLabel for="dtfim" value="Data fim:" />
+
+					<p:calendar id="dtfim" value="#{vendasMB.filtro.dataFim}"
+						label="Data fim" pattern="dd/MM/yyyy HH:mm" size="16" locale="pt" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-4">
+						<div class="ui-inputgroup">
+							<p:inputText id="nun" value="#{vendasMB.filtro.codigo}"
+								placeholder="Digite aqui o código da venda..." />
+							<p:commandButton styleClass="btn-primary btn-block"
+								update=":form:tabela :form:dtini :form:dtfim :form:nun"
+								action="#{vendasMB.consultar}" icon="fa fa-search" />
+						</div>
+					</div>
+				</div>
+
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+					<p:outputLabel style="font-weight: bold"
+						value="Vendas filtradas (Max. 50 itens)." />
+
+				</h:panelGrid>
+
+				<br />
+
+				<t:saveState value="#{vendasMB.vendas}" />
+
+				<p:dataTable id="tabela" var="item" value="#{vendasMB.vendas}"
+					emptyMessage="Não há itens."
 					filteredValue="#{vendasMB.vendasFiltrados}" paginator="true"
 					rowKey="#{item.codigo}" rowsPerPageTemplate="5,10" rows="5"
 					selectionMode="single">
 
-
-					<f:facet name="header">
-						<div align="right">
-							<h:outputText value="Pesquisar: " />
-							<p:inputText id="globalFilter" onkeyup="PF('itemTable').filter()"
-								style="width:150px" />
-
-						</div>
-					</f:facet>
-
-					<p:column style="width:110px" sortBy="#{item.codigo}"
-						filterBy="#{item.codigo}">
+					<p:column style="width:120px" sortBy="#{item.codigo}">
 						<f:facet name="header">
 							<h:outputText value="Código" />
 						</f:facet>
 						<h:outputText value="#{item.codigo}" />
 					</p:column>
 
-					<p:column sortBy="#{item.cliente}" filterBy="#{item.cliente}"
-						style="width:580px">
+					<p:column filterBy="#{item.cliente}" style="width:580px">
 						<f:facet name="header">
 							<h:outputText value="Cliente" />
 						</f:facet>
 						<h:outputText value="#{item.cliente}" />
 					</p:column>
 
+					<p:column sortBy="#{item.situacao}">
+						<f:facet name="header">
+							<h:outputText value="Situação" />
+						</f:facet>
+						<h:outputText value="#{item.situacao}" />
+					</p:column>
+
 					<p:column sortBy="#{item.data}">
 						<f:facet name="header">
-							<h:outputText value="Data/Hora" />
+							<h:outputText value="Emissão" />
 						</f:facet>
 						<h:outputText value="#{item.data}">
 							<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
@@ -71,10 +123,8 @@
 
 						<div align="center">
 
-							<p:splitButton icon="ui-icon-search" value="Vizualizar"
-								oncomplete="PF('itensDialog').show()"
-								update=":formVen:panelItens"
-								action="#{vendasMB.vizualizarItens}">
+							<p:splitButton value="Vizualizar" action="#{vendasMB.vizualizar}"
+								icon="ui-icon-document" ajax="false">
 
 								<f:param value="#{item.codigo}" name="itemcodigo" />
 
@@ -120,50 +170,6 @@
 				</p:dataTable>
 
 				<br />
-
-				<p:dialog header="Venda" widgetVar="itensDialog" modal="true"
-					showEffect="fade" hideEffect="fade" resizable="false" width="750">
-
-					<p:outputPanel id="panelItens">
-
-						<p:panelGrid columns="2" layout="grid">
-
-							<p:outputLabel for="cli" value="Cliente:" />
-							<p:outputLabel id="cli" value="#{vendasMB.venda.cliente}" />
-
-							<p:outputLabel for="sit" value="Situação:" />
-							<p:outputLabel id="sit" value="#{vendasMB.venda.situacao}" />
-
-							<p:outputLabel for="condPgto" value="Condição de Pagamento:" />
-							<p:outputLabel id="condPgto"
-								value="#{vendasMB.venda.condicaoPagamento}" />
-
-							<br />
-
-						</p:panelGrid>
-
-						<p:dataTable value="#{vendasMB.itensVendas}" var="item"
-							emptyMessage="Não há itens." paginator="true">
-
-							<p:column headerText="Produto">
-								<h:outputText value="#{item.produto}" />
-							</p:column>
-
-							<p:column headerText="Quantidade">
-								<h:outputText value="#{item.quantidade}" />
-							</p:column>
-
-							<p:column headerText="Preço Venda">
-								<h:outputText value="#{item.precoVenda}" />
-							</p:column>
-
-						</p:dataTable>
-
-						<br />
-
-					</p:outputPanel>
-
-				</p:dialog>
 
 			</h:form>
 

@@ -1,30 +1,32 @@
 package br.com.ita.controle.venda;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
-import br.com.ita.controle.config.Config;
-import br.com.ita.controle.util.DanfeUtil;
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.venda.util.VendaService;
 import br.com.ita.dominio.Cliente;
 import br.com.ita.dominio.CondicaoPagamento;
+import br.com.ita.dominio.ItemOrcamento;
 import br.com.ita.dominio.ItemVenda;
+import br.com.ita.dominio.Orcamento;
 import br.com.ita.dominio.Produto;
+import br.com.ita.dominio.TipoPesquisaProduto;
 import br.com.ita.dominio.Venda;
 import br.com.ita.dominio.dao.ClienteDAO;
 import br.com.ita.dominio.dao.CondicaoPagamentoDAO;
+import br.com.ita.dominio.dao.ItemOrcamentoDAO;
+import br.com.ita.dominio.dao.OrcamentoDAO;
 import br.com.ita.dominio.dao.ProdutoDAO;
 import br.com.ita.dominio.dao.VendaDAO;
 
@@ -64,18 +66,51 @@ public class EfetuarVendaMB implements Serializable {
 
 	private VendaService vendaService = null;
 
+	private boolean desabilitaHabilita;
+
+	@Inject
+	private ItemOrcamentoDAO daoItemOrcamento;
+
+	@Inject
+	private OrcamentoDAO daoOrcamento;
+
+	private List<TipoPesquisaProduto> tiposPesquisaProduto = null;
+
+	private TipoPesquisaProduto tipoPesquisaProduto;
+
 	@PostConstruct
 	public void init() {
 		venda.setTotal(new BigDecimal("0.00"));
 		this.setItensVenda(new ArrayList<ItemVenda>());
+		
+		itemVenda.setQuantidade(1);
+
+		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
+
 	}
 
 	public List<Produto> completeProduto(String produto) {
-		return this.daoProduto.autoCompleteProdutoPorDescricao(produto);
+		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGO) {
+			return this.daoProduto.autoCompleteProdutoPorCodigo(produto);
+		}
+
+		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGOBARRAS) {
+			return this.daoProduto.autoCompleteProdutoPorCodigoDeBarras(produto);
+		}
+
+		if (tipoPesquisaProduto == TipoPesquisaProduto.DESCRICAO) {
+			return this.daoProduto.autoCompleteProdutoPorDescricao(produto);
+		}
+
+		return null;
 	}
 
 	public List<Cliente> completeCliente(String cliente) {
 		return this.daoClientes.autoCompleteCliente(cliente);
+	}
+
+	public List<Orcamento> completeOrcamento(String orcamento) {
+		return this.daoOrcamento.autoCompleteOrcamento(orcamento);
 	}
 
 	public void adicionarProdutoPeloCodigo() {
@@ -160,12 +195,93 @@ public class EfetuarVendaMB implements Serializable {
 
 		this.setItemVenda(new ItemVenda());
 
-		// boolean fecharDialog = true;
-		// RequestContext context = RequestContext.getCurrentInstance();
-		// context.addCallbackParam("fecharDialog", fecharDialog);
-
 		JSFUtil.retornarMensagemInfo(null, "Produto adicionado.", null);
 
+	}
+
+	public void adicionar() {
+
+		Produto produto = itemVenda.getProduto();
+
+		// -------------------- Método adicionar.
+		int posicaoEncntrada = -1;
+
+		for (int i = 0; i < itensVenda.size() && posicaoEncntrada < 0; i++) {
+			ItemVenda itemTemp = itensVenda.get(i);
+
+			if (itemTemp.getProduto().equals(produto)) {
+				posicaoEncntrada = i;
+			}
+		}
+
+		itemVenda.setProduto(produto);
+
+		if (posicaoEncntrada < 0) {
+			itemVenda.setPrecoCusto(produto.getPrecoCusto());
+			itemVenda.setPrecoVenda(produto.getPrecoUnitario());
+			itensVenda.add(itemVenda);
+		} else {
+			ItemVenda itemTemp = itensVenda.get(posicaoEncntrada);
+			itemVenda.setQuantidade(itemTemp.getQuantidade() + itemVenda.getQuantidade());
+			itemVenda.setPrecoCusto(produto.getPrecoCusto());
+			itemVenda.setPrecoVenda(produto.getPrecoUnitario());
+			itensVenda.set(posicaoEncntrada, itemVenda);
+		}
+
+		venda.setTotal(new BigDecimal("0.00"));
+		for (int j = 0; j < itensVenda.size(); j++) {
+			venda.setTotal(venda.getTotal().add(
+					itensVenda.get(j).getPrecoVenda().multiply(new BigDecimal(itensVenda.get(j).getQuantidade()))));
+
+		}
+		// -------------------- Método adicionar.
+
+		this.setItemVenda(new ItemVenda());
+		itemVenda.setQuantidade(1);
+
+		boolean fecharDialog = true;
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialog", fecharDialog);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
+
+		JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
+
+	}
+
+	public void importarOrcamento() {
+
+		if (venda.getOrcamento() == null) {
+
+			JSFUtil.retornarMensagemAviso(null, "Orçamento não selecionado.", null);
+
+		} else {
+
+			venda.setCliente(venda.getOrcamento().getCliente());
+
+			List<ItemOrcamento> itensPv = daoItemOrcamento.buscaItens(this.venda.getOrcamento());
+
+			for (ItemOrcamento item : itensPv) {
+
+				ItemVenda itenVenda = new ItemVenda();
+
+				itenVenda.setCodigo(item.getCodigo());
+				itenVenda.setVenda(this.venda);
+				itenVenda.setPrecoCusto(item.getPrecoCusto());
+				itenVenda.setPrecoVenda(item.getPrecoVenda());
+				itenVenda.setProduto(item.getProduto());
+				itenVenda.setQuantidade(item.getQuantidade());
+
+				this.itensVenda.add(itenVenda);
+
+			}
+
+			venda.setTotal(venda.getOrcamento().getTotal());
+
+			this.setDesabilitaHabilita(true);
+
+			JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
+
+		}
 	}
 
 	public void removerProduto(ItemVenda itemVenda) {
@@ -194,6 +310,10 @@ public class EfetuarVendaMB implements Serializable {
 
 		itensVenda = new ArrayList<ItemVenda>();
 
+		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
+		
+		itemVenda.setQuantidade(1);
+
 		return "/EfetuarVenda/efetuarVenda?faces-redirect=true";
 	}
 
@@ -201,7 +321,12 @@ public class EfetuarVendaMB implements Serializable {
 
 		if (venda.getTotal().equals(new BigDecimal("0.00"))) {
 			JSFUtil.retornarMensagemErro(null, "Esta venda deve ter 1 ou mais itens.", null);
-			return "/EfetuarVenda/efetuarVenda";
+			return null;
+		}
+
+		if (venda.getTotal().compareTo(venda.getValorPagamento()) > 0) {
+			JSFUtil.retornarMensagemErro(null, "Valor pagamento menor que o total.", null);
+			return null;
 		}
 
 		venda.setSituacao("FINALIZADA");
@@ -212,55 +337,7 @@ public class EfetuarVendaMB implements Serializable {
 		if (vendaSalva != null && vendaSalva.getCodigo() != null)
 			JSFUtil.retornarMensagemInfo(null, "Venda finalizada com sucesso! Código: " + vendaSalva.getCodigo(), null);
 
-		if (Config.propertiesLoader().getProperty("tpImpVenda").equals("1")) {
-
-			String XMLVenda = null;
-
-			// GERA COMPROVANTE DA VENDA.
-			if (vendaSalva != null && vendaSalva.getCodigo() != null) {
-
-				vendaService = new VendaService(vendaSalva, itensVenda);
-				try {
-
-					XMLVenda = vendaService.gerarXMLVenda();
-
-				} catch (Exception e) {
-					e.printStackTrace();
-					JSFUtil.retornarMensagemErro(null, "Erro ao gerar comprovante: " + e.getMessage(), null);
-				}
-
-			} else {
-				JSFUtil.retornarMensagemErro(null, "Erro ao imprimir comprovante.", null);
-			}
-
-			// IMPRIMI A VENDA.
-			if (XMLVenda != null) {
-
-				try {
-					DanfeUtil.imprimirComprovanteVenda(XMLVenda);
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
-					JSFUtil.retornarMensagemErro(null, "Erro ao gerar comprovante: " + e.getMessage(), null);
-				}
-
-			} else {
-				JSFUtil.retornarMensagemErro(null, "Erro ao imprimir comprovante.", null);
-			}
-
-		}
-
 		this.iniciarVenda();
-
-		boolean fecharDialog = true;
-		// RequestContext context = RequestContext.getCurrentInstance();
-		// context.addCallbackParam("fecharDialog", fecharDialog);
-		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
 
 		return "/EfetuarVenda/efetuarVenda";
 
@@ -362,6 +439,49 @@ public class EfetuarVendaMB implements Serializable {
 
 	public void setVendaService(VendaService vendaService) {
 		this.vendaService = vendaService;
+	}
+
+	public boolean isDesabilitaHabilita() {
+		return desabilitaHabilita;
+	}
+
+	public void setDesabilitaHabilita(boolean desabilitaHabilita) {
+		this.desabilitaHabilita = desabilitaHabilita;
+	}
+
+	public ItemOrcamentoDAO getDaoItemOrcamento() {
+		return daoItemOrcamento;
+	}
+
+	public OrcamentoDAO getDaoOrcamento() {
+		return daoOrcamento;
+	}
+
+	public void setDaoItemOrcamento(ItemOrcamentoDAO daoItemOrcamento) {
+		this.daoItemOrcamento = daoItemOrcamento;
+	}
+
+	public void setDaoOrcamento(OrcamentoDAO daoOrcamento) {
+		this.daoOrcamento = daoOrcamento;
+	}
+
+	public List<TipoPesquisaProduto> getTiposPesquisaProduto() {
+		if (this.tiposPesquisaProduto == null)
+			this.tiposPesquisaProduto = Arrays.asList(TipoPesquisaProduto.values());
+
+		return tiposPesquisaProduto;
+	}
+
+	public TipoPesquisaProduto getTipoPesquisaProduto() {
+		return tipoPesquisaProduto;
+	}
+
+	public void setTiposPesquisaProduto(List<TipoPesquisaProduto> tiposPesquisaProduto) {
+		this.tiposPesquisaProduto = tiposPesquisaProduto;
+	}
+
+	public void setTipoPesquisaProduto(TipoPesquisaProduto tipoPesquisaProduto) {
+		this.tipoPesquisaProduto = tipoPesquisaProduto;
 	}
 
 }

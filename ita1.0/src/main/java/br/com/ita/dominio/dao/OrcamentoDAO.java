@@ -39,8 +39,8 @@ public class OrcamentoDAO extends JpaDAO<Orcamento> implements Serializable {
 
 		criteria.setMaxResults(50);
 
-		if (filtro.getNumero() != null) {
-			criteria.add(Restrictions.eq("numero", filtro.getNumero()));
+		if (filtro.getCodigo() != null) {
+			criteria.add(Restrictions.eq("codigo", filtro.getCodigo()));
 		}
 
 		if (filtro.getDataInicio() != null && filtro.getDataFim() != null) {
@@ -50,7 +50,7 @@ public class OrcamentoDAO extends JpaDAO<Orcamento> implements Serializable {
 		return criteria.list();
 	}
 
-	public Orcamento salvarOrcamento(Orcamento orcamento, List<ItemOrcamento> itensOrcamento) {
+	public Orcamento salvarOrcamento(Orcamento orcamento, List<ItemOrcamento> itensOrcamento) throws Exception {
 
 		Orcamento orcamentoSalvo = null;
 

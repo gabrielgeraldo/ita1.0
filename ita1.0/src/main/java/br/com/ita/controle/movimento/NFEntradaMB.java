@@ -109,6 +109,10 @@ public class NFEntradaMB implements Serializable {
 		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGO) {
 			return this.daoProduto.autoCompleteProdutoPorCodigo(produto);
 		}
+		
+		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGOBARRAS) {
+			return this.daoProduto.autoCompleteProdutoPorCodigoDeBarras(produto);
+		}
 
 		if (tipoPesquisaProduto == TipoPesquisaProduto.DESCRICAO) {
 			return this.daoProduto.autoCompleteProdutoPorDescricao(produto);

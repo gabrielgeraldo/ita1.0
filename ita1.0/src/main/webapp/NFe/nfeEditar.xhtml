@@ -173,7 +173,7 @@
 
 				<h:panelGrid columns="3">
 
-					<p:commandButton value="Adcionar itens"
+					<p:commandButton value="Adicionar itens"
 						styleClass="btn-primary btn-block"
 						onclick=" PF('dlgPesquisar').show();"
 						disabled="#{nfeMB.desabilitaHabilita}" />
@@ -386,8 +386,8 @@
 						<p:autoComplete id="pr" dropdown="true" maxResults="10"
 							value="#{nfeMB.itemNFe.produto}" converter="converter-genericop"
 							completeMethod="#{nfeMB.completeProduto}" var="item"
-							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao).concat(' - ').concat(item.precoUnitario)}"
-							itemValue="#{item}" forceselection="true" size="90" />
+							itemLabel="#{item.toString()}" itemValue="#{item}"
+							forceselection="true" size="90" />
 
 						<br />
 
@@ -451,8 +451,8 @@
 						<p:autoComplete id="pd" dropdown="true" maxResults="10"
 							value="#{nfeMB.nfe.orcamento}" converter="converter-generico"
 							completeMethod="#{nfeMB.completeOrcamento}" var="item"
-							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.cliente)}"
-							itemValue="#{item}" forceselection="true" size="90" />
+							itemLabel="#{item.toString()}" itemValue="#{item}"
+							forceselection="true" size="90" />
 
 						<br />
 

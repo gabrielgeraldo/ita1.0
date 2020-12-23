@@ -84,7 +84,7 @@
 
 							<p:spacer width="25" />
 
-							<p:commandButton value="Adcionar itens"
+							<p:commandButton value="Adicionar itens"
 								styleClass="btn-primary btn-block"
 								disabled="#{nfEntradaMB.bloqueaCampos}"
 								onclick=" PF('dlgPesquisar').show();" />
@@ -249,8 +249,8 @@
 							value="#{nfEntradaMB.itemNFEntrada.produto}"
 							converter="converter-genericop"
 							completeMethod="#{nfEntradaMB.completeProduto}" var="item"
-							itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao).concat(' - ').concat(item.precoUnitario)}"
-							itemValue="#{item}" forceselection="true" size="90" />
+							itemLabel="#{item.toString()}" itemValue="#{item}"
+							forceselection="true" size="90" />
 
 						<br />
 

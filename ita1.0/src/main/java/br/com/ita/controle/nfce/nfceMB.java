@@ -1,14 +1,14 @@
 package br.com.ita.controle.nfce;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,7 +19,6 @@ import org.xml.sax.SAXException;
 
 import br.com.ita.controle.config.Config;
 import br.com.ita.controle.nfce.util.NTFCeService;
-import br.com.ita.controle.util.DanfeUtil;
 import br.com.ita.controle.util.ItaMail;
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.util.XmlUtil;
@@ -30,6 +29,7 @@ import br.com.ita.dominio.ItemOrcamento;
 import br.com.ita.dominio.NTFCe;
 import br.com.ita.dominio.Orcamento;
 import br.com.ita.dominio.Produto;
+import br.com.ita.dominio.TipoPesquisaProduto;
 import br.com.ita.dominio.dao.ClienteDAO;
 import br.com.ita.dominio.dao.CondicaoPagamentoDAO;
 import br.com.ita.dominio.dao.ItemOrcamentoDAO;
@@ -86,11 +86,19 @@ public class nfceMB implements Serializable {
 
 	private String ambienteConfigurado;
 
+	private List<TipoPesquisaProduto> tiposPesquisaProduto = null;
+
+	private TipoPesquisaProduto tipoPesquisaProduto;
+
 	// SEM ESSE CONTRUTOR � APRESENTADO ERRO AO ADICIONAR UM PRODUTO.
 	@PostConstruct
 	public void init() {
 		this.novaNfce();
 		ambienteConfigurado = Config.propertiesLoader().getProperty("ambiente");
+
+		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
+
+		itemNfce.setQuantidade(1);
 	}
 
 	public String iniciarNTFCe() {
@@ -117,10 +125,26 @@ public class nfceMB implements Serializable {
 		nfce.setSerie(Integer.parseInt(n.getChave()));
 		nfce.setNumero(n.getNumeroAtual());
 
+		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
+
+		itemNfce.setQuantidade(1);
+
 	}
 
 	public List<Produto> completeProduto(String produto) {
-		return this.daoProduto.autoCompleteProdutoPorDescricao(produto);
+		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGO) {
+			return this.daoProduto.autoCompleteProdutoPorCodigo(produto);
+		}
+
+		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGOBARRAS) {
+			return this.daoProduto.autoCompleteProdutoPorCodigoDeBarras(produto);
+		}
+
+		if (tipoPesquisaProduto == TipoPesquisaProduto.DESCRICAO) {
+			return this.daoProduto.autoCompleteProdutoPorDescricao(produto);
+		}
+
+		return null;
 	}
 
 	public List<Cliente> completeCliente(String cliente) {
@@ -221,6 +245,55 @@ public class nfceMB implements Serializable {
 
 	}
 
+	public void adicionar() {
+
+		Produto produto = itemNfce.getProduto();
+
+		// -------------------- Método adicionar.
+		int posicaoEncntrada = -1;
+
+		for (int i = 0; i < itensNfce.size() && posicaoEncntrada < 0; i++) {
+			ItemNTFCe itemTemp = itensNfce.get(i);
+
+			if (itemTemp.getProduto().equals(produto)) {
+				posicaoEncntrada = i;
+			}
+		}
+
+		itemNfce.setProduto(produto);
+
+		if (posicaoEncntrada < 0) {
+			itemNfce.setPrecoCusto(produto.getPrecoCusto());
+			itemNfce.setPrecoVenda(produto.getPrecoUnitario());
+			itensNfce.add(itemNfce);
+		} else {
+			ItemNTFCe itemTemp = itensNfce.get(posicaoEncntrada);
+			itemNfce.setQuantidade(itemTemp.getQuantidade() + itemNfce.getQuantidade());
+			itemNfce.setPrecoCusto(produto.getPrecoCusto());
+			itemNfce.setPrecoVenda(produto.getPrecoUnitario());
+			itensNfce.set(posicaoEncntrada, itemNfce);
+		}
+
+		nfce.setTotal(new BigDecimal("0.00"));
+		for (int j = 0; j < itensNfce.size(); j++) {
+			nfce.setTotal(nfce.getTotal()
+					.add(itensNfce.get(j).getPrecoVenda().multiply(new BigDecimal(itensNfce.get(j).getQuantidade()))));
+
+		}
+		// -------------------- Método adicionar.
+
+		this.setItemNfce(new ItemNTFCe());
+		itemNfce.setQuantidade(1);
+
+		boolean fecharDialog = true;
+		// RequestContext context = RequestContext.getCurrentInstance();
+		// context.addCallbackParam("fecharDialog", fecharDialog);
+		PrimeFaces.current().ajax().addCallbackParam("fecharDialog", fecharDialog);
+
+		JSFUtil.retornarMensagemInfo(null, "Adicionado com sucesso.", null);
+
+	}
+
 	public void importarOrcamento() {
 
 		if (nfce.getOrcamento() == null) {
@@ -298,50 +371,21 @@ public class nfceMB implements Serializable {
 
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			JSFUtil.retornarMensagemErro(null, "Verifique a configura��o dos impostos.", null);
+			JSFUtil.retornarMensagemErro(null, "Verifique a configuração dos impostos.", null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JSFUtil.retornarMensagemErro(null, "Erro durante a Trasmiss�o: " + e.getMessage(), null);
+			JSFUtil.retornarMensagemErro(null, "Erro durante a Trasmissão: " + e.getMessage(), null);
 
 		} finally {
 
 			boolean fecharDialogStatus = true;
-			// RequestContext context = RequestContext.getCurrentInstance();
-			// context.addCallbackParam("fecharDialogStatus",
-			// fecharDialogStatus);
 			PrimeFaces.current().ajax().addCallbackParam("fecharDialogStatus", fecharDialogStatus);
 
 		}
 
-		// Aten��o testar os Exception abaixo. se houver erro ao salvar nfce n�o
-		// capitura exe��o.
-
 		// TUDO OK, NOTA TRANSMITIDA.
 		if (nfce.getStatus() != null && nfce.getStatus().equals("100")) {
-
-			// IMPRIMINDO O DANFE.
-			try {
-				DanfeUtil.imprimirDanfeNfce(nfce.getXml());
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (Exception e) {
-
-				e.printStackTrace();
-
-				System.out.println("--------------------------------------------------------------------------");
-				System.out.println("Erro durante a impress�o da DANFE: " + nfce.getChave());
-				System.out.println("--------------------------------------------------------------------------");
-
-				ItaMail.mail("Erro durante a impress�o da DANFE: " + Config.propertiesLoader().getProperty("cnpj")
-						+ ", " + Config.propertiesLoader().getProperty("codClient"), "NFC-e:" + nfce.getChave());
-
-				JSFUtil.retornarMensagemErro(null, "Erro durante a impress�o da DANFE: " + e.getMessage(), null);
-			}
 
 			// ARMANEZANDO XML.
 			try {
@@ -391,7 +435,6 @@ public class nfceMB implements Serializable {
 			}
 
 		} else {
-			// N�o foi possivel Imprimir Danfe, armazenar XMl e salvarNFC-e."
 			JSFUtil.retornarMensagemErro(null, nfce.getRejeicaoMotivo(), null);
 		}
 
@@ -529,6 +572,26 @@ public class nfceMB implements Serializable {
 
 	public void setAmbienteConfigurado(String ambienteConfigurado) {
 		this.ambienteConfigurado = ambienteConfigurado;
+	}
+
+	public List<TipoPesquisaProduto> getTiposPesquisaProduto() {
+
+		if (this.tiposPesquisaProduto == null)
+			this.tiposPesquisaProduto = Arrays.asList(TipoPesquisaProduto.values());
+
+		return tiposPesquisaProduto;
+	}
+
+	public TipoPesquisaProduto getTipoPesquisaProduto() {
+		return tipoPesquisaProduto;
+	}
+
+	public void setTiposPesquisaProduto(List<TipoPesquisaProduto> tiposPesquisaProduto) {
+		this.tiposPesquisaProduto = tiposPesquisaProduto;
+	}
+
+	public void setTipoPesquisaProduto(TipoPesquisaProduto tipoPesquisaProduto) {
+		this.tipoPesquisaProduto = tipoPesquisaProduto;
 	}
 
 }

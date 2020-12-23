@@ -175,6 +175,10 @@ public class NFeMB implements Serializable {
 			return this.daoProduto.autoCompleteProdutoPorCodigo(produto);
 		}
 
+		if (tipoPesquisaProduto == TipoPesquisaProduto.CODIGOBARRAS) {
+			return this.daoProduto.autoCompleteProdutoPorCodigoDeBarras(produto);
+		}
+
 		if (tipoPesquisaProduto == TipoPesquisaProduto.DESCRICAO) {
 			return this.daoProduto.autoCompleteProdutoPorDescricao(produto);
 		}

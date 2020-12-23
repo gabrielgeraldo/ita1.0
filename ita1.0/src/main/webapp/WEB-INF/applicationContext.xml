@@ -56,7 +56,7 @@
 		<intercept-url pattern="/NFe/**"
 			access="hasAnyRole('GERENTE', 'CAIXA','ADMINISTRADOR')" />
 		<intercept-url pattern="/Vendas/**"
-			access="hasAnyRole('GERENTE','ADMINISTRADOR')" />
+			access="hasAnyRole('GERENTE', 'CAIXA','ADMINISTRADOR')" />
 		<intercept-url pattern="/Configuracao/**" access="hasAnyRole('ADMINISTRADOR')" />
 		<intercept-url pattern="/NFCe/**"
 			access="hasAnyRole('GERENTE', 'CAIXA','ADMINISTRADOR')" />

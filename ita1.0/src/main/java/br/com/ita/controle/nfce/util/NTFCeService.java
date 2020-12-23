@@ -477,7 +477,7 @@ public class NTFCeService implements Serializable {
 
 		identificacao.setUf(DFUnidadeFederativa.valueOfCodigo(Config.propertiesLoader().getProperty("uf")));
 		identificacao.setCodigoRandomico(this.gerarCodigoRandomico());
-		// VERIFICAR SE SEMPRE SERÁ VENDA.
+		// VERIFICAR SE SEMPRE SERï¿½ VENDA.
 		identificacao.setNaturezaOperacao("VENDA");
 		// Removido 20180913 ao atualizar nfe40
 		// identificacao.setFormaPagamento(NFFormaPagamentoPrazo.A_VISTA);
@@ -596,7 +596,7 @@ public class NTFCeService implements Serializable {
 
 		}
 
-		fpgto.setValorPagamento(this.nfce.getTotal());
+		fpgto.setValorPagamento(this.nfce.getValorPagamento());
 		List<NFNotaInfoFormaPagamento> lsFpgto = new ArrayList<NFNotaInfoFormaPagamento>();
 		lsFpgto.add(fpgto);
 
@@ -621,7 +621,7 @@ public class NTFCeService implements Serializable {
 
 	public void geraProdutos() {
 
-		// Usado se a configuração do imposto estiver no sistema.
+		// Usado se a configuraï¿½ï¿½o do imposto estiver no sistema.
 		Configuracao config = (Config.propertiesLoader().getProperty("imposto").equals("1")
 				? daoConfiguracao.lerPorId(new Long(1)) : null);
 
@@ -670,7 +670,7 @@ public class NTFCeService implements Serializable {
 
 			produto.setCompoeValorNota(NFProdutoCompoeValorNota.SIM);
 
-			// Se a configuração estiver no produto.
+			// Se a configuraï¿½ï¿½o estiver no produto.
 			if (Config.propertiesLoader().getProperty("imposto").equals("2")) {
 				switch (itensNfce.get(i).getProduto().getCsosn()) {
 				case "101":
@@ -887,25 +887,25 @@ public class NTFCeService implements Serializable {
 
 		lote.setNotas(lstNF);
 
-		// VERIRICAR SE O ID SERÁ SEM 1.
+		// VERIRICAR SE O ID SERï¿½ SEM 1.
 		lote.setIdLote("1");
 		lote.setVersao(config.getVersao());
 		lote.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
 
-		// Gabiarra para gerar o código Randomico e o Indentificador.
+		// Gabiarra para gerar o cï¿½digo Randomico e o Indentificador.
 		NFGeraChave nfGeraChave = new NFGeraChave(nota);
 
 		// Mostrando os valores gerados pela classe NFGeraChave.
 		// System.out.println("----- Valores gerados pela classe NFGeraChave
 		// ----- ");
-		// System.out.println("Código Randomico gerado pela classe NFGeraChave:
+		// System.out.println("Cï¿½digo Randomico gerado pela classe NFGeraChave:
 		// " + nfGeraChave.geraCodigoRandomico());
 		// System.out.println("Identificador gerado pela classe NFGeraChave: " +
 		// nfGeraChave.getChaveAcesso());
 
 		// Mostrando os valores de teste dos objetos.
 		// System.out.println("----- Valores de teste dos objetos ----- ");
-		// System.out.println("Código Randomico com valor de teste: " +
+		// System.out.println("Cï¿½digo Randomico com valor de teste: " +
 		// identificacao.getCodigoRandomico());
 		// System.out.println("Identificador com valor de teste: " +
 		// info.getIdentificador());
@@ -916,7 +916,7 @@ public class NTFCeService implements Serializable {
 
 		// Mostrando os valores atualizados.
 		// System.out.println("----- Valores atualizados ----- ");
-		// System.out.println("Código Randomico com valor atualizado: " +
+		// System.out.println("Cï¿½digo Randomico com valor atualizado: " +
 		// identificacao.getCodigoRandomico());
 		// System.out.println("Identificador com valor atualizado: " +
 		// info.getIdentificador());
@@ -946,7 +946,7 @@ public class NTFCeService implements Serializable {
 
 		System.out.println(" ");
 
-		System.out.println("----------DADOS APÓS TRANSMISSAO DA NF-e FIM--------------");
+		System.out.println("----------DADOS APï¿½S TRANSMISSAO DA NF-e FIM--------------");
 
 		NFLoteEnvioRetornoDados retorno = new WSFacade(config).enviaLote(lote);
 
@@ -956,22 +956,22 @@ public class NTFCeService implements Serializable {
 
 		System.out.println(" ");
 
-		// RETORNO DAS INFORMAÇÕES GERADAS APÓS TRANSMISSÃO DA NF-CE.
+		// RETORNO DAS INFORMAï¿½ï¿½ES GERADAS APï¿½S TRANSMISSï¿½O DA NF-CE.
 		NFLoteConsultaRetorno retc = new WSFacade(config)
 				.consultaLote(retorno.getRetorno().getInfoRecebimento().getRecibo(), DFModelo.NFCE);
 
 		for (NFProtocolo prot : retc.getProtocolos()) {
 
-			System.out.println("----------DADOS APÓS TRANSMISSAO DA NFC-e INICIO-----------");
+			System.out.println("----------DADOS APï¿½S TRANSMISSAO DA NFC-e INICIO-----------");
 			System.out.println(" ");
 			System.out.println("Chave: " + prot.getProtocoloInfo().getChave());
-			System.out.println("Número Protocolo: " + prot.getProtocoloInfo().getNumeroProtocolo());
+			System.out.println("Nï¿½mero Protocolo: " + prot.getProtocoloInfo().getNumeroProtocolo());
 			System.out.println("Status: " + prot.getProtocoloInfo().getStatus());
 			System.out.println("Motivo: " + prot.getProtocoloInfo().getMotivo());
 			System.out.println("Ambiente: " + prot.getProtocoloInfo().getAmbiente().getCodigo());
 			System.out.println("DataRecebimento: " + prot.getProtocoloInfo().getDataRecebimento());
 			System.out.println(" ");
-			System.out.println("----------DADOS APÓS TRANSMISSAO DA NFC-e FIM--------------");
+			System.out.println("----------DADOS APï¿½S TRANSMISSAO DA NFC-e FIM--------------");
 
 			nfce.setChave(prot.getProtocoloInfo().getChave());
 			nfce.setNumProtocolo(prot.getProtocoloInfo().getNumeroProtocolo());

@@ -309,7 +309,7 @@ public class OrcamentoMB implements Serializable {
 
 		} catch (Exception e) {
 
-			return e.getMessage();
+			return e.toString();
 
 		}
 

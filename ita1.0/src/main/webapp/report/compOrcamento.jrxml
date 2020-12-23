@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2020-08-17T14:54:06 -->
+<!-- 2020-12-22T15:18:04 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DanfeNFCe" pageWidth="230" pageHeight="909" whenNoDataType="NoPages" columnWidth="226" leftMargin="2" rightMargin="2" topMargin="10" bottomMargin="0" uuid="2ee59f2c-90ef-45b6-820e-6d2b3ab6db90">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
@@ -582,7 +582,7 @@ $F{dhRecbto}.substring(11,19)]]></textFieldExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ORCAMENTO]]></text>
+				<text><![CDATA[Comprovante NAO FISCAL]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="69" y="32" width="28" height="9" uuid="f38e90a0-e4a7-47eb-bd1d-ab398fd10e84">

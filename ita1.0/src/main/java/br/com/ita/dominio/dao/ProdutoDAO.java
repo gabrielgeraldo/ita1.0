@@ -97,7 +97,7 @@ public class ProdutoDAO extends JpaDAO<Produto> implements Serializable {
 		Criteria criteria = session.createCriteria(Produto.class);
 
 		if (StringUtils.isNoneBlank(produto)) {
-			criteria.add(Restrictions.ilike("descricao", produto.toUpperCase(), MatchMode.START));
+			criteria.add(Restrictions.ilike("descricao", produto, MatchMode.ANYWHERE));
 		}
 
 		return criteria.list();
@@ -111,6 +111,19 @@ public class ProdutoDAO extends JpaDAO<Produto> implements Serializable {
 
 		if (StringUtils.isNoneBlank(produto)) {
 			criteria.add(Restrictions.ilike("codigo", produto.toUpperCase(), MatchMode.START));
+		}
+
+		return criteria.list();
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Produto> autoCompleteProdutoPorCodigoDeBarras(String produto) {
+		Session session = this.getEntityManager().unwrap(Session.class);
+		Criteria criteria = session.createCriteria(Produto.class);
+
+		if (StringUtils.isNoneBlank(produto)) {
+			criteria.add(Restrictions.ilike("codigoBarras", produto.toUpperCase(), MatchMode.START));
 		}
 
 		return criteria.list();

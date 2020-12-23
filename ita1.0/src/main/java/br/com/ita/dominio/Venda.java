@@ -14,6 +14,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -45,6 +46,14 @@ public class Venda implements BaseEntity, Serializable {
 	@Column(length = 15)
 	@NotNull(message = "Situação não definida.")
 	private String situacao;
+
+	@ManyToOne
+	private Orcamento orcamento;
+
+	@NotNull(message = "O valor pagamento é de preenchimento obrigatório.")
+	@DecimalMin(value = "0.01", message = "O valor pagamento deverá ser superior a 0.00")
+	@Column(precision = 7, scale = 2, nullable = false, columnDefinition = "decimal(7,2) default 0")
+	private BigDecimal valorPagamento;
 
 	public Long getCodigo() {
 		return codigo;
@@ -92,6 +101,22 @@ public class Venda implements BaseEntity, Serializable {
 
 	public void setSituacao(String situacao) {
 		this.situacao = situacao;
+	}
+
+	public Orcamento getOrcamento() {
+		return orcamento;
+	}
+
+	public void setOrcamento(Orcamento orcamento) {
+		this.orcamento = orcamento;
+	}
+
+	public BigDecimal getValorPagamento() {
+		return valorPagamento;
+	}
+
+	public void setValorPagamento(BigDecimal valorPagamento) {
+		this.valorPagamento = valorPagamento;
 	}
 
 	@Override

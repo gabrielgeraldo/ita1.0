@@ -6,11 +6,16 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.util.JpaDAO;
 import br.com.ita.dominio.ItemVenda;
 import br.com.ita.dominio.Produto;
 import br.com.ita.dominio.Venda;
+import br.com.ita.dominio.dao.filtros.FiltroVenda;
 
 public class VendaDAO extends JpaDAO<Venda> implements Serializable {
 
@@ -381,6 +386,25 @@ public class VendaDAO extends JpaDAO<Venda> implements Serializable {
 		List<Object> results = query.getResultList();
 
 		return results;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Venda> consultar(FiltroVenda filtro) {
+
+		Session session = this.getEntityManager().unwrap(Session.class);
+		Criteria criteria = session.createCriteria(Venda.class);
+
+		criteria.setMaxResults(50);
+
+		if (filtro.getCodigo() != null) {
+			criteria.add(Restrictions.eq("codigo", filtro.getCodigo()));
+		}
+
+		if (filtro.getDataInicio() != null && filtro.getDataFim() != null) {
+			criteria.add(Restrictions.between("data", filtro.getDataInicio(), filtro.getDataFim()));
+		}
+
+		return criteria.list();
 	}
 
 }

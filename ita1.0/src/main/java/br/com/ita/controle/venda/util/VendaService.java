@@ -585,7 +585,7 @@ public class VendaService implements Serializable {
 
 		}
 
-		fpgto.setValorPagamento(this.venda.getTotal());
+		fpgto.setValorPagamento(this.venda.getValorPagamento());
 		List<NFNotaInfoFormaPagamento> lsFpgto = new ArrayList<NFNotaInfoFormaPagamento>();
 		lsFpgto.add(fpgto);
 
@@ -780,7 +780,7 @@ public class VendaService implements Serializable {
 
 		lote.setNotas(lstNF);
 
-		// VERIRICAR SE O ID SERÁ SEM 1.
+		// VERIRICAR SE O ID SERï¿½ SEM 1.
 		lote.setIdLote("1");
 		lote.setVersao("3.10");
 		lote.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
