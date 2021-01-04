@@ -477,7 +477,7 @@ public class NTFCeService implements Serializable {
 
 		identificacao.setUf(DFUnidadeFederativa.valueOfCodigo(Config.propertiesLoader().getProperty("uf")));
 		identificacao.setCodigoRandomico(this.gerarCodigoRandomico());
-		// VERIFICAR SE SEMPRE SER� VENDA.
+		// VERIFICAR SE SEMPRE SERA VENDA.
 		identificacao.setNaturezaOperacao("VENDA");
 		// Removido 20180913 ao atualizar nfe40
 		// identificacao.setFormaPagamento(NFFormaPagamentoPrazo.A_VISTA);
@@ -601,6 +601,7 @@ public class NTFCeService implements Serializable {
 		lsFpgto.add(fpgto);
 
 		pagamento.setDetalhamentoFormasPagamento(lsFpgto);
+		pagamento.setValorTroco(this.nfce.getValorPagamento().subtract(this.nfce.getTotal()));
 		pagamentos.add(pagamento);
 
 	}
@@ -612,7 +613,10 @@ public class NTFCeService implements Serializable {
 		info.setIdentificacao(identificacao);
 		info.setTransporte(transporte);
 		info.setEmitente(emitente);
-		info.setDestinatario(destinatario);
+
+		if (nfce.getCliente() != null) {
+			info.setDestinatario(destinatario);
+		}
 
 		this.geraPagamentos();
 		info.setPagamentos(pagamentos);
