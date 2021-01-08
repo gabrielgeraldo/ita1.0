@@ -125,7 +125,7 @@ public class ProdutoMB implements Serializable {
 			Produto objetoDoBanco = this.daoProduto.lerPorId(this.getProduto().getCodigo());
 
 			if (objetoDoBanco != null) {
-				JSFUtil.retornarMensagemAviso(null, "Outro produto com o mesmo c�digo j� existe no sistema.", null);
+				JSFUtil.retornarMensagemAviso(null, "Outro produto com o mesmo código já existe no sistema.", null);
 				return null;
 			}
 		}
