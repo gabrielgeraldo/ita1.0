@@ -133,7 +133,7 @@
 											<td><a><p:commandLink action="#{baixaCPMB.listar}"
 														title="Clique para baixar">#{item.id.numeroCP}</p:commandLink></a></td>
 											<td>#{item.id.parcelaCP}</td>
-											<td>#{item.id.fornecedor.toString().substring(0,20)}</td>
+											<td>#{item.id.fornecedor.toString().substring(0,15)}</td>
 											<c:if test="#{item.saldo > 0 and item.baixa == null}">
 												<td><span class="label label-danger">Em aberto</span></td>
 											</c:if>
@@ -322,7 +322,7 @@
 											<td><a><p:commandLink action="#{baixaCRMB.listar}"
 														title="Clique para baixar">#{item.id.numeroCR}</p:commandLink></a></td>
 											<td>#{item.id.parcelaCR}</td>
-											<td>#{item.id.cliente.toString().substring(0,20)}</td>
+											<td>#{item.id.cliente.toString().substring(0,15)}</td>
 											<c:if test="#{item.saldo > 0 and item.baixa == null}">
 												<td><span class="label label-danger">Em aberto</span></td>
 											</c:if>

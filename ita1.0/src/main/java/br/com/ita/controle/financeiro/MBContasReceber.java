@@ -75,7 +75,7 @@ public class MBContasReceber {
 
 	public String novoTitulo() {
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasReceber(new ContasReceber());
 		this.setContasReceberPK(new ContasReceberPK());
 
@@ -94,7 +94,7 @@ public class MBContasReceber {
 		 * getNumero(), this.getContasReceber().getCliente());
 		 * 
 		 * if (objetoDoBanco != null) { JSFUtil.retornarMensagemAviso(null,
-		 * "Outro título com o mesmo número/cliente já existe no sistema.",
+		 * "Outro tï¿½tulo com o mesmo nï¿½mero/cliente jï¿½ existe no sistema.",
 		 * null); return null; } }
 		 */
 
@@ -103,7 +103,7 @@ public class MBContasReceber {
 		// limpa a lista
 		this.contasReceberLista = null;
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasReceber(new ContasReceber());
 
 		return "/Financeiro/financeiroListarCR";
@@ -119,7 +119,7 @@ public class MBContasReceber {
 
 		if (this.contasReceber.getBaixa() != null) {
 
-			JSFUtil.retornarMensagemErro("Título já baixado.", null, null);
+			JSFUtil.retornarMensagemErro("Tï¿½tulo jï¿½ baixado.", null, null);
 
 			return null;
 
@@ -156,18 +156,23 @@ public class MBContasReceber {
 	public String excluir() {
 
 		ContasReceberPK codigo = (ContasReceberPK) JSFUtil.getValorExpressao("item.id");
-
+		//Long codigo = JSFUtil.getParametroLong("item.id");
+		
+		System.out.println("codigo: "+codigo);
+		
 		ContasReceber objetoDoBanco = this.contasReceberDAO.lerPorId(codigo);
+		
+		System.out.println("objetoDoBanco: "+objetoDoBanco);
 
 		if (objetoDoBanco.getBaixa() == null) {
 
 			this.contasReceberDAO.remove(objetoDoBanco);
 
 			if (this.contasReceberDAO.lerPorId(objetoDoBanco.getId()) == null) {
-				JSFUtil.retornarMensagemInfo(null, "Excluído com sucesso.", null);
+				JSFUtil.retornarMensagemInfo(null, "Excluï¿½do com sucesso.", null);
 			}
 
-			// limpar o objeto da página
+			// limpar o objeto da pï¿½gina
 			this.setContasReceber(new ContasReceber());
 			// limpa a lista
 			this.contasReceberLista = null;
@@ -176,7 +181,7 @@ public class MBContasReceber {
 
 		} else {
 
-			JSFUtil.retornarMensagemAviso(null, "Título já baixado.", null);
+			JSFUtil.retornarMensagemAviso(null, "Tï¿½tulo jï¿½ baixado.", null);
 
 			return null;
 
@@ -185,7 +190,7 @@ public class MBContasReceber {
 
 	public String cancelar() {
 
-		// limpar o objeto da página
+		// limpar o objeto da pï¿½gina
 		this.setContasReceber(new ContasReceber());
 
 		return "/Financeiro/financeiroListarCR";

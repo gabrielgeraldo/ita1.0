@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:adm="http://github.com/adminfaces"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
@@ -55,6 +56,18 @@ html {
 }
 
 )
+
+
+
+
+
+
+
+
+
+
+
+
 no-repeat
 
 
@@ -107,7 +120,19 @@ no-repeat
 
 
 
+
+
+
+
+
+
  
+
+
+
+
+
+
 
 
 
@@ -211,7 +236,19 @@ center
 
 
 
+
+
+
+
+
+
  
+
+
+
+
+
+
 
 
 
@@ -315,7 +352,19 @@ center
 
 
 
+
+
+
+
+
+
  
+
+
+
+
+
+
 
 
 
@@ -368,6 +417,18 @@ center
 
 
 fixed
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -574,7 +635,25 @@ fixed
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 :
+
+
+
+
+
+
 
 
 
@@ -678,7 +757,25 @@ fixed
 
 
 
+
+
+
+
+
+
 cover
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -885,7 +982,25 @@ cover
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 :
+
+
+
+
+
+
 
 
 
@@ -989,7 +1104,25 @@ cover
 
 
 
+
+
+
+
+
+
 cover
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1196,7 +1329,25 @@ cover
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 :
+
+
+
+
+
+
 
 
 
@@ -1300,7 +1451,25 @@ cover
 
 
 
+
+
+
+
+
+
 cover
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1507,6 +1676,18 @@ background-size
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 :
 
 
@@ -1559,7 +1740,19 @@ background-size
 
 
 
+
+
+
+
+
+
  
+
+
+
+
+
+
 
 
 
@@ -1714,13 +1907,36 @@ cover
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ;
 }
 @media ( max-width : 768px) {
 	html {
 		background-image: url(#{ resource [ 'images:login-bg-mobile.jpeg' ]
 	}
-	);
+	)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	;
 }
 }
 </style>
@@ -1765,11 +1981,13 @@ cover
 					<p:focus context="panel" />
 
 					<div class="form-group has-feedback">
-						<p:inputMask value="#{senhaMesMB.senha}" style="width: 100%"
-							mask="9?9999999999999999999999" required="true" slotChar=""
-							autocomplete="off"
-							requiredMessage="A senha mensal é de preenchimento obrigatório.">
-						</p:inputMask>
+						<p:inputText value="#{senhaMesMB.senha}" style="width: 100%"
+							required="true" slotChar="" autocomplete="off"
+							converter="toUpperCaseConverter"
+							requiredMessage="A senha mensal é de preenchimento obrigatório."
+							validatorMessage="Verifique a senha mensal. Caracteres permitidos: [0-9]">
+							<f:validateRegex pattern="(^[0-9]+$)?" />
+						</p:inputText>
 						<i class="fa fa-lock form-control-feedback"
 							style="font-size: 18px"></i>
 					</div>

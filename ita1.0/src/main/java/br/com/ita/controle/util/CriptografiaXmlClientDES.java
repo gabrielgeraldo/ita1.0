@@ -47,8 +47,12 @@ public class CriptografiaXmlClientDES {
 	 * @version 1.0
 	 * @author Anderson
 	 */
+	
 	@SuppressWarnings("restriction")
 	public String encriptar(String str) {
+		
+		// removido 20210331 após recuperar windows
+		/*
 		try {
 			// Codifica a String usando UTF-8
 			byte[] utf8 = str.getBytes("UTF-8");
@@ -65,8 +69,13 @@ public class CriptografiaXmlClientDES {
 		} catch (@SuppressWarnings("hiding") java.io.IOException ex) {
 			ex.printStackTrace();
 		}
+		*/
+		// removido 20210331 após recuperar windows
+		
 		// Caso nao consiga, retorna null
 		return null;
+		
+		
 	}
 
 	/**
@@ -79,6 +88,9 @@ public class CriptografiaXmlClientDES {
 	 * @author Anderson
 	 */
 	public String decriptar(String str) {
+		
+		// removido 20210331 após recuperar windows
+		/*
 		try {
 			// Decodifica na base64 os bytes capturados
 			@SuppressWarnings("restriction")
@@ -96,6 +108,9 @@ public class CriptografiaXmlClientDES {
 		} catch (java.io.IOException ex) {
 			ex.printStackTrace();
 		}
+		*/
+		// removido 20210331 após recuperar windows
+		
 		// Caso nao consiga, retorna null
 		return null;
 	}

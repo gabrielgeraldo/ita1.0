@@ -42,10 +42,12 @@
 							</p:inputText>
 
 							<p:outputLabel for="codigoBarras" value="Código de barras:" />
-							<p:inputMask id="codigoBarras"
+							<p:inputText id="codigoBarras"
 								value="#{produtoMB.produto.codigoBarras}"
-								mask="9?9999999999999999999999" slotChar="">
-							</p:inputMask>
+								mconverter="toUpperCaseConverter" readonly="true"
+								validatorMessage="Verifique o código de barras. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$)?" />
+							</p:inputText>
 
 							<p:outputLabel for="descricao" value="Descrição:" />
 							<p:inputText id="descricao"

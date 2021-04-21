@@ -37,14 +37,18 @@
 							</p:inputText>
 
 							<p:outputLabel for="agencia" value="Nr. agência:" />
-							<p:inputMask id="agencia" value="#{bancoMB.banco.numeroAgencia}"
-								mask="9?9999999999999999999999" slotChar="">
-							</p:inputMask>
+							<p:inputText id="agencia" value="#{bancoMB.banco.numeroAgencia}"
+								converter="toUpperCaseConverter"
+								validatorMessage="Verifique o número da agencia. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$?)" />
+							</p:inputText>
 
 							<p:outputLabel for="conta" value="Nr. conta:" />
-							<p:inputMask id="conta" value="#{bancoMB.banco.numeroConta}"
-								mask="9?9999999999999999999999" slotChar="">
-							</p:inputMask>
+							<p:inputText id="conta" value="#{bancoMB.banco.numeroConta}"
+								converter="toUpperCaseConverter"
+								validatorMessage="Verifique o número da conta. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$?)" />
+							</p:inputText>
 
 							<p:outputLabel for="saldoAtual" value="Saldo atual:" />
 							<p:inputNumber id="saldoAtual"

@@ -2,7 +2,7 @@ package br.com.ita.dominio;
 
 public enum FormaPagamento {
 
-	AVISTA("À vista"), APRAZO("A prazo");
+	AVISTA("Ã€ vista"), APRAZO("A prazo");
 
 	private String descricao;
 

@@ -64,8 +64,8 @@ import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaProcessada;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFOperacaoConsumidorFinal;
 import com.fincatto.documentofiscal.nfe400.utils.NFGeraChave;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
-import com.fincatto.documentofiscal.persister.DFPersister;
 import com.fincatto.documentofiscal.utils.DFAssinaturaDigital;
+import com.fincatto.documentofiscal.utils.DFPersister;
 
 import br.com.ita.controle.config.Config;
 import br.com.ita.dominio.Configuracao;
@@ -619,7 +619,8 @@ public class NTFCeService implements Serializable {
 		}
 
 		this.geraPagamentos();
-		info.setPagamentos(pagamentos);
+		// info.setPagamentos(pagamentos);
+		info.setPagamento(pagamento);
 
 	}
 

@@ -30,16 +30,20 @@
 							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
 							<p:outputLabel for="numero" value="Número:" />
-							<p:inputMask id="numero"
+							<p:inputText id="numero"
 								value="#{contasReceberMB.contasReceberPK.numeroCR}"
-								mask="9?9999999999999999999999">
-							</p:inputMask>
+								converter="toUpperCaseConverter"
+								validatorMessage="Verifique o número. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$?)" />
+							</p:inputText>
 
 							<p:outputLabel for="parcela" value="Parcela:" />
-							<p:inputMask id="parcela"
+							<p:inputText id="parcela"
 								value="#{contasReceberMB.contasReceberPK.parcelaCR}"
-								mask="9?999">
-							</p:inputMask>
+								converter="toUpperCaseConverter"
+								validatorMessage="Verifique a parcela. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$?)" />
+							</p:inputText>
 
 							<p:outputLabel value="Cliente:" for="cli" />
 							<p:autoComplete id="cli" dropdown="true" maxResults="10"

@@ -606,7 +606,8 @@ public class VendaService implements Serializable {
 			info.setDestinatario(destinatario);
 
 		this.geraPagamentos();
-		info.setPagamentos(pagamentos);
+		// info.setPagamentos(pagamentos);
+		info.setPagamento(pagamento);
 
 	}
 

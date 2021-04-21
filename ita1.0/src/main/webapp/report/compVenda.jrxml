@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DanfeNFCe" pageWidth="230" pageHeight="909" whenNoDataType="NoPages" columnWidth="226" leftMargin="2" rightMargin="2" topMargin="10" bottomMargin="0" uuid="2ee59f2c-90ef-45b6-820e-6d2b3ab6db90">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
@@ -224,28 +224,28 @@
 							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JRXmlDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("//det")]]></dataSourceExpression>
 						</datasetRun>
 						<jr:listContents height="22" width="226">
-							<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
 								<reportElement key="textField-11" positionType="FixRelativeToBottom" mode="Transparent" x="101" y="12" width="14" height="9" uuid="244d2984-48f6-421e-8904-d545ae974847"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="7"/>
 								</textElement>
 								<textFieldExpression><![CDATA[( $F{unidadeComercial}.equals($F{unidadeTributaria}) ? $F{unidadeComercial} : $F{unidadeComercial} + "\n" + $F{unidadeTributaria} )]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement key="textField-10" positionType="FixRelativeToBottom" mode="Transparent" x="69" y="12" width="28" height="9" uuid="bcf8350e-3546-4317-b7a8-7e2e0ff0a1be"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="7"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{unidadeComercial}.equals($F{unidadeTributaria}) ? (new DecimalFormat("#,##0.##")).format(new Double($F{quantidadeComercial})) : (new DecimalFormat("#,##0.##")).format(new Double($F{quantidadeComercial})) + "\n" + (new DecimalFormat("#,##0.###")).format(new Double($F{quantidadeTributaria}))]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
 								<reportElement key="textField-9" positionType="FixRelativeToBottom" mode="Transparent" x="122" y="12" width="37" height="9" uuid="cea51a21-f004-4b92-8e7a-0fda92cf3bd9"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="7"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{unidadeComercial}.toString().equals($F{unidadeTributaria}.toString()) ? (new DecimalFormat("#,##0.00##")).format(new Double($F{valorUnitarioComercial})) : (new DecimalFormat("#,##0.00##")).format(new Double($F{valorUnitarioComercial})) + "\n" + (new DecimalFormat("#,##0.00##")).format(new Double($F{valorUnitarioTributario}))]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 								<reportElement key="textField-8" positionType="FixRelativeToBottom" mode="Transparent" x="159" y="12" width="64" height="9" uuid="2d1f09d3-3c02-46ca-bfc5-27cc01222b3f">
 									<property name="local_mesure_unitwidth" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -255,7 +255,7 @@
 								</textElement>
 								<textFieldExpression><![CDATA[new Double($F{valorTotal})]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement key="textField-2" mode="Transparent" x="16" y="3" width="55" height="9" uuid="d400bdca-d9c9-4959-9222-17a66f0e51a9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 									<font fontName="SansSerif" size="7"/>
@@ -269,14 +269,14 @@
 								</textElement>
 								<text><![CDATA[x]]></text>
 							</staticText>
-							<textField isStretchWithOverflow="true" pattern="#000" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" pattern="#000" isBlankWhenNull="true">
 								<reportElement key="textField-10" mode="Transparent" x="1" y="3" width="13" height="9" uuid="646c825e-6c66-4f4f-989d-e2939df1933d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="7"/>
 								</textElement>
 								<textFieldExpression><![CDATA[new Integer($F{nItem})]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement key="textField-2" mode="Transparent" x="71" y="3" width="152" height="9" uuid="b1f679e1-12da-40f4-bd0a-0ee4a5a0c705"/>
 								<textElement verticalAlignment="Middle" markup="html">
 									<font fontName="SansSerif" size="7"/>
@@ -375,7 +375,7 @@
 								</textElement>
 								<textFieldExpression><![CDATA[new Double($F{vPag})]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true" pattern="">
+							<textField textAdjust="StretchHeight" pattern="">
 								<reportElement x="0" y="0" width="158" height="13" uuid="8525d390-6d68-47d3-8ae6-b4c405f6fc52"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8"/>
@@ -415,7 +415,7 @@ $F{tPag}.equals("13")?"Vale Combust?vel":
 			</band>
 			<band height="26">
 				<printWhenExpression><![CDATA[$F{informacoesComplementares2}!=null]]></printWhenExpression>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement x="0" y="13" width="226" height="13" uuid="7dabd4a4-621a-40db-a6e1-c8294250fb1d">
 						<property name="local_mesure_unity" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -483,7 +483,7 @@ $F{chaveAcesso}.substring(43,47)]]></textFieldExpression>
 					</textElement>
 					<text><![CDATA[]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement x="0" y="27" width="225" height="18" uuid="8b10200e-be7b-47f7-9f36-f5c63e94c713">
 						<property name="local_mesure_unitheight" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -521,7 +521,7 @@ $F{dhRecbto}.substring(11,19)]]></textFieldExpression>
 	</group>
 	<title>
 		<band height="69" splitType="Immediate">
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
 				<reportElement key="textField-7" mode="Transparent" x="-1" y="1" width="226" height="15" uuid="b4c16ac9-2760-43f0-9ed8-9d1e1dc392c6">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -538,7 +538,7 @@ $F{dhRecbto}.substring(11,19)]]></textFieldExpression>
 				</textElement>
 				<textFieldExpression><![CDATA["CNPJ:"+$F{emitenteCnpj}.substring(0, 2) + "." + $F{emitenteCnpj}.substring(2, 5) + "." + $F{emitenteCnpj}.substring(5, 8) + "/" + $F{emitenteCnpj}.substring(8, 12) + "-" + $F{emitenteCnpj}.substring(12,14)]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
 				<reportElement key="textField-9" mode="Transparent" x="-1" y="28" width="226" height="14" uuid="e01c231d-29be-4f1f-a2b6-ca57210cae86">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -551,7 +551,7 @@ $F{dhRecbto}.substring(11,19)]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{emitenteEndereco}+", "+$F{emitenteEnderecoNro}
 + " - " + $F{emitenteBairro}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
 				<reportElement key="textField-9" mode="Transparent" x="-1" y="55" width="226" height="12" uuid="a75afab2-3d16-425b-b469-fa8142d08671"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 					<font fontName="SansSerif" size="8" isBold="false"/>
@@ -559,7 +559,7 @@ $F{dhRecbto}.substring(11,19)]]></textFieldExpression>
 				<textFieldExpression><![CDATA[($F{emitenteCep}!=null? "CEP: " + $F{emitenteCep}: "")
 + ($F{emitenteTelefone}!=null ? " - Fone/Fax: " + $F{emitenteTelefone} : "")]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
 				<reportElement key="textField-9" mode="Transparent" x="-1" y="42" width="226" height="13" uuid="b6a579e6-909c-465b-85ae-61a4aa3c298c">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>

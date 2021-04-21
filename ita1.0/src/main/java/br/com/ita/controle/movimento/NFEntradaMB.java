@@ -23,7 +23,7 @@ import org.primefaces.model.file.UploadedFile;
 
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFIndicadorIEDestinatario;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaProcessada;
-import com.fincatto.documentofiscal.persister.DFPersister;
+import com.fincatto.documentofiscal.utils.DFPersister;
 
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.dominio.NFEntrada;

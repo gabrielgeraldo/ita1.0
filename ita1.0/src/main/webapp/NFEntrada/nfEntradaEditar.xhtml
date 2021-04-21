@@ -33,19 +33,23 @@
 								<p:panelGrid columns="2" layout="grid"
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
-									<p:outputLabel value="Número:" />
-									<p:inputMask id="numero" style="width:85px"
+									<p:outputLabel for="numero" value="Número:" />
+									<p:inputText id="numero" style="width:85px"
 										value="#{nfEntradaMB.nfEntrada.numero}" autocomplete="off"
 										readonly="#{nfEntradaMB.bloqueaCampos}"
-										mask="9?9999999999999999999999" slotChar="">
-									</p:inputMask>
+										converter="toUpperCaseConverter"
+										validatorMessage="Verifique o número. Caracteres permitidos: [0-9]">
+										<f:validateRegex pattern="(^[0-9]+$?)" />
+									</p:inputText>
 
 									<p:outputLabel for="serie" value="Série:" />
-									<p:inputMask id="serie" style="width:85px"
+									<p:inputText id="serie" style="width:85px"
 										readonly="#{nfEntradaMB.bloqueaCampos}"
 										value="#{nfEntradaMB.nfEntrada.serie}" autocomplete="off"
-										mask="9?9999999999999999999999" slotChar="">
-									</p:inputMask>
+										converter="toUpperCaseConverter"
+										validatorMessage="Verifique o série. Caracteres permitidos: [0-9]">
+										<f:validateRegex pattern="(^[0-9]+$?)" />
+									</p:inputText>
 
 									<p:outputLabel for="emissao" value="Emissão:" />
 									<p:calendar id="emissao"
@@ -79,7 +83,7 @@
 							<p:fileUpload label="XML" update="formPrepDialog"
 								disabled="#{nfEntradaMB.bloqueaCampos}"
 								listener="#{nfEntradaMB.upload}" auto="true"
-								allowTypes="/(\.|\/)(xml)$/"
+								allowTypes="/(\.|\/)(xml)$/" ajax="false"
 								invalidFileMessage="Arquivo inválido" />
 
 							<p:spacer width="25" />

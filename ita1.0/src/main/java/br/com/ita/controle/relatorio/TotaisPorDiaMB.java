@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
@@ -22,19 +22,19 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
-@ManagedBean(name = "tataisPorDiaMB")
+@Named("tataisPorDiaMB")
 @ViewScoped
 public class TotaisPorDiaMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@NotNull(message = "Favor digitar uma data início.")
+	@NotNull(message = "Favor digitar uma data inï¿½cio.")
 	private Date dataInicio;
 
 	@NotNull(message = "Favor digitar uma data final.")
 	private Date dataFim;
 
-	@NotNull(message = "Selecione o tipo do relatório.")
+	@NotNull(message = "Selecione o tipo do relatï¿½rio.")
 	private String tipoRelatorio;
 
 	@PostConstruct
@@ -104,7 +104,7 @@ public class TotaisPorDiaMB implements Serializable {
 			// try {
 			// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			// JasperViewer viewer = new JasperViewer(relatorio, false);
-			// viewer.setTitle("Relatório");
+			// viewer.setTitle("Relatï¿½rio");
 			// viewer.setVisible(true);
 			// } catch (ClassNotFoundException e) {
 			// e.printStackTrace();
@@ -122,8 +122,8 @@ public class TotaisPorDiaMB implements Serializable {
 					.getResponse();
 			res.setContentType("application/pdf");
 
-			// Código abaixo gerar o relatório e disponibiliza diretamente na
-			// página
+			// Cï¿½digo abaixo gerar o relatï¿½rio e disponibiliza diretamente na
+			// pï¿½gina
 			res.setHeader("Content-Disposition", "inline;filename=Relatorio.pdf");
 
 			try {
@@ -135,17 +135,17 @@ public class TotaisPorDiaMB implements Serializable {
 				e.printStackTrace();
 			}
 
-			JSFUtil.retornarMensagemInfo("Relatório gerado com sucesso!", null, null);
+			JSFUtil.retornarMensagemInfo("Relatï¿½rio gerado com sucesso!", null, null);
 
 		} catch (
 
 		JRException erro) {
 			erro.printStackTrace();
-			JSFUtil.retornarMensagemErro("Erro ao gerar relatório!", null, null);
+			JSFUtil.retornarMensagemErro("Erro ao gerar relatï¿½rio!", null, null);
 		} catch (java.lang.NullPointerException erro) {
 			System.out.println("Erro/Fala: (java.lang.NullPointerException))");
 			erro.printStackTrace();
-			JSFUtil.retornarMensagemErro("Falha ao gerar relatório!", erro.getMessage(), null);
+			JSFUtil.retornarMensagemErro("Falha ao gerar relatï¿½rio!", erro.getMessage(), null);
 		} catch (Exception erro) {
 			System.out.println("Erro/Falha: Desconhecido).");
 			erro.printStackTrace();

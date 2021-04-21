@@ -2,7 +2,7 @@ package br.com.ita.dominio;
 
 public enum DataParaConsulta {
 
-	EMISSAO("Emiss„o"), VENCIMENTO("Vencimento");
+	EMISSAO("Emiss√£o"), VENCIMENTO("Vencimento");
 
 	private String descricao;
 

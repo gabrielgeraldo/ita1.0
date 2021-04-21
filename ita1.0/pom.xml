@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.ita</groupId>
@@ -70,7 +71,7 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
@@ -92,7 +93,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>8.0</version>
+			<version>10.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -103,7 +104,7 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>6.9.0</version>
+			<version>6.16.0</version>
 		</dependency>
 
 		<!-- necessario jasper -->
@@ -172,11 +173,16 @@
 
 
 		<!-- https://mvnrepository.com/artifact/com.github.wmixvideo/nfe -->
+		<!--<dependency> <groupId>com.github.gabrielgeraldo</groupId> <artifactId>nfe</artifactId> 
+			<version>correcao_url_rj_2-SNAPSHOT</version> </dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/com.github.wmixvideo/nfe -->
 		<dependency>
-			<groupId>com.github.gabrielgeraldo</groupId>
+			<groupId>com.github.wmixvideo</groupId>
 			<artifactId>nfe</artifactId>
-			<version>correcao_url_rj_2-SNAPSHOT</version>
+			<version>3.0.41</version>
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/xalan/xalan -->
 		<!-- DEPENDENCIA UTILIZADA PARA GERAR A DANFE -->
@@ -332,6 +338,24 @@
 		</dependency>
 
 		<!-- webservice -->
+
+		<!-- removido 20210331 após recuperar windows -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+		<!-- removido 20210331 após recuperar windows -->
 
 	</dependencies>
 	<repositories>

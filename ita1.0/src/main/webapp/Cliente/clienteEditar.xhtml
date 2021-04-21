@@ -82,10 +82,12 @@
 							</p:inputText>
 
 							<p:outputLabel for="nun" value="Número:" />
-							<p:inputMask id="nun" style="width:85px"
+							<p:inputText id="nun" style="width:85px"
 								value="#{clienteMB.cliente.numero}"
-								converter="toUpperCaseConverter" mask="9?9999999">
-							</p:inputMask>
+								converter="toUpperCaseConverter"
+								validatorMessage="Verifique o número. Caracteres permitidos: [0-9]">
+								<f:validateRegex pattern="(^[0-9]+$?)" />
+							</p:inputText>
 
 							<p:outputLabel for="estado" value="Estado:" />
 							<p:selectOneMenu id="estado" value="#{clienteMB.cliente.estado}"

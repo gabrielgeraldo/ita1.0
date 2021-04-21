@@ -7,171 +7,246 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-<ui:composition template="/_modelo.xhtml">
+<ui:composition template="#{layoutMB.template}">
 
-	<ui:define name="titulo">Cadastrar\Editar imposto</ui:define>
+	<ui:define name="title">
+		<h1 class="aw-page-title">Imposto</h1>
+	</ui:define>
 
-	<ui:define name="conteudo">
+	<ui:define name="body">
 
-		<div class="fundoBranco">
+		<p:panel styleClass="card no-border" style="min-height: 100px">
 
-			<h1 class="aw-page-title">Cadastrar \ Editar imposto</h1>
-
-			<h:form>
-
-				<h:inputHidden id="idId" value="#{impostoMB.imposto.codigo}" />
+			<h:form id="form">
 
 				<p:growl id="messagens" />
 
 				<p:tabView>
 
-					<p:tab title="Dados do Imposto">
+					<p:tab title="Imposto">
 
-						<h:panelGrid columns="2">
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
-							<p:outputLabel for="descricao1" value="Descrição:" />
-							<p:inputText id="descricao1"
-								value="#{impostoMB.imposto.descricao}" style="width: 120%"
-								converter="toUpperCaseConverter">
-							</p:inputText>
+							<p:outputLabel for="regimeTributario" value="Regime Tributario:" />
+							<p:selectOneMenu id="regimeTributario"
+								value="#{impostoMB.imposto.regimeTributario}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.regimeTributarios}" var="item"
+									itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
 
-						</h:panelGrid>
+						</p:panelGrid>
 
 						<br />
 
 						<p:tabView>
 
-							<p:tab title="ICMS">
+							<p:tab title="ICMS ou CST">
 
-								<h:panelGrid columns="2">
+								<p:panelGrid columns="2" layout="grid"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
-									<p:outputLabel for="stIcms" value="Situação Trib. do ICMS:" />
-									<p:selectOneMenu id="stIcms"
-										value="#{impostoMB.imposto.situacaoTribdICMS}"
+									<p:outputLabel for="icms" value="ICMS ou CST:" />
+									<p:selectOneMenu id="icms" value="#{impostoMB.imposto.icms}"
 										filterMatchMode="startsWith">
-										<f:selectItem itemLabel="" itemValue=""
+										<f:selectItem itemLabel="" itemValue="" />
+										<f:selectItem itemLabel="00 - Tributada integralmente"
+											itemValue="00" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="10 - Tributada e com cobrança do ICMS por substituição tributária"
+											itemValue="10" noSelectionOption="true" />
+										<f:selectItem itemLabel="20 - Com redução da BC"
+											itemValue="20" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="30 - Isenta / não tributada e com cobrança do ICMS por substituição tributária"
+											itemValue="30" noSelectionOption="true" />
+										<f:selectItem itemLabel="40 - Isenta" itemValue="40"
 											noSelectionOption="true" />
-										<f:selectItems value="#{impostoMB.situacaoTribdICMS}"
-											var="item" itemLabel="#{item}" itemValue="#{item}" />
+										<f:selectItem itemLabel="41 - Não tributada" itemValue="41"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="50 - Com suspensão" itemValue="50"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="51 - Com diferimento" itemValue="51"
+											noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="60 - ICMS cobrado anteriormente por substituição tributária"
+											itemValue="60" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="70 - Com redução da BC e cobrança do ICMS por substituição tributária"
+											itemValue="70" noSelectionOption="true" />
+										<f:selectItem itemLabel="90 - Outras" itemValue="90"
+											noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="101 – Tributada pelo Simples Nacional com permissão de crédito"
+											itemValue="101" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="102 – Tributada pelo Simples Nacional sem permissão de crédito"
+											itemValue="102" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta"
+											itemValue="103" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"
+											itemValue="201" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"
+											itemValue="202" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"
+											itemValue="203" noSelectionOption="true" />
+										<f:selectItem itemLabel="300 - Imune" itemValue="300"
+											noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="400 - Não tributada pelo Simples Nacional"
+											itemValue="400" noSelectionOption="true" />
+										<f:selectItem
+											itemLabel="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
+											itemValue="500" noSelectionOption="true" />
+										<f:selectItem itemLabel="900 - Outros" itemValue="900"
+											noSelectionOption="true" />
 									</p:selectOneMenu>
 
-									<p:outputLabel for="origProd" value="Origem do Produto:" />
-									<p:selectOneMenu id="origProd"
-										value="#{impostoMB.imposto.origemdoProduto}"
-										filterMatchMode="startsWith">
-										<f:selectItem itemLabel="" itemValue=""
-											noSelectionOption="true" />
-										<f:selectItems value="#{impostoMB.origemdoProduto}" var="item"
-											itemLabel="#{item}" itemValue="#{item}" />
-									</p:selectOneMenu>
-
-								</h:panelGrid>
+								</p:panelGrid>
 
 								<br />
 
-								<p:accordionPanel>
+								<p:tabView>
 
-									<p:tab title="ICMS">
+									<p:tab title="ICMS 00">
 
-										<h:panelGrid columns="2">
-
-											<p:outputLabel for="modBCICMS" value="Modalidade BC do ICMS:" />
-											<p:selectOneMenu id="modBCICMS"
-												value="#{impostoMB.imposto.modalidadeBCdoICMS}"
-												filterMatchMode="startsWith">
-												<f:selectItem itemLabel="" itemValue=""
-													noSelectionOption="true" />
-												<f:selectItems value="#{impostoMB.modalidadeBCdoICMS}"
-													var="item" itemLabel="#{item}" itemValue="#{item}" />
-											</p:selectOneMenu>
-
-											<p:outputLabel for="percModBCICMS"
-												value="Perc. da BC do ICMS:" />
-											<p:inputNumber id="percModBCICMS"
-												value="#{impostoMB.imposto.percdaBCdoICMS}" symbol="%"
-												symbolPosition="s" emptyValue="zero" />
-
-											<p:outputLabel for="percICMS" value="Perc. do ICMS:" />
-											<p:inputNumber id="percICMS"
-												value="#{impostoMB.imposto.percdoICMS}" symbol="%"
-												symbolPosition="s" emptyValue="zero" />
-
-										</h:panelGrid>
 
 									</p:tab>
 
-									<p:tab title="ICMS Substituição">
+									<p:tab title="ICMS 10">
 
-										<h:panelGrid columns="2">
-
-											<p:outputLabel for="modBCICMSST" value="Modalidade BC da ST:" />
-											<p:selectOneMenu id="modBCICMSST"
-												value="#{impostoMB.imposto.modalidadeBCdaST}"
-												filterMatchMode="startsWith">
-												<f:selectItem itemLabel="" itemValue=""
-													noSelectionOption="true" />
-												<f:selectItems value="#{impostoMB.modalidadeBCdaST}"
-													var="item" itemLabel="#{item}" itemValue="#{item}" />
-											</p:selectOneMenu>
-
-											<p:outputLabel for="percAcresBCdaST"
-												value="Perc. Acres. BC da ST:" />
-											<p:inputNumber id="percAcresBCdaST"
-												value="#{impostoMB.imposto.percAcresBCdaST}" symbol="%"
-												symbolPosition="s" emptyValue="zero" />
-
-											<p:outputLabel for="percRedBCdaST"
-												value="Perc. Red. BC da ST:" />
-											<p:inputNumber id="percRedBCdaST"
-												value="#{impostoMB.imposto.percRedBCdaST}" symbol="%"
-												symbolPosition="s" emptyValue="zero" />
-
-											<p:outputLabel for="percBCdaST" value="Perc. BC da ST:" />
-											<p:inputNumber id="percBCdaST"
-												value="#{impostoMB.imposto.percBCdaST}" symbol="%"
-												symbolPosition="s" emptyValue="zero" />
-
-											<p:outputLabel for="percdoICMSdaST"
-												value="Perc. do ICMS da ST:" />
-											<p:inputNumber id="percdoICMSdaST"
-												value="#{impostoMB.imposto.percdoICMSdaST}" symbol="%"
-												symbolPosition="s" emptyValue="zero" />
-
-											<p:outputLabel for="aliqICMSAdescontarNaoDestacadopeloSN"
-												value="Aliq.ICMS a descontar, não destacado pelo SN:" />
-											<p:inputNumber id="aliqICMSAdescontarNaoDestacadopeloSN"
-												value="#{impostoMB.imposto.aliqICMSAdescontarNaoDestacadopeloSN}"
-												symbol="%" symbolPosition="s" emptyValue="zero" />
-
-										</h:panelGrid>
 
 									</p:tab>
 
-								</p:accordionPanel>
+									<p:tab title="ICMS 20">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS 30">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS 40">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS 51">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS 60">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS 70">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS 90">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS Partilhado">
+
+
+									</p:tab>
+
+									<p:tab title="ICMS ST">
+
+
+									</p:tab>
+
+									<p:tab title="ICMSSN 101">
+
+
+									</p:tab>
+
+									<p:tab title="ICMSSN 102">
+
+
+									</p:tab>
+
+									<p:tab title="ICMSSN 201">
+
+
+									</p:tab>
+
+									<p:tab title="ICMSSN 202">
+
+
+									</p:tab>
+
+									<p:tab title="ICMSSN 500">
+
+
+									</p:tab>
+
+									<p:tab title="ICMSSN 900">
+
+
+									</p:tab>
+
+
+								</p:tabView>
 
 							</p:tab>
 
 							<p:tab title="IPI">
 
-							</p:tab>
-
-							<p:tab title="PIS">
 
 							</p:tab>
 
-							<p:tab title="COFINS">
+							<p:tab title="Imposto Importacao">
+
 
 							</p:tab>
 
 							<p:tab title="ISSQN">
 
-							</p:tab>
-
-							<p:tab title="Outras informações">
 
 							</p:tab>
+
+							<p:tab title="PIS">
+
+
+							</p:tab>
+
+							<p:tab title="PISST">
+
+
+							</p:tab>
+
+							<p:tab title="COFINS">
+
+
+							</p:tab>
+
+							<p:tab title="COFINSST">
+
+
+							</p:tab>
+
+							<p:tab title="ICMS UF Destino">
+
+
+							</p:tab>
+
 
 						</p:tabView>
+
 
 					</p:tab>
 
@@ -181,18 +256,15 @@
 
 				<h:panelGrid columns="2">
 
-					<p:commandButton ajax="false" id="btnSalvar" image="ui-icon-disk"
-						action="#{impostoMB.acaoSalvar}" value="Salvar" />
-
-					<p:commandButton ajax="false" id="btnCancelar"
-						action="#{impostoMB.acaoCancelar}" immediate="true"
-						value="Cancelar" icon="ui-icon-closethick" />
+					<p:commandButton ajax="false" id="btnSalvar"
+						styleClass="btn-success btn-block" action="#{impostoMB.salvar}"
+						value="Salvar" update="form" />
 
 				</h:panelGrid>
 
 			</h:form>
 
-		</div>
+		</p:panel>
 
 	</ui:define>
 
