@@ -7,35 +7,42 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-<ui:composition template="/_modelo.xhtml">
+<ui:composition template="#{layoutMB.template}">
 
-	<ui:define name="titulo">Impostos</ui:define>
+	<ui:define name="title">
+		<h1 class="aw-page-title">Imposto</h1>
+	</ui:define>
 
-	<ui:define name="conteudo">
+	<ui:define name="body">
 
-		<div class="fundoBranco">
+		<p:panel styleClass="card no-border" style="min-height: 100px">
 
-			<h1 class="aw-page-title">Impostos</h1>
+			<h:form id="formCadBanco">
 
-			<h:form id="formCadImpostos">
-
-				<p:growl id="messages" />
+				<p:growl id="messagens" showSummary="false" showDetail="true" />
 
 				<p:dataTable id="tabImpostos" var="item"
 					value="#{impostoMB.impostos}" emptyMessage="Não há itens."
-					widgetVar="itemTable"
+					widgetVar="itemTable" selection="#{impostoMB.imposto.codigo}"
 					filteredValue="#{impostoMB.impostosFiltrados}" paginator="true"
-					rowKey="#{item.codigo}" rowsPerPageTemplate="5,10" rows="10"
+					rowKey="#{item.codigo}" rowsPerPageTemplate="5,10" rows="5"
 					selectionMode="single">
 
-					<p:column sortBy="#{item.descricao}" filterBy="#{item.descricao}">
+					<p:column sortBy="#{item.codigo}" filterBy="#{item.codigo}">
 						<f:facet name="header">
-							<h:outputText value="Descrição" />
+							<h:outputText value="Código" />
 						</f:facet>
-						<h:outputText value="#{item.descricao}" />
+						<h:outputText value="#{item.codigo}" />
 					</p:column>
 
-					<p:column style="width:120px">
+					<p:column filterBy="#{item.regimeTributario}">
+						<f:facet name="header">
+							<h:outputText value="Regime Tributario" />
+						</f:facet>
+						<h:outputText value="#{item.regimeTributario}" />
+					</p:column>
+
+					<p:column style="width:160px">
 
 						<f:facet name="header">
 							<h:outputText value="Ações" />
@@ -44,16 +51,15 @@
 						<div align="center">
 
 							<p:splitButton value="Alterar" icon="ui-icon-disk"
-								action="#{impostoMB.alterarImposto}" update="formCadImposto"
-								ajax="false">
+								action="#{impostoMB.alterar}" ajax="false">
 
 								<f:param value="#{item.codigo}" name="itemcodigo" />
 
 								<p:menuitem>
 
 									<p:commandLink styleClass="ui-menuitem-link"
-										icon="ui-icon-close" action="#{impostoMB.excluirImposto}"
-										update="formCadImposto" ajax="false">
+										icon="ui-icon-close" action="#{impostoMB.excluir}"
+										update="form" ajax="false">
 
 										<p:confirm header="Confirmação"
 											message="Deseja excluir este registro?" icon="ui-icon-alert" />
@@ -89,19 +95,14 @@
 
 				<h:panelGrid columns="2">
 
-					<ui:remove>
-
-						<p:commandButton ajax="false" type="push" value="Novo Imposto"
-							action="#{impostoMB.acaoAbrirInclusao}" immediate="true"
-							image="ui-icon-document" />
-
-					</ui:remove>
+					<p:commandButton styleClass="btn-success btn-block" ajax="false"
+						value="Nova configuração de imposto" action="#{impostoMB.novo}" />
 
 				</h:panelGrid>
 
 			</h:form>
 
-		</div>
+		</p:panel>
 
 	</ui:define>
 

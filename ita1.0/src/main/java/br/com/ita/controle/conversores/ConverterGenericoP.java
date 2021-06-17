@@ -29,9 +29,9 @@ public class ConverterGenericoP implements Converter {
 	}
 
 	public String getAsString(FacesContext ctx, UIComponent component, Object value) {
-		//System.out.println("getAsString = " + value);
+		// System.out.println("getAsString = " + value);
 		if (value != null && !"".equals(value)) {
-			//System.out.println("entrou");
+			// System.out.println("entrou");
 
 			BaseEntityP entity = (BaseEntityP) value;  
 

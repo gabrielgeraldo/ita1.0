@@ -63,7 +63,6 @@ import br.com.ita.controle.config.Config;
 import br.com.ita.controle.nfce.util.QRCode;
 import br.com.ita.dominio.ItemVenda;
 import br.com.ita.dominio.Venda;
-import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.dao.EstadoDAO;
 import br.com.ita.dominio.dao.MunicipioDAO;
 import br.com.ita.dominio.notafiscal.NFeConfigIta;
@@ -127,8 +126,6 @@ public class VendaService implements Serializable {
 	private NFNotaInfoPagamento pagamento = new NFNotaInfoPagamento();
 
 	private List<NFNotaInfoPagamento> pagamentos = new ArrayList<NFNotaInfoPagamento>();
-
-	private ConfiguracaoDAO daoConfiguracao = new ConfiguracaoDAO();
 
 	private EstadoDAO daoEstado = new EstadoDAO();
 
@@ -361,14 +358,6 @@ public class VendaService implements Serializable {
 
 	public void setPagamentos(List<NFNotaInfoPagamento> pagamentos) {
 		this.pagamentos = pagamentos;
-	}
-
-	public ConfiguracaoDAO getDaoConfiguracao() {
-		return daoConfiguracao;
-	}
-
-	public void setDaoConfiguracao(ConfiguracaoDAO daoConfiguracao) {
-		this.daoConfiguracao = daoConfiguracao;
 	}
 
 	public EstadoDAO getDaoEstado() {

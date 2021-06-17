@@ -112,69 +112,7 @@
 								value="#{produtoMB.produto.cest}" mask="9?9999999">
 							</p:inputMask>
 
-							<p:outputLabel for="csosn" value="CSOSN:"
-								rendered="#{produtoMB.renderizaConfgImposto}" />
-							<p:selectOneMenu id="csosn" value="#{produtoMB.produto.csosn}"
-								filterMatchMode="startsWith"
-								rendered="#{produtoMB.renderizaConfgImposto}">
-								<f:selectItem itemLabel="" itemValue="" />
-								<f:selectItem
-									itemLabel="101 – Tributada pelo Simples Nacional com permissão de crédito"
-									itemValue="101" noSelectionOption="true" />
-								<f:selectItem
-									itemLabel="102 – Tributada pelo Simples Nacional sem permissão de crédito"
-									itemValue="102" noSelectionOption="true" />
-								<f:selectItem
-									itemLabel="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
-									itemValue="500" noSelectionOption="true" />
-							</p:selectOneMenu>
-
 						</p:panelGrid>
-
-						<p:tabView rendered="#{produtoMB.renderizaConfgImposto}">
-
-							<p:tab
-								title="101 – Tributada pelo Simples Nacional com permissão de crédito">
-
-								<p:panelGrid columns="2" layout="grid">
-
-									<p:outputLabel for="pCredSN"
-										value="Percentual aplicável no cálculo do crédito:" />
-									<p:inputNumber id="pCredSN"
-										value="#{produtoMB.produto.pCredSN}" />
-
-									<p:outputLabel for="vCredICMSSN"
-										value="Valor do ICMS que pode ser aproveitado:" />
-									<p:inputNumber id="vCredICMSSN"
-										value="#{produtoMB.produto.vCredICMSSN}" />
-
-								</p:panelGrid>
-
-							</p:tab>
-
-							<p:tab
-								title="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação">
-
-								<p:panelGrid columns="2" layout="grid">
-
-									<p:outputLabel for="vBCSTRet"
-										value="Base de Cálculo do ICMS ST:" />
-									<p:inputNumber id="vBCSTRet"
-										value="#{produtoMB.produto.vBCSTRet}" />
-
-									<p:outputLabel for="vICMSSTRet"
-										value="Informar o valor do ICMS ST retido:" />
-									<p:inputNumber id="vICMSSTRet"
-										value="#{produtoMB.produto.vICMSSTRet}" />
-
-									<p:outputLabel for="pST" value="Percentual aliquota ICMSST:" />
-									<p:inputNumber id="pST" value="#{produtoMB.produto.pST}" />
-
-								</p:panelGrid>
-
-							</p:tab>
-
-						</p:tabView>
 
 					</p:tab>
 

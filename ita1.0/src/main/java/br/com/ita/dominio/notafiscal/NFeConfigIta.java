@@ -8,6 +8,13 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.naming.ldap.LdapName;
 
 import com.fincatto.documentofiscal.DFAmbiente;
 import com.fincatto.documentofiscal.DFUnidadeFederativa;
@@ -99,6 +106,58 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 
 	public void setKeyStoreCadeia(KeyStore keyStoreCadeia) {
 		this.keyStoreCadeia = keyStoreCadeia;
+	}
+
+	public String getDadosDoCertificado() {
+		try {
+			java.util.Enumeration<String> aliases = this.getCertificadoKeyStore().aliases();
+			for (; aliases.hasMoreElements();) {
+
+				String alias = (String) aliases.nextElement();
+				Date CertExpiryDate = ((X509Certificate) this.getCertificadoKeyStore().getCertificate(alias))
+						.getNotAfter();
+
+				String infoCert = "Sem mais informações.";
+
+				try {
+					((X509Certificate) this.getCertificadoKeyStore().getCertificate(alias)).checkValidity(new Date());
+				} catch (CertificateExpiredException e) {
+					infoCert = "Certificado expirado!";
+				} catch (CertificateNotYetValidException e) {
+					infoCert = "Certificado não é válido!";
+				}
+
+				// String name = ((X509Certificate)
+				// this.getCertificadoKeyStore().getCertificate(alias)).getSubjectDN()
+				// .getName();
+				// System.out.println("Name: " + name);
+
+				SimpleDateFormat formatado = new SimpleDateFormat("dd-MM-yyyy");
+				String dataValidade = formatado.format(CertExpiryDate);
+
+				// System.out.println("CertExpiryDate: " + CertExpiryDate);
+
+				String dn = ((X509Certificate) this.getCertificadoKeyStore().getCertificate(alias)).getSubjectDN()
+						.getName();
+				LdapName ldapDN = new LdapName(dn);
+
+				// System.out.println(
+				// "Cerificado :" + ldapDN.getRdns().get(7).getValue() + " | Data de validade: "
+				// + dataValidade);
+
+				// for (Rdn rdn : ldapDN.getRdns()) {
+				// System.out.println("Nome ajustado:" + rdn.getType() + " -> " +
+				// rdn.getValue());
+				// }
+
+				return "Cerificado digital : " + ldapDN.getRdns().get(7).getValue() + " | Data de validade: "
+						+ dataValidade + " | Informações: " + infoCert;
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "Atenção! Não foi possível obeter os dados do certificado digital. Entre em contato com o suporte.";
 	}
 
 }

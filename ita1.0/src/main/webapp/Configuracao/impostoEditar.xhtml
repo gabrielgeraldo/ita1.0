@@ -19,236 +19,567 @@
 
 			<h:form id="form">
 
+				<h:inputHidden id="id" value="#{impostoMB.imposto.codigo}" />
+
 				<p:growl id="messagens" />
 
-				<p:tabView>
+				<br />
 
-					<p:tab title="Imposto">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+					<p:outputLabel for="regimeTributario" value="Regime Tributario:" />
+					<p:selectOneMenu id="regimeTributario"
+						value="#{impostoMB.imposto.regimeTributario}"
+						filterMatchMode="startsWith">
+						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{impostoMB.regimeTributario}" var="item"
+							itemLabel="#{item}" itemValue="#{item}" />
+						<p:ajax update="form"
+							listener="#{impostoMB.renderizaCompoentesSimplesNacionalOuRegimeNormal}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<br />
+
+				<p:tabView id="tabViewImposto">
+
+					<p:tab title="ICMS" id="tabICMS">
 
 						<p:panelGrid columns="2" layout="grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
-							<p:outputLabel for="regimeTributario" value="Regime Tributario:" />
-							<p:selectOneMenu id="regimeTributario"
-								value="#{impostoMB.imposto.regimeTributario}"
+							<p:outputLabel for="ICMS" value="Grupo ICMS:" />
+							<p:selectOneMenu id="ICMS" value="#{impostoMB.imposto.ICMS}"
 								filterMatchMode="startsWith">
 								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
-								<f:selectItems value="#{impostoMB.regimeTributarios}" var="item"
+								<f:selectItems value="#{impostoMB.ICMS}" var="item"
 									itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="situacaoOperacaoSN"
+								value="Situacao Operacao SN (CSOSN) :" />
+							<p:selectOneMenu id="situacaoOperacaoSN"
+								value="#{impostoMB.imposto.situacaoOperacaoSN}"
+								filterMatchMode="startsWith"
+								disabled="#{impostoMB.renderizaCompoentesSimplesNacional}">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.situacaoOperacaoSN}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+								<p:ajax listener="#{impostoMB.renderizaCompoentesCSTOuCSOSN}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="situacaoTributaria"
+								value="Situacao Tributaria (CST):" />
+							<p:selectOneMenu id="situacaoTributaria"
+								value="#{impostoMB.imposto.situacaoTributaria}"
+								filterMatchMode="startsWith"
+								disabled="#{impostoMB.renderizaCompoentesRegimeNormal}">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.situacaoTributaria}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+								<p:ajax listener="#{impostoMB.renderizaCompoentesCSTOuCSOSN}" />
 							</p:selectOneMenu>
 
 						</p:panelGrid>
 
 						<br />
 
-						<p:tabView>
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
-							<p:tab title="ICMS ou CST">
+							<p:outputLabel for="origem" value="Origem:" />
+							<p:selectOneMenu id="origem" value="#{impostoMB.imposto.origem}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.origem}" var="item"
+									itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
 
-								<p:panelGrid columns="2" layout="grid"
-									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+						</p:panelGrid>
 
-									<p:outputLabel for="icms" value="ICMS ou CST:" />
-									<p:selectOneMenu id="icms" value="#{impostoMB.imposto.icms}"
-										filterMatchMode="startsWith">
-										<f:selectItem itemLabel="" itemValue="" />
-										<f:selectItem itemLabel="00 - Tributada integralmente"
-											itemValue="00" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="10 - Tributada e com cobrança do ICMS por substituição tributária"
-											itemValue="10" noSelectionOption="true" />
-										<f:selectItem itemLabel="20 - Com redução da BC"
-											itemValue="20" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="30 - Isenta / não tributada e com cobrança do ICMS por substituição tributária"
-											itemValue="30" noSelectionOption="true" />
-										<f:selectItem itemLabel="40 - Isenta" itemValue="40"
+						<p:tabView id="tabViewICMS">
+
+							<p:tab title="CST / CSOSN" id="tabCST">
+
+								<p:panelGrid columns="4" layout="grid">
+
+									<p:outputLabel for="modalidadeBCICMS"
+										value="Modalidade BC ICMS:" />
+									<p:selectOneMenu id="modalidadeBCICMS"
+										value="#{impostoMB.imposto.modalidadeBCICMS}"
+										filterMatchMode="startsWith"
+										disabled="#{impostoMB.renderizaCompoentesCST}">
+										<f:selectItem itemLabel="" itemValue=""
 											noSelectionOption="true" />
-										<f:selectItem itemLabel="41 - Não tributada" itemValue="41"
-											noSelectionOption="true" />
-										<f:selectItem itemLabel="50 - Com suspensão" itemValue="50"
-											noSelectionOption="true" />
-										<f:selectItem itemLabel="51 - Com diferimento" itemValue="51"
-											noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="60 - ICMS cobrado anteriormente por substituição tributária"
-											itemValue="60" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="70 - Com redução da BC e cobrança do ICMS por substituição tributária"
-											itemValue="70" noSelectionOption="true" />
-										<f:selectItem itemLabel="90 - Outras" itemValue="90"
-											noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="101 – Tributada pelo Simples Nacional com permissão de crédito"
-											itemValue="101" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="102 – Tributada pelo Simples Nacional sem permissão de crédito"
-											itemValue="102" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta"
-											itemValue="103" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"
-											itemValue="201" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"
-											itemValue="202" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"
-											itemValue="203" noSelectionOption="true" />
-										<f:selectItem itemLabel="300 - Imune" itemValue="300"
-											noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="400 - Não tributada pelo Simples Nacional"
-											itemValue="400" noSelectionOption="true" />
-										<f:selectItem
-											itemLabel="500 – ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"
-											itemValue="500" noSelectionOption="true" />
-										<f:selectItem itemLabel="900 - Outros" itemValue="900"
-											noSelectionOption="true" />
+										<f:selectItems value="#{impostoMB.modalidadeBCICMS}"
+											var="item" itemLabel="#{item}" itemValue="#{item}" />
 									</p:selectOneMenu>
+
+									<p:outputLabel for="valorBaseCalculo"
+										value="Valor Base Calculo:" />
+									<p:inputNumber id="valorBaseCalculo"
+										value="#{impostoMB.imposto.valorBaseCalculo}" />
+
+									<p:outputLabel for="percentualAliquota"
+										value="Percentual Aliquota:" />
+									<p:inputNumber id="percentualAliquota"
+										value="#{impostoMB.imposto.percentualAliquota}" />
+
+									<p:outputLabel for="valorTributo" value="Valor Tributo:" />
+									<p:inputNumber id="valorTributo"
+										value="#{impostoMB.imposto.valorTributo}" />
+
+									<p:outputLabel for="percentualFundoCombatePobreza"
+										value="Percentual Fundo Combate Pobreza:" />
+									<p:inputNumber id="percentualFundoCombatePobreza"
+										value="#{impostoMB.imposto.valorBaseCalculo}" />
+
+									<p:outputLabel for="valorFundoCombatePobreza"
+										value="Valor Fundo Combate Pobreza:" />
+									<p:inputNumber id="valorFundoCombatePobreza"
+										value="#{impostoMB.imposto.valorFundoCombatePobreza}" />
+
+									<p:outputLabel for="modalidadeBCICMSST"
+										value="Modalidade BC ICMS ST:" />
+									<p:selectOneMenu id="modalidadeBCICMSST"
+										value="#{impostoMB.imposto.modalidadeBCICMSST}"
+										filterMatchMode="startsWith">
+										<f:selectItem itemLabel="" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{impostoMB.modalidadeBCICMSST}"
+											var="item" itemLabel="#{item}" itemValue="#{item}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="percentualMargemValorAdicionadoICMSST"
+										value="Percentual Margem Valor Adicionado ICMS ST:" />
+									<p:inputNumber id="percentualMargemValorAdicionadoICMSST"
+										value="#{impostoMB.imposto.percentualMargemValorAdicionadoICMSST}" />
+
+									<p:outputLabel for="percentualReducaoBCICMSST"
+										value="Percentual Reducao BC ICMS ST:" />
+									<p:inputNumber id="percentualReducaoBCICMSST"
+										value="#{impostoMB.imposto.percentualReducaoBCICMSST}" />
+
+									<p:outputLabel for="valorBCICMSST" value="Valor BC ICMS ST:" />
+									<p:inputNumber id="valorBCICMSST"
+										value="#{impostoMB.imposto.valorBCICMSST}" />
+
+									<p:outputLabel for="percentualAliquotaImpostoICMSST"
+										value="Percentual Aliquota Imposto ICMS ST:" />
+									<p:inputNumber id="percentualAliquotaImpostoICMSST"
+										value="#{impostoMB.imposto.percentualAliquotaImpostoICMSST}" />
+
+									<p:outputLabel for="valorICMSST" value="Valor ICMS ST:" />
+									<p:inputNumber id="valorICMSST"
+										value="#{impostoMB.imposto.valorICMSST}" />
+
+									<p:outputLabel for="valorBCFundoCombatePobrezaST"
+										value="Valor BC Fundo Combate Pobreza ST:" />
+									<p:inputNumber id="valorBCFundoCombatePobrezaST"
+										value="#{impostoMB.imposto.valorBCFundoCombatePobrezaST}" />
+
+									<p:outputLabel for="percentualFundoCombatePobrezaST"
+										value="Percentual Fundo Combate Pobreza ST:" />
+									<p:inputNumber id="percentualFundoCombatePobrezaST"
+										value="#{impostoMB.imposto.percentualFundoCombatePobrezaST}" />
+
+									<p:outputLabel for="valorFundoCombatePobrezaST"
+										value="Valor Fundo Combate Pobreza ST:" />
+									<p:inputNumber id="valorFundoCombatePobrezaST"
+										value="#{impostoMB.imposto.valorFundoCombatePobrezaST}" />
+
+									<p:outputLabel for="valorImpostoICMSST"
+										value="Valor Imposto ICMS ST:" />
+									<p:inputNumber id="valorImpostoICMSST"
+										value="#{impostoMB.imposto.valorImpostoICMSST}" />
+
+									<p:outputLabel for="valorICMSDesoneracao"
+										value="Valor ICMS Desoneracao:" />
+									<p:inputNumber id="valorICMSDesoneracao"
+										value="#{impostoMB.imposto.valorICMSDesoneracao}" />
+
+									<p:outputLabel for="desoneracao" value="Desoneracao:" />
+									<p:selectOneMenu id="desoneracao" style="width: 200px"
+										value="#{impostoMB.imposto.desoneracao}"
+										filterMatchMode="startsWith">
+										<f:selectItem itemLabel="" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{impostoMB.desoneracao}" var="item"
+											itemLabel="#{item}" itemValue="#{item}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="motivoDesoneracaoICMS"
+										value="Motivo Desoneracao ICMS" />
+									<p:selectOneMenu id="motivoDesoneracaoICMS"
+										style="width: 200px"
+										value="#{impostoMB.imposto.motivoDesoneracaoICMS}"
+										filterMatchMode="startsWith">
+										<f:selectItem itemLabel="" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{impostoMB.motivoDesoneracaoICMS}"
+											var="item" itemLabel="#{item}" itemValue="#{item}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="percentualReducaoBC"
+										value="Percentual Reducao BC:" />
+									<p:inputNumber id="percentualReducaoBC"
+										value="#{impostoMB.imposto.percentualReducaoBC}" />
+
+									<p:outputLabel for="valorBCICMS" value="Valor BC ICMS:" />
+									<p:inputNumber id="valorBCICMS"
+										value="#{impostoMB.imposto.valorBCICMS}" />
+
+									<p:outputLabel for="percentualICMS" value="Percentual ICMS:" />
+									<p:inputNumber id="percentualICMS"
+										value="#{impostoMB.imposto.percentualICMS}" />
+
+									<p:outputLabel for="valorICMSOperacao"
+										value="Valor ICMS Operacao:" />
+									<p:inputNumber id="valorICMSOperacao"
+										value="#{impostoMB.imposto.valorICMSOperacao}" />
+
+									<p:outputLabel for="percentualDiferimento"
+										value="Percentual Diferimento:" />
+									<p:inputNumber id="percentualDiferimento"
+										value="#{impostoMB.imposto.percentualDiferimento}" />
+
+									<p:outputLabel for="valorICMSDiferimento"
+										value="Valor ICMS Diferimento:" />
+									<p:inputNumber id="valorICMSDiferimento"
+										value="#{impostoMB.imposto.valorICMSDiferimento}" />
+
+									<p:outputLabel for="valorICMS" value="Valor ICMS:" />
+									<p:inputNumber id="valorICMS"
+										value="#{impostoMB.imposto.valorICMS}" />
+
+									<p:outputLabel for="valorBCFundoCombatePobreza"
+										value="Valor BC Fundo Combate Pobreza:" />
+									<p:inputNumber id="valorBCFundoCombatePobreza"
+										value="#{impostoMB.imposto.valorBCFundoCombatePobreza}" />
+
+									<p:outputLabel for="valorBCICMSSTRetido"
+										value="Valor BC ICMS ST Retido:" />
+									<p:inputNumber id="valorBCICMSSTRetido"
+										value="#{impostoMB.imposto.valorBCICMSSTRetido}" />
+
+									<p:outputLabel for="percentualAliquotaICMSSTConsumidorFinal"
+										value="Percentual Aliquota ICMS ST Consumidor Final:" />
+									<p:inputNumber id="percentualAliquotaICMSSTConsumidorFinal"
+										value="#{impostoMB.imposto.percentualAliquotaICMSSTConsumidorFinal}" />
+
+									<p:outputLabel for="valorICMSSubstituto"
+										value="Valor ICMS Substituto:" />
+									<p:inputNumber id="valorICMSSubstituto"
+										value="#{impostoMB.imposto.valorICMSSubstituto}" />
+
+									<p:outputLabel for="valorICMSSTRetido"
+										value="Valor ICMS ST Retido:" />
+									<p:inputNumber id="valorICMSSTRetido"
+										value="#{impostoMB.imposto.valorICMSSTRetido}" />
+
+									<p:outputLabel for="valorBCFundoCombatePobrezaRetidoST"
+										value="Valor BC Fundo Combate Pobreza Retido ST:" />
+									<p:inputNumber id="valorBCFundoCombatePobrezaRetidoST"
+										value="#{impostoMB.imposto.valorBCFundoCombatePobrezaRetidoST}" />
+
+									<p:outputLabel for="percentualFundoCombatePobrezaRetidoST"
+										value="Percentual Fundo Combate Pobreza Retido ST:" />
+									<p:inputNumber id="percentualFundoCombatePobrezaRetidoST"
+										value="#{impostoMB.imposto.percentualFundoCombatePobrezaRetidoST}" />
+
+									<p:outputLabel for="valorFundoCombatePobrezaRetidoST"
+										value="Valor Fundo Combate Pobreza Retido ST:" />
+									<p:inputNumber id="valorFundoCombatePobrezaRetidoST"
+										value="#{impostoMB.imposto.valorFundoCombatePobrezaRetidoST}" />
+
+									<p:outputLabel for="percentualReducaoBCEfetiva"
+										value="Percentual Reducao BC Efetiva:" />
+									<p:inputNumber id="percentualReducaoBCEfetiva"
+										value="#{impostoMB.imposto.percentualReducaoBCEfetiva}" />
+
+									<p:outputLabel for="valorBCEfetiva" value="Valor BC Efetiva:" />
+									<p:inputNumber id="valorBCEfetiva"
+										value="#{impostoMB.imposto.valorBCEfetiva}" />
+
+									<p:outputLabel for="percentualAliquotaICMSEfetiva"
+										value="Percentual Aliquota ICMS Efetiva:" />
+									<p:inputNumber id="percentualAliquotaICMSEfetiva"
+										value="#{impostoMB.imposto.percentualAliquotaICMSEfetiva}" />
+
+									<p:outputLabel for="valorICMSEfetivo"
+										value="Valor ICMS Efetivo:" />
+									<p:inputNumber id="valorICMSEfetivo"
+										value="#{impostoMB.imposto.valorICMSEfetivo}" />
+
+									<p:outputLabel for="valorBC" value="Valor BC:" />
+									<p:inputNumber id="valorBC"
+										value="#{impostoMB.imposto.valorBC}" />
+
+									<p:outputLabel for="valorBCST" value="Valor BC ST:" />
+									<p:inputNumber id="valorBCST"
+										value="#{impostoMB.imposto.valorBCST}" />
+
+									<p:outputLabel for="percentualAliquotaImposto"
+										value="Percentual Aliquota Imposto:" />
+									<p:inputNumber id="percentualAliquotaImposto"
+										value="#{impostoMB.imposto.percentualAliquotaImposto}" />
+
+									<p:outputLabel for="percentualBCOperacaoPropria"
+										value="Percentual BC Operacao Propria:" />
+									<p:inputNumber id="percentualBCOperacaoPropria"
+										value="#{impostoMB.imposto.percentualBCOperacaoPropria}" />
+
+									<p:outputLabel for="ufICMSST" value="UF ICMS ST:" />
+									<p:inputNumber id="ufICMSST"
+										value="#{impostoMB.imposto.ufICMSST}" />
+
+									<p:outputLabel for="valorBCICMSSTRetidoUFRemetente"
+										value="Valor BC ICMS ST Retido UF Remetente:" />
+									<p:inputNumber id="valorBCICMSSTRetidoUFRemetente"
+										value="#{impostoMB.imposto.valorBCICMSSTRetidoUFRemetente}" />
+
+									<p:outputLabel for="aliqSuportadaConsFinal"
+										value="Aliq Suportada Cons Final:" />
+									<p:inputNumber id="aliqSuportadaConsFinal"
+										value="#{impostoMB.imposto.aliqSuportadaConsFinal}" />
+
+									<p:outputLabel for="valorICMSSTRetidoUFRemetente"
+										value="Valor ICMS ST Retido UF Remetente:" />
+									<p:inputNumber id="valorICMSSTRetidoUFRemetente"
+										value="#{impostoMB.imposto.valorICMSSTRetidoUFRemetente}" />
+
+									<p:outputLabel for="valorBCICMSSTUFDestino"
+										value="Valor BC ICMS ST UF Destino:" />
+									<p:inputNumber id="valorBCICMSSTUFDestino"
+										value="#{impostoMB.imposto.valorBCICMSSTUFDestino}" />
+
+									<p:outputLabel for="valorICMSSTUFDestino"
+										value="Valor ICMS ST UF Destino:" />
+									<p:inputNumber id="valorICMSSTUFDestino"
+										value="#{impostoMB.imposto.valorICMSSTUFDestino}" />
+
+									<p:outputLabel
+										for="percentualAliquotaAplicavelCalculoCreditoSN"
+										value="Percentual Aliquota Aplicavel Calculo Credito SN:" />
+									<p:inputNumber id="percentualAliquotaAplicavelCalculoCreditoSN"
+										value="#{impostoMB.imposto.percentualAliquotaAplicavelCalculoCreditoSN}" />
+
+									<p:outputLabel for="valorCreditoICMSSN"
+										value="Valor Credito ICMS SN:" />
+									<p:inputNumber id="valorCreditoICMSSN"
+										value="#{impostoMB.imposto.valorCreditoICMSSN}" />
+
+									<p:outputLabel for="percentualICMSSTRetido"
+										value="Percentual ICMS ST Retido:" />
+									<p:inputNumber id="percentualICMSSTRetido"
+										value="#{impostoMB.imposto.percentualICMSSTRetido}" />
 
 								</p:panelGrid>
 
 								<br />
 
-								<p:tabView>
-
-									<p:tab title="ICMS 00">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 10">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 20">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 30">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 40">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 51">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 60">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 70">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS 90">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS Partilhado">
-
-
-									</p:tab>
-
-									<p:tab title="ICMS ST">
-
-
-									</p:tab>
-
-									<p:tab title="ICMSSN 101">
-
-
-									</p:tab>
-
-									<p:tab title="ICMSSN 102">
-
-
-									</p:tab>
-
-									<p:tab title="ICMSSN 201">
-
-
-									</p:tab>
-
-									<p:tab title="ICMSSN 202">
-
-
-									</p:tab>
-
-									<p:tab title="ICMSSN 500">
-
-
-									</p:tab>
-
-									<p:tab title="ICMSSN 900">
-
-
-									</p:tab>
-
-
-								</p:tabView>
-
 							</p:tab>
-
-							<p:tab title="IPI">
-
-
-							</p:tab>
-
-							<p:tab title="Imposto Importacao">
-
-
-							</p:tab>
-
-							<p:tab title="ISSQN">
-
-
-							</p:tab>
-
-							<p:tab title="PIS">
-
-
-							</p:tab>
-
-							<p:tab title="PISST">
-
-
-							</p:tab>
-
-							<p:tab title="COFINS">
-
-
-							</p:tab>
-
-							<p:tab title="COFINSST">
-
-
-							</p:tab>
-
-							<p:tab title="ICMS UF Destino">
-
-
-							</p:tab>
-
 
 						</p:tabView>
 
+					</p:tab>
+
+					<p:tab title="IPI">
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="cnpjProdutor" value="CNPJ Produtor" />
+							<p:inputText id="cnpjProdutor"
+								value="#{impostoMB.imposto.cnpjProdutor}"
+								validatorMessage="Verifique o CNPJ. Caracteres permitidos: [0-9] Min:1 Max:18">
+								<f:validateRegex pattern="(^[0-9]+$)?" />
+							</p:inputText>
+
+							<p:outputLabel for="codigoSelo" value="Código Selo:" />
+							<p:inputText id="codigoSelo"
+								value="#{impostoMB.imposto.codigoSelo}">
+							</p:inputText>
+
+							<p:outputLabel for="quantidadeSelo" value="Quantidade Selo:" />
+							<p:spinner id="quantidadeSelo"
+								value="#{impostoMB.imposto.quantidadeSelo}" />
+
+							<p:outputLabel for="codigoEnquadramento"
+								value="Código Enquadramento:" />
+							<p:inputText id="codigoEnquadramento"
+								value="#{impostoMB.imposto.codigoEnquadramento}">
+							</p:inputText>
+
+							<p:outputLabel for="situacaoTributariaIPI"
+								value="Situacao Tributaria IPI" />
+							<p:selectOneMenu id="situacaoTributariaIPI" style="width: 200px"
+								value="#{impostoMB.imposto.situacaoTributariaIPI}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.situacaoTributariaIPI}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:separator />
+
+						<p:outputLabel value="IPI Tributado" />
+
+						<br />
+
+						<br />
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="valorBaseCalculoIPI"
+								value="Valor Base Calculo IPI:" />
+							<p:inputNumber id="valorBaseCalculoIPI"
+								value="#{impostoMB.imposto.valorBaseCalculoIPI}" />
+
+							<p:outputLabel for="percentualAliquotaIPI"
+								value="Percentual Aliquota IPI:" />
+							<p:inputNumber id="percentualAliquotaIPI"
+								value="#{impostoMB.imposto.percentualAliquotaIPI}" />
+
+							<p:outputLabel for="quantidadeIPI" value="Quantidade IPI:" />
+							<p:inputNumber id="quantidadeIPI"
+								value="#{impostoMB.imposto.quantidadeIPI}" />
+
+							<p:outputLabel for="valorUnidadeTributavelIPI"
+								value="Valor Unidade Tributavel IPI:" />
+							<p:inputNumber id="valorUnidadeTributavelIPI"
+								value="#{impostoMB.imposto.valorUnidadeTributavelIPI}" />
+
+							<p:outputLabel for="valorTributoIPI" value="Valor Tributo IPI:" />
+							<p:inputNumber id="valorTributoIPI"
+								value="#{impostoMB.imposto.valorTributoIPI}" />
+
+						</p:panelGrid>
 
 					</p:tab>
+
+					<p:tab title="Imposto Importacao">
+
+
+					</p:tab>
+
+					<p:tab title="ISSQN">
+
+
+					</p:tab>
+
+					<p:tab title="PIS">
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="situacaoTributariaPIS"
+								value="Situacao Tributaria PIS" />
+							<p:selectOneMenu id="situacaoTributariaPIS" style="width: 200px"
+								value="#{impostoMB.imposto.situacaoTributariaPIS}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.situacaoTributariaPIS}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="valorBaseCalculoPIS"
+								value="Valor Base Calculo PIS:" />
+							<p:inputNumber id="valorBaseCalculoPIS"
+								value="#{impostoMB.imposto.valorBaseCalculoPIS}" />
+
+							<p:outputLabel for="percentualAliquotaPIS"
+								value="Percentual Aliquota PIS:" />
+							<p:inputNumber id="percentualAliquotaPIS"
+								value="#{impostoMB.imposto.percentualAliquotaPIS}" />
+
+							<p:outputLabel for="valorTributoPIS" value="Valor Tributo PIS:" />
+							<p:inputNumber id="valorTributoPIS"
+								value="#{impostoMB.imposto.valorTributoPIS}" />
+
+							<p:outputLabel for="quantidadeVendidaPIS"
+								value="Quantidade Vendida PIS:" />
+							<p:inputNumber id="quantidadeVendidaPIS"
+								value="#{impostoMB.imposto.quantidadeVendidaPIS}" />
+
+							<p:outputLabel for="valorAliquotaPIS" value="Valor Aliquota PIS:" />
+							<p:inputNumber id="valorAliquotaPIS"
+								value="#{impostoMB.imposto.valorAliquotaPIS}" />
+
+						</p:panelGrid>
+
+
+					</p:tab>
+
+					<p:tab title="PISST">
+
+
+					</p:tab>
+
+					<p:tab title="COFINS">
+
+						<p:panelGrid columns="2" layout="grid">
+
+							<p:outputLabel for="situacaoTributariaCOFINS"
+								value="Situacao Tributaria COFINS" />
+							<p:selectOneMenu id="situacaoTributariaCOFINS"
+								style="width: 200px"
+								value="#{impostoMB.imposto.situacaoTributariaCOFINS}"
+								filterMatchMode="startsWith">
+								<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{impostoMB.situacaoTributariaCOFINS}"
+									var="item" itemLabel="#{item}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="valorBaseCalculoCOFINS"
+								value="Valor Base Calculo COFINS:" />
+							<p:inputNumber id="valorBaseCalculoCOFINS"
+								value="#{impostoMB.imposto.valorBaseCalculoCOFINS}" />
+
+							<p:outputLabel for="percentualAliquotaCOFINS"
+								value="Percentual Aliquota COFINS:" />
+							<p:inputNumber id="percentualAliquotaCOFINS"
+								value="#{impostoMB.imposto.percentualAliquotaCOFINS}" />
+
+							<p:outputLabel for="valorCOFINS" value="Valor COFINS:" />
+							<p:inputNumber id="valorCOFINS"
+								value="#{impostoMB.imposto.valorCOFINS}" />
+
+							<p:outputLabel for="quantidadeVendidaCOFINS"
+								value="Quantidade Vendida COFINS:" />
+							<p:inputNumber id="quantidadeVendidaCOFINS"
+								value="#{impostoMB.imposto.quantidadeVendidaCOFINS}" />
+
+							<p:outputLabel for="valorAliquotaCOFINS"
+								value="valorAliquotaCOFINS:" />
+							<p:inputNumber id="valorAliquotaCOFINS"
+								value="#{impostoMB.imposto.valorAliquotaCOFINS}" />
+
+							<p:outputLabel for="valorTributoCOFINS"
+								value="Valor Tributo COFINS:" />
+							<p:inputNumber id="valorTributoCOFINS"
+								value="#{impostoMB.imposto.valorTributoCOFINS}" />
+
+							<p:outputLabel for="percentualCOFINS" value="Percentual COFINS:" />
+							<p:inputNumber id="percentualCOFINS"
+								value="#{impostoMB.imposto.percentualCOFINS}" />
+
+						</p:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="COFINSST">
+
+
+					</p:tab>
+
+					<p:tab title="ICMS UF Destino">
+
+
+					</p:tab>
+
 
 				</p:tabView>
 

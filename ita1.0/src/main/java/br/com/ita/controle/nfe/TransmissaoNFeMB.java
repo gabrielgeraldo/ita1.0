@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,14 +30,13 @@ import com.fincatto.documentofiscal.nfe.NFTipoEmissao;
 import com.fincatto.documentofiscal.nfe400.classes.NFEndereco;
 import com.fincatto.documentofiscal.nfe400.classes.NFFinalidade;
 import com.fincatto.documentofiscal.nfe400.classes.NFIndicadorFormaPagamento;
+import com.fincatto.documentofiscal.nfe400.classes.NFNotaInfoImpostoTributacaoICMS;
 import com.fincatto.documentofiscal.nfe400.classes.NFNotaInfoSituacaoTributariaCOFINS;
 import com.fincatto.documentofiscal.nfe400.classes.NFNotaInfoSituacaoTributariaPIS;
 import com.fincatto.documentofiscal.nfe400.classes.NFNotaSituacaoOperacionalSimplesNacional;
-import com.fincatto.documentofiscal.nfe400.classes.NFOrigem;
 import com.fincatto.documentofiscal.nfe400.classes.NFProcessoEmissor;
 import com.fincatto.documentofiscal.nfe400.classes.NFProdutoCompoeValorNota;
 import com.fincatto.documentofiscal.nfe400.classes.NFProtocolo;
-import com.fincatto.documentofiscal.nfe400.classes.NFRegimeTributario;
 import com.fincatto.documentofiscal.nfe400.classes.NFTipoImpressao;
 import com.fincatto.documentofiscal.nfe400.classes.lote.consulta.NFLoteConsultaRetorno;
 import com.fincatto.documentofiscal.nfe400.classes.lote.envio.NFLoteEnvio;
@@ -61,9 +60,23 @@ import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoCOF
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoCOFINSNaoTributavel;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoCOFINSOutrasOperacoes;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS00;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS10;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS20;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS30;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS40;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS51;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS60;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS70;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMS90;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSPartilhado;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSSN101;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSSN102;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSSN201;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSSN202;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSSN500;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSSN900;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoICMSST;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoIPI;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoIPITributado;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoPIS;
@@ -83,11 +96,9 @@ import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
 import br.com.ita.controle.config.Config;
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.util.XmlUtil;
-import br.com.ita.dominio.Configuracao;
 import br.com.ita.dominio.FormaPagamento;
 import br.com.ita.dominio.ItemNTFe;
 import br.com.ita.dominio.NTFe;
-import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.dao.EstadoDAO;
 import br.com.ita.dominio.dao.ItemNFeDAO;
 import br.com.ita.dominio.dao.MunicipioDAO;
@@ -166,9 +177,6 @@ public class TransmissaoNFeMB implements Serializable {
 
 	private List<NFNotaInfoPagamento> pagamentos = new ArrayList<NFNotaInfoPagamento>();
 
-	@Inject
-	private ConfiguracaoDAO daoConfiguracao;
-
 	private String ambienteConfigurado;
 
 	private NFNotaInfoCobranca cobranca = new NFNotaInfoCobranca();
@@ -185,9 +193,17 @@ public class TransmissaoNFeMB implements Serializable {
 	@Inject
 	private MunicipioDAO daoMunicipio;
 
+	private String dadosDoCertificado;
+
 	@PostConstruct
 	public void init() {
+
 		ambienteConfigurado = Config.propertiesLoader().getProperty("ambiente");
+
+		this.setDadosDoCertificado(config.getDadosDoCertificado());
+
+		consultarStatusSefaz();
+
 	}
 
 	public String listar() {
@@ -204,34 +220,40 @@ public class TransmissaoNFeMB implements Serializable {
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 		} catch (UnrecoverableKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 		} catch (KeyStoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JSFUtil.retornarMensagemFatal(e.getMessage(), null, null);
+			JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 		} catch (CertificateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JSFUtil.retornarMensagemFatal(null, e.getMessage() + " ( Verifique a validade do certificado digital )",
+					null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 		}
 
-		// System.out.println("Status SEFAZ: " + retornoStatus.getStatus());
-		// System.out.println("Motivo SEFAZ: " + retornoStatus.getMotivo());
+		if (retornoStatus != null)
+			this.setStatusSefaz(
+					retornoStatus.getStatus() + " " + retornoStatus.getMotivo() + " " + config.getAmbiente());
 
-		// System.out.println("Ambiente Configurado: " + config.getAmbiente());
-
-		this.setStatusSefaz(retornoStatus.getStatus() + " " + retornoStatus.getMotivo() + " " + config.getAmbiente());
+		if (retornoStatus == null)
+			this.setStatusSefaz("Atenção! Não foi possível obeter o ststaus da SEFAZ. Entre em contato com o suporte.");
 
 	}
 
@@ -267,7 +289,7 @@ public class TransmissaoNFeMB implements Serializable {
 		emitente.setNomeFantasia(Config.propertiesLoader().getProperty("nomeFantasia"));
 		emitente.setEndereco(emitenteEndereco);
 		emitente.setInscricaoEstadual(Config.propertiesLoader().getProperty("inscricaoEstadual"));
-		emitente.setRegimeTributario(NFRegimeTributario.SIMPLES_NACIONAL);
+		emitente.setRegimeTributario(nfe.getRegimeTributario());
 
 	}
 
@@ -354,15 +376,19 @@ public class TransmissaoNFeMB implements Serializable {
 	public void geraNFNotaInfoIdentificacao() {
 
 		identificacao.setUf(DFUnidadeFederativa.valueOfCodigo(Config.propertiesLoader().getProperty("uf")));
-		// identificacao.setCodigoRandomico(null); // Esse atributo � setado no
-		// m�todo transmitirNfe().
 
-		// Esse valaor e setado como "teste" e depois e atualizado no m�todo
+		// Esse atributo e setado no metodo transmitirNfe().
+		// identificacao.setCodigoRandomico(null);
+
+		// Esse valor e setado como "teste" e depois e atualizado no metodo
 		// transmitirNfe().
 		identificacao.setCodigoRandomico(this.gerarCodigoRandomico());
+
 		identificacao.setNaturezaOperacao(this.nfe.getNaturezaOperacao());
+
 		// Removido 20180913 ao atualizar nfe40
 		// identificacao.setFormaPagamento(this.nfe.getNfFormaPagamentoPrazo());
+
 		identificacao.setModelo(DFModelo.valueOfCodigo("55"));
 		identificacao.setSerie(Integer.toString(this.nfe.getSerie()));
 		identificacao.setNumeroNota(Integer.toString(this.nfe.getNumero())); // VERIFICAR
@@ -524,18 +550,22 @@ public class TransmissaoNFeMB implements Serializable {
 
 	public void geraNFNotaInfo() {
 
-		// Esse valaor e setado como "teste" e depois e atualizado no m�todo
+		// Esse valor e setado como "teste" e depois e atualizado no metodo
 		// transmitirNfe().
 		info.setIdentificador("11111111111111111111111111111111111111111111");
-		// info.setIdentificador(null); // Esse atributo � setado no m�todo
-		// transmitirNfe().
+
+		// Esse atributo e setado no metodo transmitirNfe().
+		// info.setIdentificador(null);
+
 		info.setVersao(new java.math.BigDecimal(config.getVersao()));
 		info.setIdentificacao(identificacao);
 		info.setEmitente(emitente);
 		info.setDestinatario(destinatario);
 
 		this.geraPagamentos();
+
 		// info.setPagamentos(pagamentos);
+
 		info.setPagamento(pagamento);
 		info.setCobranca(cobranca);
 
@@ -545,94 +575,13 @@ public class TransmissaoNFeMB implements Serializable {
 
 		List<ItemNTFe> lista = this.daoItemNFe.buscaItens(nfe);
 
-		// Usado se a configuração do imposto estiver no sistema.
-		Configuracao config = (Config.propertiesLoader().getProperty("imposto").equals("1")
-				? daoConfiguracao.lerPorId(new Long(1)) : null);
-
-		NFNotaInfoInformacoesAdicionais infoAdc = new NFNotaInfoInformacoesAdicionais();
-
-		// Se a configuração estiver no produto.
-		if (Config.propertiesLoader().getProperty("imposto").equals("2")) {
-
-			switch (lista.get(0).getProduto().getCsosn()) {
-			case "101":
-				if (this.nfe.getInformacoesComplementares() == null) {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.PERMITE O APROVEITAMENTO DO *CRÉDITO DE ICMS NO VALOR DE R$......; CORRESPONDENTE À *ALÍQUOTA DE...%, NOS TERMOS DO ART. 23 DA LEI COMPLEMENTAR Nº 123, DE 2006.");
-				} else {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.PERMITE O APROVEITAMENTO DO *CRÉDITO DE ICMS NO VALOR DE R$......; CORRESPONDENTE À *ALÍQUOTA DE...%, NOS TERMOS DO ART. 23 DA LEI COMPLEMENTAR Nº 123, DE 2006."
-									+ this.nfe.getInformacoesComplementares());
-				}
-				break;
-			case "102":
-				if (this.nfe.getInformacoesComplementares() == null) {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.;");
-				} else {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.;"
-									+ this.nfe.getInformacoesComplementares());
-				}
-				break;
-			case "500":
-				if (this.nfe.getInformacoesComplementares() == null) {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.");
-				} else {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI."
-									+ this.nfe.getInformacoesComplementares());
-				}
-				break;
-			default:
-			}
-
-		} else if (Config.propertiesLoader().getProperty("imposto").equals("1")) {
-
-			switch (config.getCsosn()) {
-			case "101":
-				if (this.nfe.getInformacoesComplementares() == null) {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.PERMITE O APROVEITAMENTO DO *CRÉDITO DE ICMS NO VALOR DE R$......; CORRESPONDENTE À *ALÍQUOTA DE...%, NOS TERMOS DO ART. 23 DA LEI COMPLEMENTAR Nº 123, DE 2006.");
-				} else {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.PERMITE O APROVEITAMENTO DO *CRÉDITO DE ICMS NO VALOR DE R$......; CORRESPONDENTE À *ALÍQUOTA DE...%, NOS TERMOS DO ART. 23 DA LEI COMPLEMENTAR Nº 123, DE 2006."
-									+ this.nfe.getInformacoesComplementares());
-				}
-				break;
-			case "102":
-				if (this.nfe.getInformacoesComplementares() == null) {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.;");
-				} else {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.;"
-									+ this.nfe.getInformacoesComplementares());
-				}
-				break;
-			case "500":
-				if (this.nfe.getInformacoesComplementares() == null) {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI.");
-				} else {
-					infoAdc.setInformacoesComplementaresInteresseContribuinte(
-							"DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL;NÃO GERA DIREITO A CRÉDITO FISCAL DE IPI."
-									+ this.nfe.getInformacoesComplementares());
-				}
-				break;
-			default:
-			}
-
-		}
-		info.setInformacoesAdicionais(infoAdc);
-
 		for (int i = 0; i < lista.size(); i++) {
 
 			item.setNumeroItem(i + 1);
 
 			produto.setCodigo(lista.get(i).getProduto().getCodigo().toString() != null
-					? lista.get(i).getProduto().getCodigo().toString() : "");
+					? lista.get(i).getProduto().getCodigo().toString()
+					: "");
 
 			produto.setCodigoDeBarras("SEM GTIN");
 
@@ -647,134 +596,1141 @@ public class TransmissaoNFeMB implements Serializable {
 			produto.setCfop(lista.get(i).getCfop().toString() != null ? lista.get(i).getCfop().toString() : "");
 
 			produto.setUnidadeComercial(lista.get(i).getProduto().getUnidadeComercial() != null
-					? lista.get(i).getProduto().getUnidadeComercial() : "");
+					? lista.get(i).getProduto().getUnidadeComercial()
+					: "");
 
 			produto.setUnidadeTributavel(lista.get(i).getProduto().getUnidadeComercial() != null
-					? lista.get(i).getProduto().getUnidadeComercial() : "");
+					? lista.get(i).getProduto().getUnidadeComercial()
+					: "");
 
-			produto.setQuantidadeComercial(new BigDecimal(lista.get(i).getQuantidade()) != null
-					? new BigDecimal(lista.get(i).getQuantidade()) : null);
+			produto.setQuantidadeComercial(
+					new BigDecimal(lista.get(i).getQuantidade()) != null ? new BigDecimal(lista.get(i).getQuantidade())
+							: null);
 
-			produto.setQuantidadeTributavel(new BigDecimal(lista.get(i).getQuantidade()) != null
-					? new BigDecimal(lista.get(i).getQuantidade()) : null);
+			produto.setQuantidadeTributavel(
+					new BigDecimal(lista.get(i).getQuantidade()) != null ? new BigDecimal(lista.get(i).getQuantidade())
+							: null);
 
-			produto.setValorUnitario(lista.get(i).getProduto().getPrecoUnitario() != null
-					? lista.get(i).getProduto().getPrecoUnitario() : null);
+			produto.setValorUnitario(
+					lista.get(i).getProduto().getPrecoUnitario() != null ? lista.get(i).getProduto().getPrecoUnitario()
+							: null);
 
-			produto.setValorUnitarioTributavel(lista.get(i).getProduto().getPrecoUnitario() != null
-					? lista.get(i).getProduto().getPrecoUnitario() : null);
+			produto.setValorUnitarioTributavel(
+					lista.get(i).getProduto().getPrecoUnitario() != null ? lista.get(i).getProduto().getPrecoUnitario()
+							: null);
 
 			produto.setValorTotalBruto(lista.get(i).getProduto().getPrecoUnitario()
 					.multiply(new BigDecimal(lista.get(i).getQuantidade())));
 
-			// Todos os produtos compoe o valor da NF-e.
 			produto.setCompoeValorNota(NFProdutoCompoeValorNota.SIM);
 
-			// Se a configura��o estiver no produto.
-			if (Config.propertiesLoader().getProperty("imposto").equals("2")) {
+			if (nfe.getICMS() != null)
+				switch (nfe.getICMS()) {
+				case ICMS00:
 
-				switch (lista.get(i).getProduto().getCsosn()) {
-				case "101":
+					NFNotaInfoItemImpostoICMS00 icms00 = new NFNotaInfoItemImpostoICMS00();
+					icms00.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+					icms00.setOrigem(nfe.getOrigem());
+
+					icms00.setPercentualAliquota(nfe.getPercentualAliquota().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquota()));
+
+					icms00.setPercentualFundoCombatePobreza(nfe.getPercentualFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobreza()));
+
+					icms00.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms00.setValorBaseCalculo(
+							nfe.getValorBaseCalculo().equals("") ? null : new BigDecimal(nfe.getValorBaseCalculo()));
+
+					icms00.setValorFundoCombatePobreza(nfe.getValorFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobreza()));
+
+					icms00.setValorTributo(
+							nfe.getValorTributo().equals("") ? null : new BigDecimal(nfe.getValorTributo()));
+
+					icms.setIcms00(icms00);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS10:
+
+					NFNotaInfoItemImpostoICMS10 icms10 = new NFNotaInfoItemImpostoICMS10();
+
+					icms10.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+
+					icms10.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+
+					icms10.setOrigem(nfe.getOrigem());
+
+					icms10.setPercentualAliquota(nfe.getPercentualAliquota().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquota()));
+
+					icms10.setPercentualAliquotaImpostoICMSST(nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icms10.setPercentualFundoCombatePobreza(nfe.getPercentualFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobreza()));
+
+					icms10.setPercentualFundoCombatePobrezaST(nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+					icms10.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icms10.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icms10.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms10.setValorBaseCalculo(
+							nfe.getValorBaseCalculo().equals("") ? null : new BigDecimal(nfe.getValorBaseCalculo()));
+
+					icms10.setValorBaseCalculoFundoCombatePobreza(
+							nfe.getValorBaseCalculoFundoCombatePobreza().equals("") ? null
+									: new BigDecimal(nfe.getValorBaseCalculoFundoCombatePobreza()));
+
+					icms10.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+					icms10.setValorBCICMSST(
+							nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+					icms10.setValorFundoCombatePobreza(nfe.getValorFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobreza()));
+
+					icms10.setValorFundoCombatePobrezaST(null);
+
+					icms10.setValorICMSST(
+							nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+					icms10.setValorTributo(
+							nfe.getValorTributo().equals("") ? null : new BigDecimal(nfe.getValorTributo()));
+
+					icms.setIcms10(icms10);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS20:
+
+					NFNotaInfoItemImpostoICMS20 icms20 = new NFNotaInfoItemImpostoICMS20();
+
+					icms20.setDesoneracao(nfe.getDesoneracao());
+
+					icms20.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+
+					icms20.setOrigem(nfe.getOrigem());
+
+					icms20.setPercentualAliquota(nfe.getPercentualAliquota().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquota()));
+
+					icms20.setPercentualFundoCombatePobreza(nfe.getPercentualFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobreza()));
+
+					icms20.setPercentualReducaoBC(nfe.getPercentualReducaoBC().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBC()));
+
+					icms20.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms20.setValorBCFundoCombatePobreza(nfe.getValorBCFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobreza()));
+
+					icms20.setValorBCICMS(
+							nfe.getValorBCICMS().equals("") ? null : new BigDecimal(nfe.getValorBCICMS()));
+
+					icms20.setValorFundoCombatePobreza(nfe.getValorFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobreza()));
+
+					icms20.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+					icms20.setValorTributo(
+							nfe.getValorTributo().equals("") ? null : new BigDecimal(nfe.getValorTributo()));
+
+					icms.setIcms20(icms20);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS30:
+
+					NFNotaInfoItemImpostoICMS30 icms30 = new NFNotaInfoItemImpostoICMS30();
+
+					icms30.setDesoneracao(nfe.getDesoneracao());
+
+					icms30.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+
+					icms30.setOrigem(nfe.getOrigem());
+
+					icms30.setPercentualAliquotaImpostoICMSST(nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icms30.setPercentualFundoCombatePobrezaST(nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+					icms30.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icms30.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icms30.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms30.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+					icms30.setValorBCICMSST(
+							nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+					icms30.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+					icms30.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+					icms30.setValorImpostoICMSST(nfe.getValorImpostoICMSST().equals("") ? null
+							: new BigDecimal(nfe.getValorImpostoICMSST()));
+
+					icms.setIcms30(icms30);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS40:
+
+					// 202 N06 ICMS40 Grupo Tributação ICMS = 40, 41, 50 CG N01 1-1 Tributação
+					// Isenta, Não tributada ou Suspensão
+
+					// ICMS 40
+					if (nfe.getSituacaoTributaria() == NFNotaInfoImpostoTributacaoICMS.ISENTA) {
+
+						NFNotaInfoItemImpostoICMS40 icms40 = new NFNotaInfoItemImpostoICMS40();
+
+						icms40.setMotivoDesoneracaoICMS(nfe.getMotivoDesoneracaoICMS());
+						icms40.setOrigem(nfe.getOrigem());
+						icms40.setSituacaoTributaria(NFNotaInfoImpostoTributacaoICMS.ISENTA);
+						icms40.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+								: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+						icms.setIcms40(icms40);
+						imposto.setIcms(icms);
+
+					}
+
+					// ICMS 41
+					if (nfe.getSituacaoTributaria() == NFNotaInfoImpostoTributacaoICMS.NAO_TRIBUTADO) {
+
+						NFNotaInfoItemImpostoICMS40 icms41 = new NFNotaInfoItemImpostoICMS40();
+
+						icms41.setMotivoDesoneracaoICMS(nfe.getMotivoDesoneracaoICMS());
+						icms41.setOrigem(nfe.getOrigem());
+						icms41.setSituacaoTributaria(NFNotaInfoImpostoTributacaoICMS.NAO_TRIBUTADO);
+						icms41.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+								: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+						icms.setIcms40(icms41);
+						imposto.setIcms(icms);
+
+					}
+
+					// ICMS 50
+					if (nfe.getSituacaoTributaria() == NFNotaInfoImpostoTributacaoICMS.SUSPENSAO) {
+
+						NFNotaInfoItemImpostoICMS40 icms50 = new NFNotaInfoItemImpostoICMS40();
+
+						icms50.setMotivoDesoneracaoICMS(nfe.getMotivoDesoneracaoICMS());
+						icms50.setOrigem(nfe.getOrigem());
+						icms50.setSituacaoTributaria(NFNotaInfoImpostoTributacaoICMS.SUSPENSAO);
+						icms50.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+								: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+						icms.setIcms40(icms50);
+						imposto.setIcms(icms);
+
+					}
+
+					break;
+
+				case ICMS51:
+
+					NFNotaInfoItemImpostoICMS51 icms51 = new NFNotaInfoItemImpostoICMS51();
+
+					icms51.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+
+					icms51.setOrigem(nfe.getOrigem());
+
+					icms51.setPercentualDiferimento(nfe.getPercentualDiferimento().equals("") ? null
+							: new BigDecimal(nfe.getPercentualDiferimento()));
+
+					icms51.setPercentualFundoCombatePobreza(nfe.getPercentualFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobreza()));
+
+					icms51.setPercentualICMS(
+							nfe.getPercentualICMS().equals("") ? null : new BigDecimal(nfe.getPercentualICMS()));
+
+					icms51.setPercentualReducaoBC(nfe.getPercentualReducaoBC().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBC()));
+
+					icms51.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms51.setValorBCFundoCombatePobreza(nfe.getValorBCFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobreza()));
+
+					icms51.setValorBCICMS(
+							nfe.getValorBCICMS().equals("") ? null : new BigDecimal(nfe.getValorBCICMS()));
+
+					icms51.setValorFundoCombatePobreza(nfe.getValorFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobreza()));
+
+					icms51.setValorICMS(nfe.getValorICMS().equals("") ? null : new BigDecimal(nfe.getValorICMS()));
+
+					icms51.setValorICMSDiferimento(nfe.getValorICMSDiferimento().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSDiferimento()));
+
+					icms51.setValorICMSOperacao(
+							nfe.getValorICMSOperacao().equals("") ? null : new BigDecimal(nfe.getValorICMSOperacao()));
+
+					icms.setIcms51(icms51);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS60:
+
+					NFNotaInfoItemImpostoICMS60 icms60 = new NFNotaInfoItemImpostoICMS60();
+
+					icms60.setOrigem(nfe.getOrigem());
+
+					icms60.setPercentualAliquotaICMSEfetiva(nfe.getPercentualAliquotaICMSEfetiva().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaICMSEfetiva()));
+
+					icms60.setPercentualAliquotaICMSSTConsumidorFinal(
+							nfe.getPercentualAliquotaICMSSTConsumidorFinal().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaICMSSTConsumidorFinal()));
+
+					icms60.setPercentualFundoCombatePobrezaRetidoST(
+							nfe.getPercentualFundoCombatePobrezaRetidoST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualFundoCombatePobrezaRetidoST()));
+
+					icms60.setPercentualReducaoBCEfetiva(nfe.getPercentualReducaoBCEfetiva().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCEfetiva()));
+
+					icms60.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms60.setValorBCEfetiva(
+							nfe.getValorBCEfetiva().equals("") ? null : new BigDecimal(nfe.getValorBCEfetiva()));
+
+					icms60.setValorBCFundoCombatePobrezaRetidoST(
+							nfe.getValorBCFundoCombatePobrezaRetidoST().equals("") ? null
+									: new BigDecimal(nfe.getValorBCFundoCombatePobrezaRetidoST()));
+
+					icms60.setValorBCICMSSTRetido(nfe.getValorBCICMSSTRetido().equals("") ? null
+							: new BigDecimal(nfe.getValorBCICMSSTRetido()));
+
+					icms60.setValorFundoCombatePobrezaRetidoST(
+							nfe.getValorFundoCombatePobrezaRetidoST().equals("") ? null
+									: new BigDecimal(nfe.getValorFundoCombatePobrezaRetidoST()));
+
+					icms60.setValorICMSEfetivo(
+							nfe.getValorICMSEfetivo().equals("") ? null : new BigDecimal(nfe.getValorICMSEfetivo()));
+
+					icms60.setValorICMSSTRetido(
+							nfe.getValorICMSSTRetido().equals("") ? null : new BigDecimal(nfe.getValorICMSSTRetido()));
+
+					icms60.setValorICMSSubstituto(nfe.getValorICMSSubstituto().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSSubstituto()));
+
+					icms.setIcms60(icms60);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS70:
+
+					NFNotaInfoItemImpostoICMS70 icms70 = new NFNotaInfoItemImpostoICMS70();
+
+					icms70.setDesoneracao(nfe.getDesoneracao());
+
+					icms70.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+
+					icms70.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+
+					icms70.setOrigem(nfe.getOrigem());
+
+					icms70.setPercentualAliquota(nfe.getPercentualAliquota().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquota()));
+
+					icms70.setPercentualAliquotaImpostoICMSST(nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icms70.setPercentualFundoCombatePobreza(nfe.getPercentualFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobreza()));
+
+					icms70.setPercentualFundoCombatePobrezaST(nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+					icms70.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icms70.setPercentualReducaoBC(nfe.getPercentualReducaoBC().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBC()));
+
+					icms70.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icms70.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms70.setValorBC(nfe.getValorBC().equals("") ? null : new BigDecimal(nfe.getValorBC()));
+
+					icms70.setValorBCFundoCombatePobreza(nfe.getValorBCFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobreza()));
+
+					icms70.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+					icms70.setValorBCST(nfe.getValorBCST().equals("") ? null : new BigDecimal(nfe.getValorBCST()));
+
+					icms70.setValorFundoCombatePobreza(nfe.getValorFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobreza()));
+
+					icms70.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+					icms70.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+					icms70.setValorICMSST(
+							nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+					icms70.setValorTributo(
+							nfe.getValorTributo().equals("") ? null : new BigDecimal(nfe.getValorTributo()));
+
+					icms.setIcms70(icms70);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMS90:
+
+					NFNotaInfoItemImpostoICMS90 icms90 = new NFNotaInfoItemImpostoICMS90();
+
+					icms90.setDesoneracao(nfe.getDesoneracao());
+
+					icms90.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+
+					icms90.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+
+					icms90.setOrigem(nfe.getOrigem());
+
+					icms90.setPercentualAliquota(nfe.getPercentualAliquota().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquota()));
+
+					icms90.setPercentualAliquotaImpostoICMSST(nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icms90.setPercentualFundoCombatePobreza(nfe.getPercentualFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobreza()));
+
+					icms90.setPercentualFundoCombatePobrezaST(nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+					icms90.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icms90.setPercentualReducaoBC(nfe.getPercentualReducaoBC().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBC()));
+
+					icms90.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icms90.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icms90.setValorBC(nfe.getValorBC().equals("") ? null : new BigDecimal(nfe.getValorBC()));
+
+					icms90.setValorBCFundoCombatePobreza(nfe.getValorBCFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobreza()));
+
+					icms90.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+					icms90.setValorBCST(nfe.getValorBCST().equals("") ? null : new BigDecimal(nfe.getValorBCST()));
+
+					icms90.setValorFundoCombatePobreza(nfe.getValorFundoCombatePobreza().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobreza()));
+
+					icms90.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+					icms90.setValorICMSDesoneracao(nfe.getValorICMSDesoneracao().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSDesoneracao()));
+
+					icms90.setValorICMSST(
+							nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+					icms90.setValorTributo(
+							nfe.getValorTributo().equals("") ? null : new BigDecimal(nfe.getValorTributo()));
+
+					icms.setIcms90(icms90);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMSPart:
+
+					NFNotaInfoItemImpostoICMSPartilhado icmsPartilhado = new NFNotaInfoItemImpostoICMSPartilhado();
+
+					icmsPartilhado.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+
+					icmsPartilhado.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+
+					icmsPartilhado.setOrigem(nfe.getOrigem());
+
+					icmsPartilhado.setPercentualAliquotaImposto(nfe.getPercentualAliquotaImposto().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaImposto()));
+
+					icmsPartilhado.setPercentualAliquotaImpostoICMSST(
+							nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icmsPartilhado.setPercentualBCOperacaoPropria(nfe.getPercentualBCOperacaoPropria().equals("") ? null
+							: new BigDecimal(nfe.getPercentualBCOperacaoPropria()));
+
+					icmsPartilhado.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icmsPartilhado.setPercentualReducaoBC(nfe.getPercentualReducaoBC().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBC()));
+
+					icmsPartilhado.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icmsPartilhado.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icmsPartilhado.setUfICMSST(
+							nfe.getUfICMSST().equals("") ? null : DFUnidadeFederativa.valueOfCodigo(nfe.getUfICMSST()));
+
+					icmsPartilhado.setValorBCICMS(
+							nfe.getValorBCICMS().equals("") ? null : new BigDecimal(nfe.getValorBCICMS()));
+
+					icmsPartilhado.setValorBCICMSST(
+							nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+					icmsPartilhado
+							.setValorICMS(nfe.getValorICMS().equals("") ? null : new BigDecimal(nfe.getValorICMS()));
+
+					icmsPartilhado.setValorICMSST(
+							nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+					icms.setIcmsPartilhado(icmsPartilhado);
+					imposto.setIcms(icms);
+
+					break;
+
+				case ICMSSN101:
 
 					NFNotaInfoItemImpostoICMSSN101 icmssn101 = new NFNotaInfoItemImpostoICMSSN101();
-					icmssn101.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_COM_PERMISSAO_CREDITO);
-					icmssn101.setOrigem(NFOrigem.NACIONAL);
-					icmssn101.setPercentualAliquotaAplicavelCalculoCreditoSN(lista.get(i).getProduto().getpCredSN());
-					icmssn101.setValorCreditoICMSSN(lista.get(i).getProduto().getvCredICMSSN());
+
+					icmssn101.setSituacaoOperacaoSN(nfe.getSituacaoOperacaoSN());
+
+					icmssn101.setOrigem(nfe.getOrigem());
+
+					icmssn101.setPercentualAliquotaAplicavelCalculoCreditoSN(
+							nfe.getPercentualAliquotaAplicavelCalculoCreditoSN().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaAplicavelCalculoCreditoSN()));
+
+					icmssn101.setValorCreditoICMSSN(nfe.getValorCreditoICMSSN().equals("") ? null
+							: new BigDecimal(nfe.getValorCreditoICMSSN()));
+
 					icms.setIcmssn101(icmssn101);
 					imposto.setIcms(icms);
 
 					break;
-				case "102":
 
-					NFNotaInfoItemImpostoICMSSN102 icmssn102 = new NFNotaInfoItemImpostoICMSSN102();
-					icmssn102.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO);
-					icmssn102.setOrigem(NFOrigem.NACIONAL);
-					icms.setIcmssn102(icmssn102);
+				case ICMSSN102:
+
+					// 245.24 N10d ICMSSN102 Grupo CRT=1 – Simples Nacional e CSOSN=102, 103, 300 ou
+					// 400 CG N01 1-1 Tributação ICMS pelo Simples Nacional, CSOSN=102, 103, 300 ou
+					// 400
+
+					// CSOSN 102
+					if (nfe.getSituacaoOperacaoSN() == NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO) {
+
+						NFNotaInfoItemImpostoICMSSN102 icmssn102 = new NFNotaInfoItemImpostoICMSSN102();
+						icmssn102.setSituacaoOperacaoSN(
+								NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO);
+						icmssn102.setOrigem(nfe.getOrigem());
+						icms.setIcmssn102(icmssn102);
+						imposto.setIcms(icms);
+
+					}
+
+					// CSOSN 103
+					if (nfe.getSituacaoOperacaoSN() == NFNotaSituacaoOperacionalSimplesNacional.ISENCAO_ICMS_FAIXA_RECEITA_BRUTA) {
+
+						NFNotaInfoItemImpostoICMSSN102 icmssn103 = new NFNotaInfoItemImpostoICMSSN102();
+						icmssn103.setOrigem(nfe.getOrigem());
+						icmssn103.setSituacaoOperacaoSN(NFNotaSituacaoOperacionalSimplesNacional.IMUNE);
+						icms.setIcmssn102(icmssn103);
+						imposto.setIcms(icms);
+
+					}
+
+					// CSOSN 300
+					if (nfe.getSituacaoOperacaoSN() == NFNotaSituacaoOperacionalSimplesNacional.IMUNE) {
+
+						NFNotaInfoItemImpostoICMSSN102 icmssn300 = new NFNotaInfoItemImpostoICMSSN102();
+						icmssn300.setOrigem(nfe.getOrigem());
+						icmssn300.setSituacaoOperacaoSN(NFNotaSituacaoOperacionalSimplesNacional.IMUNE);
+						icms.setIcmssn102(icmssn300);
+						imposto.setIcms(icms);
+
+					}
+
+					// CSOSN 400
+					if (nfe.getSituacaoOperacaoSN() == NFNotaSituacaoOperacionalSimplesNacional.NAO_TRIBUTADA) {
+
+						NFNotaInfoItemImpostoICMSSN102 icmssn400 = new NFNotaInfoItemImpostoICMSSN102();
+						icmssn400.setOrigem(nfe.getOrigem());
+						icmssn400.setSituacaoOperacaoSN(NFNotaSituacaoOperacionalSimplesNacional.NAO_TRIBUTADA);
+						icms.setIcmssn102(icmssn400);
+						imposto.setIcms(icms);
+
+					}
+
+					break;
+
+				case ICMSSN201:
+
+					NFNotaInfoItemImpostoICMSSN201 icmssn201 = new NFNotaInfoItemImpostoICMSSN201();
+
+					icmssn201.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+					icmssn201.setOrigem(nfe.getOrigem());
+
+					icmssn201.setPercentualAliquotaAplicavelCalculoCreditoSN(
+							nfe.getPercentualAliquotaAplicavelCalculoCreditoSN().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaAplicavelCalculoCreditoSN()));
+
+					icmssn201.setPercentualAliquotaImpostoICMSST(
+							nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icmssn201.setPercentualFundoCombatePobrezaST(
+							nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+					icmssn201.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icmssn201.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icmssn201.setSituacaoOperacaoSN(nfe.getSituacaoOperacaoSN());
+
+					icmssn201.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+					icmssn201.setValorBCICMSST(
+							nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+					icmssn201.setValorCreditoICMSSN(nfe.getValorCreditoICMSSN().equals("") ? null
+							: new BigDecimal(nfe.getValorCreditoICMSSN()));
+
+					icmssn201.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+					icmssn201.setValorICMSST(
+							nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+					icms.setIcmssn201(icmssn201);
 					imposto.setIcms(icms);
 
 					break;
-				case "500":
+
+				case ICMSSN202:
+
+					// 245.38 N10f ICMSSN202 Grupo CRT=1 – Simples Nacional e CSOSN=202 ou 203
+					// CG N01 1-1 Tributação ICMS pelo Simples Nacional, CSOSN=202 ou 203
+
+					// CSOSN 202
+					if (nfe.getSituacaoOperacaoSN() == NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SIMPLES_NACIONAL_SEM_PERMISSAO_DE_CREDITO_E_COBRANCA_ICMS_SUBSTITUICAO_TRIBUTARIA) {
+
+						NFNotaInfoItemImpostoICMSSN202 icmssn202 = new NFNotaInfoItemImpostoICMSSN202();
+
+						icmssn202.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+						icmssn202.setOrigem(nfe.getOrigem());
+
+						icmssn202.setPercentualAliquotaImpostoICMSST(
+								nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+										: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+						icmssn202.setPercentualFundoCombatePobrezaST(
+								nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+										: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+						icmssn202.setPercentualMargemValorAdicionadoICMSST(
+								nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+										: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+						icmssn202.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+								: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+						icmssn202.setSituacaoOperacaoSN(
+								NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SIMPLES_NACIONAL_SEM_PERMISSAO_DE_CREDITO_E_COBRANCA_ICMS_SUBSTITUICAO_TRIBUTARIA);
+
+						icmssn202
+								.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+										: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+						icmssn202.setValorBCICMSST(
+								nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+						icmssn202.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+								: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+						icmssn202.setValorICMSST(
+								nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+						icms.setIcmssn202(icmssn202);
+						imposto.setIcms(icms);
+
+					}
+
+					// CSOSN 203
+					if (nfe.getSituacaoOperacaoSN() == NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SIMPLES_NACIONAL_PARA_FAIXA_RECEITA_BRUTA_E_COBRANCA_ICMS_SUBSTITUICAO_TRIBUTARIA) {
+
+						NFNotaInfoItemImpostoICMSSN202 icmssn203 = new NFNotaInfoItemImpostoICMSSN202();
+
+						icmssn203.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+						icmssn203.setOrigem(nfe.getOrigem());
+
+						icmssn203.setPercentualAliquotaImpostoICMSST(
+								nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+										: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+						icmssn203.setPercentualFundoCombatePobrezaST(
+								nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+										: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+						icmssn203.setPercentualMargemValorAdicionadoICMSST(
+								nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+										: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+						icmssn203.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+								: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+						icmssn203.setSituacaoOperacaoSN(
+								NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SIMPLES_NACIONAL_SEM_PERMISSAO_DE_CREDITO_E_COBRANCA_ICMS_SUBSTITUICAO_TRIBUTARIA);
+
+						icmssn203
+								.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+										: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+						icmssn203.setValorBCICMSST(
+								nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+						icmssn203.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+								: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+						icmssn203.setValorICMSST(
+								nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+						icms.setIcmssn202(icmssn203);
+						imposto.setIcms(icms);
+
+					}
+
+					break;
+
+				case ICMSSN500:
 
 					NFNotaInfoItemImpostoICMSSN500 icmssn500 = new NFNotaInfoItemImpostoICMSSN500();
-					icmssn500.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.ICMS_COBRADO_ANTERIORMENTE_POR_SUBSTITUICAO_TRIBUTARIA_SUBSIDIO_OU_POR_ANTECIPACAO);
-					icmssn500.setOrigem(NFOrigem.NACIONAL);
-					icmssn500.setValorBCICMSSTRetido(lista.get(i).getProduto().getvBCSTRet());
-					icmssn500.setValorICMSSTRetido(lista.get(i).getProduto().getvICMSSTRet());
-					icmssn500.setPercentualICMSSTRetido(lista.get(i).getProduto().getpST());
+					icmssn500.setSituacaoOperacaoSN(nfe.getSituacaoOperacaoSN());
+					icmssn500.setOrigem(nfe.getOrigem());
+					icmssn500.setValorBCICMSSTRetido(new BigDecimal(nfe.getValorBCICMSSTRetido()));
+					icmssn500.setValorICMSSTRetido(new BigDecimal(nfe.getValorICMSSTRetido()));
+					icmssn500.setPercentualICMSSTRetido(new BigDecimal(nfe.getPercentualICMSSTRetido()));
 					icms.setIcmssn500(icmssn500);
 					imposto.setIcms(icms);
 
-					produto.setCodigoEspecificadorSituacaoTributaria(lista.get(i).getProduto().getCest());
+					break;
+
+				case ICMSSN900:
+
+					NFNotaInfoItemImpostoICMSSN900 icmssn900 = new NFNotaInfoItemImpostoICMSSN900();
+					icmssn900.setModalidadeBCICMS(nfe.getModalidadeBCICMS());
+					icmssn900.setModalidadeBCICMSST(nfe.getModalidadeBCICMSST());
+					icmssn900.setOrigem(nfe.getOrigem());
+
+					icmssn900.setPercentualAliquotaAplicavelCalculoCreditoSN(
+							nfe.getPercentualAliquotaAplicavelCalculoCreditoSN().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaAplicavelCalculoCreditoSN()));
+
+					icmssn900.setPercentualAliquotaImposto(nfe.getPercentualAliquotaImposto().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaImposto()));
+
+					icmssn900.setPercentualAliquotaImpostoICMSST(
+							nfe.getPercentualAliquotaImpostoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualAliquotaImpostoICMSST()));
+
+					icmssn900.setPercentualFundoCombatePobrezaST(
+							nfe.getPercentualFundoCombatePobrezaST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualFundoCombatePobrezaST()));
+
+					icmssn900.setPercentualMargemValorAdicionadoICMSST(
+							nfe.getPercentualMargemValorAdicionadoICMSST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualMargemValorAdicionadoICMSST()));
+
+					icmssn900.setPercentualReducaoBC(nfe.getPercentualReducaoBC().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBC()));
+
+					icmssn900.setPercentualReducaoBCICMSST(nfe.getPercentualReducaoBCICMSST().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCICMSST()));
+
+					icmssn900.setSituacaoOperacaoSN(nfe.getSituacaoOperacaoSN());
+
+					icmssn900.setValorBCFundoCombatePobrezaST(nfe.getValorBCFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorBCFundoCombatePobrezaST()));
+
+					icmssn900.setValorBCICMS(
+							nfe.getValorBCICMS().equals("") ? null : new BigDecimal(nfe.getValorBCICMS()));
+
+					icmssn900.setValorBCICMSST(
+							nfe.getValorBCICMSST().equals("") ? null : new BigDecimal(nfe.getValorBCICMSST()));
+
+					icmssn900.setValorCreditoICMSSN(nfe.getValorCreditoICMSSN().equals("") ? null
+							: new BigDecimal(nfe.getValorCreditoICMSSN()));
+
+					icmssn900.setValorFundoCombatePobrezaST(nfe.getValorFundoCombatePobrezaST().equals("") ? null
+							: new BigDecimal(nfe.getValorFundoCombatePobrezaST()));
+
+					icmssn900.setValorICMS(nfe.getValorICMS().equals("") ? null : new BigDecimal(nfe.getValorICMS()));
+
+					icmssn900.setValorICMSST(
+							nfe.getValorICMSST().equals("") ? null : new BigDecimal(nfe.getValorICMSST()));
+
+					icms.setIcmssn900(icmssn900);
+					imposto.setIcms(icms);
 
 					break;
-				default:
 
+				case ICMSST:
+
+					NFNotaInfoItemImpostoICMSST icmsst = new NFNotaInfoItemImpostoICMSST();
+
+					icmsst.setAliqSuportadaConsFinal(nfe.getAliqSuportadaConsFinal().equals("") ? null
+							: new BigDecimal(nfe.getAliqSuportadaConsFinal()));
+
+					icmsst.setOrigem(nfe.getOrigem());
+
+					icmsst.setPercentualAliquotaICMSEfetiva(nfe.getPercentualAliquotaICMSEfetiva().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaICMSEfetiva()));
+
+					icmsst.setPercentualFundoCombatePobrezaRetidoST(
+							nfe.getPercentualFundoCombatePobrezaRetidoST().equals("") ? null
+									: new BigDecimal(nfe.getPercentualFundoCombatePobrezaRetidoST()));
+
+					icmsst.setPercentualReducaoBCEfetiva(nfe.getPercentualReducaoBCEfetiva().equals("") ? null
+							: new BigDecimal(nfe.getPercentualReducaoBCEfetiva()));
+
+					icmsst.setSituacaoTributaria(nfe.getSituacaoTributaria());
+
+					icmsst.setValorBCEfetiva(
+							nfe.getValorBCEfetiva().equals("") ? null : new BigDecimal(nfe.getValorBCEfetiva()));
+
+					icmsst.setValorBCFundoCombatePobrezaRetidoST(
+							nfe.getValorBCFundoCombatePobrezaRetidoST().equals("") ? null
+									: new BigDecimal(nfe.getValorBCFundoCombatePobrezaRetidoST()));
+
+					icmsst.setValorBCICMSSTRetidoUFRemetente(nfe.getValorBCICMSSTRetidoUFRemetente().equals("") ? null
+							: new BigDecimal(nfe.getValorBCICMSSTRetidoUFRemetente()));
+
+					icmsst.setValorBCICMSSTUFDestino(nfe.getValorBCICMSSTUFDestino().equals("") ? null
+							: new BigDecimal(nfe.getValorBCICMSSTUFDestino()));
+
+					icmsst.setValorFundoCombatePobrezaRetidoST(
+							nfe.getValorFundoCombatePobrezaRetidoST().equals("") ? null
+									: new BigDecimal(nfe.getValorFundoCombatePobrezaRetidoST()));
+
+					icmsst.setValorICMSEfetivo(
+							nfe.getValorICMSEfetivo().equals("") ? null : new BigDecimal(nfe.getValorICMSEfetivo()));
+
+					icmsst.setValorICMSSTRetidoUFRemetente(nfe.getValorICMSSTRetidoUFRemetente().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSSTRetidoUFRemetente()));
+
+					icmsst.setValorICMSSTUFDestino(nfe.getValorICMSSTUFDestino().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSSTUFDestino()));
+
+					icmsst.setValorICMSSubstituto(nfe.getValorICMSSubstituto().equals("") ? null
+							: new BigDecimal(nfe.getValorICMSSubstituto()));
+
+					icms.setIcmsst(icmsst);
+					imposto.setIcms(icms);
+
+					break;
+
+				default:
 				}
 
-			} else if (Config.propertiesLoader().getProperty("imposto").equals("1")) {
-
-				switch (config.getCsosn()) {
-				case "101":
-
-					NFNotaInfoItemImpostoICMSSN101 icmssn101 = new NFNotaInfoItemImpostoICMSSN101();
-					icmssn101.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_COM_PERMISSAO_CREDITO);
-					icmssn101.setOrigem(NFOrigem.NACIONAL);
-					icmssn101.setPercentualAliquotaAplicavelCalculoCreditoSN(config.getpCredSN());
-					icmssn101.setValorCreditoICMSSN(config.getvCredICMSSN());
-					icms.setIcmssn101(icmssn101);
-					imposto.setIcms(icms);
+			if (nfe.getSituacaoTributariaPIS() != null)
+				switch (nfe.getSituacaoTributariaPIS()) {
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_EXCLUSIVAMENTE_A_RECEITA_NAO_TRIBUTADA_MERCADO_INTERNO:
 
 					break;
-				case "102":
-
-					NFNotaInfoItemImpostoICMSSN102 icmssn102 = new NFNotaInfoItemImpostoICMSSN102();
-					icmssn102.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO);
-					icmssn102.setOrigem(NFOrigem.NACIONAL);
-					icms.setIcmssn102(icmssn102);
-					imposto.setIcms(icms);
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_EXCLUSIVAMENTE_RECEITA_EXPORTACAO:
 
 					break;
-				case "500":
-
-					NFNotaInfoItemImpostoICMSSN500 icmssn500 = new NFNotaInfoItemImpostoICMSSN500();
-					icmssn500.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.ICMS_COBRADO_ANTERIORMENTE_POR_SUBSTITUICAO_TRIBUTARIA_SUBSIDIO_OU_POR_ANTECIPACAO);
-					icmssn500.setOrigem(NFOrigem.NACIONAL);
-					icmssn500.setValorBCICMSSTRetido(config.getvBCSTRet());
-					icmssn500.setValorICMSSTRetido(config.getvICMSSTRet());
-					icmssn500.setPercentualICMSSTRetido(config.getpST());
-					icms.setIcmssn500(icmssn500);
-					imposto.setIcms(icms);
-
-					produto.setCodigoEspecificadorSituacaoTributaria(lista.get(i).getProduto().getCest());
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_EXCLUSIVAMENTE_RECEITA_TRIBUTADA_MERCADO_INTERNO:
 
 					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_NAO_TRIBUTADAS_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_TRIBUTADA_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_TRIBUTADAS_E_NAO_TRIBUTADAS_MERCADO_INTERNO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_TRIBUTADAS_E_NAO_TRIBUTADAS_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OUTRAS_OPERACOES:
+
+					break;
+				case OPERACAO_AQUISICAO_ALIQUOTA_ZERO:
+
+					break;
+				case OPERACAO_AQUISICAO_COM_ISENCAO:
+
+					break;
+				case OPERACAO_AQUISICAO_COM_SUSPENSAO:
+
+					break;
+				case OPERACAO_AQUISICAO_POR_SUBSTITUICAO_TRIBUTARIA:
+
+					break;
+				case OPERACAO_AQUISICAO_SEM_DIREITO_CREDITO:
+
+					break;
+				case OPERACAO_AQUISICAO_SEM_INCIDENCIA_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_COM_SUSPENSAO_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_EXCLUSIVAMENTE_RECEITA_EXPORTACAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_EXCLUSIVAMENTE_RECEITA_NAO_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_EXCLUSIVAMENTE_RECEITA_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_NAO_TRIBUTADA_NO_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_TRIBUTADA_E_NAO_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_TRIBUTADAS_E_NAO_TRIBUTADAS_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_TRIBUTADAS_NO_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case OPERACAO_ISENTA_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_SEM_INCIDENCIA_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_ALIQUOTA_DIFERENCIADA:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_ALIQUOTA_ZERO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_CUMULATIVO_NAO_CUMULATIVO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_MONOFASICA_ALIQUOTA_ZERO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_QUANTIDADE_VENDIDA_POR_ALIQUOTA_POR_UNIDADE_PRODUTO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_SUBSTITUICAO_TRIBUTARIA:
+
+					break;
+				case OUTRAS_OPERACOES:
+
+					NFNotaInfoItemImpostoPISOutrasOperacoes pis = new NFNotaInfoItemImpostoPISOutrasOperacoes();
+					pis.setSituacaoTributaria(NFNotaInfoSituacaoTributariaPIS.OUTRAS_OPERACOES);
+
+					pis.setValorBaseCalculo(nfe.getValorBaseCalculoPIS().equals("") ? null
+							: new BigDecimal(nfe.getValorBaseCalculoPIS()));
+
+					pis.setPercentualAliquota(nfe.getPercentualAliquotaPIS().equals("") ? null
+							: new BigDecimal(nfe.getPercentualAliquotaPIS()));
+
+					pis.setValorTributo(
+							nfe.getValorTributoPIS().equals("") ? null : new BigDecimal(nfe.getValorTributoPIS()));
+
+					this.pis.setOutrasOperacoes(pis);
+					imposto.setPis(this.pis);
+
+					break;
+				case OUTRAS_OPERACOES_ENTRADA:
+
+					break;
+				case OUTRAS_OPERACOES_SAIDA:
+
+					break;
+
 				default:
+				}
+
+			if (nfe.getSituacaoTributariaCOFINS() != null)
+				switch (nfe.getSituacaoTributariaCOFINS()) {
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_EXCLUSIVAMENTE_A_RECEITA_NAO_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_EXCLUSIVAMENTE_RECEITA_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_EXCLUSIVAMENTE_RECEITA_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_NAO_TRIBUTADAS_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_TRIBUTADA_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_TRIBUTADAS_E_NAO_TRIBUTADAS_MERCADO_INTERNO:
+
+					break;
+				case CREDITO_PRESUMIDO_OPERACAO_AQUISICAO_VINCULADA_RECEITAS_TRIBUTADAS_E_NAO_TRIBUTADAS_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case CREDITO_PRESUMIDO_OUTRAS_OPERACOES:
+
+					break;
+				case OPERACAO_AQUISICAO_ALIQUOTA_ZERO:
+
+					break;
+				case OPERACAO_AQUISICAO_COM_ISENCAO:
+
+					break;
+				case OPERACAO_AQUISICAO_COM_SUSPENSAO:
+
+					break;
+				case OPERACAO_AQUISICAO_POR_SUBSTITUICAO_TRIBUTARIA:
+
+					break;
+				case OPERACAO_AQUISICAO_SEM_DIREITO_CREDITO:
+
+					break;
+				case OPERACAO_AQUISICAO_SEM_INCIDENCIA_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_COM_SUSPENSAO_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_EXCLUSIVAMENTE_RECEITA_EXPORTACAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_EXCLUSIVAMENTE_RECEITA_NAO_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_EXCLUSIVAMENTE_RECEITA_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_NAO_TRIBUTADA_NO_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_TRIBUTADA_E_NAO_TRIBUTADA_MERCADO_INTERNO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_TRIBUTADAS_E_NAO_TRIBUTADAS_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case OPERACAO_DIREITO_CREDITO_VINCULADA_RECEITAS_TRIBUTADAS_NO_MERCADO_INTERNO_EXPORTACAO:
+
+					break;
+				case OPERACAO_ISENTA_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_SEM_INCIDENCIA_CONTRIBUICAO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_ALIQUOTA_DIFERENCIADA:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_ALIQUOTA_ZERO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_CUMULATIVO_NAO_CUMULATIVO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_MONOFASICA_ALIQUOTA_ZERO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_QUANTIDADE_VENDIDA_POR_ALIQUOTA_POR_UNIDADE_PRODUTO:
+
+					break;
+				case OPERACAO_TRIBUTAVEL_SUBSTITUICAO_TRIBUTARIA:
+
+					break;
+				case OUTRAS_OPERACOES:
+
+					NFNotaInfoItemImpostoCOFINSOutrasOperacoes cofins = new NFNotaInfoItemImpostoCOFINSOutrasOperacoes();
+					cofins.setSituacaoTributaria(NFNotaInfoSituacaoTributariaCOFINS.OUTRAS_OPERACOES);
+
+					cofins.setValorBaseCalculo(nfe.getValorBaseCalculoCOFINS().equals("") ? null
+							: new BigDecimal(nfe.getValorBaseCalculoCOFINS()));
+
+					cofins.setPercentualCOFINS(
+							nfe.getPercentualCOFINS().equals("") ? null : new BigDecimal(nfe.getPercentualCOFINS()));
+
+					cofins.setValorCOFINS(
+							nfe.getValorCOFINS().equals("") ? null : new BigDecimal(nfe.getValorCOFINS()));
+
+					this.cofins.setOutrasOperacoes(cofins);
+					imposto.setCofins(this.cofins);
+
+					break;
+				case OUTRAS_OPERACOES_ENTRADA:
+
+					break;
+				case OUTRAS_OPERACOES_SAIDA:
+
+					break;
+
+				default:
+				}
+
+			if (this.nfe.getInformacoesComplementares() != null) {
+
+				// SE NAO FOR STRING VAZIA.
+				if (!this.nfe.getInformacoesComplementares().equals("")) {
+
+					NFNotaInfoInformacoesAdicionais infoAdc = new NFNotaInfoInformacoesAdicionais();
+					infoAdc.setInformacoesComplementaresInteresseContribuinte(nfe.getInformacoesComplementares());
+					info.setInformacoesAdicionais(infoAdc);
+
 				}
 
 			}
-
-			NFNotaInfoItemImpostoPISOutrasOperacoes pis = new NFNotaInfoItemImpostoPISOutrasOperacoes();
-			pis.setSituacaoTributaria(NFNotaInfoSituacaoTributariaPIS.OUTRAS_OPERACOES);
-			pis.setValorBaseCalculo(new java.math.BigDecimal("0.00"));
-			pis.setPercentualAliquota(new java.math.BigDecimal("0.00"));
-			pis.setValorTributo(new java.math.BigDecimal("0.00"));
-			this.pis.setOutrasOperacoes(pis);
-			imposto.setPis(this.pis);
-
-			NFNotaInfoItemImpostoCOFINSOutrasOperacoes cofins = new NFNotaInfoItemImpostoCOFINSOutrasOperacoes();
-			cofins.setSituacaoTributaria(NFNotaInfoSituacaoTributariaCOFINS.OUTRAS_OPERACOES);
-			cofins.setValorBaseCalculo(new java.math.BigDecimal("0.00"));
-			cofins.setPercentualCOFINS(new java.math.BigDecimal("0.00"));
-			cofins.setValorCOFINS(new java.math.BigDecimal("0.00"));
-			this.cofins.setOutrasOperacoes(cofins);
-			imposto.setCofins(this.cofins);
 
 			item.setProduto(produto);
 
@@ -891,15 +1847,13 @@ public class TransmissaoNFeMB implements Serializable {
 			lote.setVersao(config.getVersao());
 			lote.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
 
-			// Gabiarra para gerar o c�digo Randomico e o Indentificador.
+			// gabiarra para gerar o codigo Randomico e o Indentificador.
 			NFGeraChave nfGeraChave = new NFGeraChave(nota);
 
 			// Mostrando os valores gerados pela classe NFGeraChave.
 			/*
-			 * System.out.println(
-			 * "----- Valores gerados pela classe NFGeraChave ----- ");
-			 * System.out.println(
-			 * "C�digo Randomico gerado pela classe NFGeraChave: " +
+			 * System.out.println( "----- Valores gerados pela classe NFGeraChave ----- ");
+			 * System.out.println( "Codigo Randomico gerado pela classe NFGeraChave: " +
 			 * nfGeraChave.geraCodigoRandomico()); System.out.println(
 			 * "Identificador gerado pela classe NFGeraChave: " +
 			 * nfGeraChave.getChaveAcesso());
@@ -908,7 +1862,7 @@ public class TransmissaoNFeMB implements Serializable {
 			// Mostrando os valores de teste dos objetos.
 			/*
 			 * System.out.println("----- Valores de teste dos objetos ----- ");
-			 * System.out.println("C�digo Randomico com valor de teste: " +
+			 * System.out.println("Codigo Randomico com valor de teste: " +
 			 * identificacao.getCodigoRandomico()); System.out.println(
 			 * "Identificador com valor de teste: " + info.getIdentificador());
 			 */
@@ -920,10 +1874,9 @@ public class TransmissaoNFeMB implements Serializable {
 			// Mostrando os valores atualizados.
 			/*
 			 * System.out.println("----- Valores atualizados ----- ");
-			 * System.out.println("C�digo Randomico com valor atualizado: " +
+			 * System.out.println("Codigo Randomico com valor atualizado: " +
 			 * identificacao.getCodigoRandomico()); System.out.println(
-			 * "Identificador com valor atualizado: " +
-			 * info.getIdentificador());
+			 * "Identificador com valor atualizado: " + info.getIdentificador());
 			 */
 
 			// ENVIO DO LOTE GERADO PELO CODIGO ACIMA.
@@ -951,7 +1904,7 @@ public class TransmissaoNFeMB implements Serializable {
 
 				System.out.println(" ");
 
-				System.out.println("----------DADOS AP�S TRANSMISSAO DA NF-e FIM--------------");
+				System.out.println("----------DADOS APOS TRANSMISSAO DA NF-e FIM--------------");
 
 				retorno = new WSFacade(config).enviaLote(lote);
 
@@ -984,7 +1937,7 @@ public class TransmissaoNFeMB implements Serializable {
 				JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 			}
 
-			// RETORNO DAS INFORMA��ES GERADAS AP�S TRANSMISS�O DA NF-E.
+			// RETORNO DAS INFORMACOES GERADAS AP�S TRANSMISSAO DA NF-E.
 			try {
 
 				NFLoteConsultaRetorno retc = new WSFacade(config)
@@ -992,18 +1945,18 @@ public class TransmissaoNFeMB implements Serializable {
 
 				for (NFProtocolo prot : retc.getProtocolos()) {
 
-					System.out.println("----------DADOS AP�S TRANSMISSAO DA NF-e INICIO-----------");
+					System.out.println("----------DADOS APOS TRANSMISSAO DA NF-e INICIO-----------");
 					System.out.println(" ");
 					System.out.println("Chave: " + prot.getProtocoloInfo().getChave());
-					System.out.println("N�mero Protocolo: " + prot.getProtocoloInfo().getNumeroProtocolo());
+					System.out.println("Numero Protocolo: " + prot.getProtocoloInfo().getNumeroProtocolo());
 					System.out.println("Status: " + prot.getProtocoloInfo().getStatus());
 					System.out.println("Motivo: " + prot.getProtocoloInfo().getMotivo());
 					System.out.println("Ambiente: " + prot.getProtocoloInfo().getAmbiente().getCodigo());
 					System.out.println("DataRecebimento: " + prot.getProtocoloInfo().getDataRecebimento());
 					System.out.println(" ");
-					System.out.println("----------DADOS AP�S TRANSMISSAO DA NF-e FIM--------------");
+					System.out.println("----------DADOS APOS TRANSMISSAO DA NF-e FIM--------------");
 
-					// ATUALIZA A NFE COM AS INFORMA��ES AP�S TRANSMISS�O.
+					// ATUALIZA A NFE COM AS INFORMACOES AP�S TRANSMISSAO.
 					this.nfe.setChave(prot.getProtocoloInfo().getChave());
 					this.nfe.setNumProtocolo(prot.getProtocoloInfo().getNumeroProtocolo());
 					this.nfe.setStatus(prot.getProtocoloInfo().getStatus());
@@ -1030,7 +1983,7 @@ public class TransmissaoNFeMB implements Serializable {
 					System.out.println(" ");
 					System.out.println("----------XML DA NF-e FIM--------------");
 
-					// O sistema s� dever� armazernar o Xml da nota, se a nota
+					// O sistema dever armazernar o Xml da nota, se a nota
 					// for autorizada pela SEFAZ.
 					if (nfe.getStatus().equals("100")) {
 
@@ -1057,7 +2010,7 @@ public class TransmissaoNFeMB implements Serializable {
 						}
 					} else {
 
-						JSFUtil.retornarMensagemErro(null, "Rejei��o. O XML n�o ser� armazenado.", null);
+						JSFUtil.retornarMensagemErro(null, "Rejeição. O XML não será armazenado.", null);
 
 						return "/NFe/nfeTransmitir";
 
@@ -1069,8 +2022,6 @@ public class TransmissaoNFeMB implements Serializable {
 
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			JSFUtil.retornarMensagemErro(null, "Verifique a configura��o dos impostos", null);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSFUtil.retornarMensagemErro(null, e.getMessage(), null);
@@ -1336,14 +2287,6 @@ public class TransmissaoNFeMB implements Serializable {
 		this.pagamentos = pagamentos;
 	}
 
-	public ConfiguracaoDAO getDaoConfiguracao() {
-		return daoConfiguracao;
-	}
-
-	public void setDaoConfiguracao(ConfiguracaoDAO daoConfiguracao) {
-		this.daoConfiguracao = daoConfiguracao;
-	}
-
 	public String getAmbienteConfigurado() {
 		return ambienteConfigurado;
 	}
@@ -1398,6 +2341,14 @@ public class TransmissaoNFeMB implements Serializable {
 
 	public void setDaoMunicipio(MunicipioDAO daoMunicipio) {
 		this.daoMunicipio = daoMunicipio;
+	}
+
+	public String getDadosDoCertificado() {
+		return dadosDoCertificado;
+	}
+
+	public void setDadosDoCertificado(String dadosDoCertificado) {
+		this.dadosDoCertificado = dadosDoCertificado;
 	}
 
 }

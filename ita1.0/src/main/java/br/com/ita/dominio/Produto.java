@@ -13,12 +13,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-//import com.fincatto.nfe310.classes.NFNotaInfoSituacaoTributariaCOFINS;
-//import com.fincatto.nfe310.classes.NFNotaInfoSituacaoTributariaIPI;
-//import com.fincatto.nfe310.classes.NFNotaInfoSituacaoTributariaPIS;
-//import com.fincatto.nfe310.classes.NFNotaSituacaoOperacionalSimplesNacional;
-//import com.fincatto.nfe310.classes.NFOrigem;
-
 @Entity
 @Table(name = "produto")
 public class Produto implements BaseEntityP, Serializable {
@@ -61,24 +55,6 @@ public class Produto implements BaseEntityP, Serializable {
 	@Size(min = 0, max = 2, message = "A unidade comercia deve ter entre 0 e 2 caracteres.")
 	@NotNull(message = "A unidade comercia � de preenchimento obrigat�rio.")
 	private String unidadeComercial;
-
-	@Column(length = 3)
-	private String csosn;
-
-	@Column(precision = 7, scale = 2)
-	private BigDecimal pCredSN;
-
-	@Column(precision = 7, scale = 2)
-	private BigDecimal vCredICMSSN;
-
-	@Column(precision = 7, scale = 2)
-	private BigDecimal vBCSTRet;
-
-	@Column(precision = 7, scale = 2)
-	private BigDecimal vICMSSTRet;
-
-	@Column(precision = 7, scale = 2)
-	private BigDecimal pST;
 
 	@Column(length = 7)
 	@Size(min = 0, max = 7, message = "O c�digo CEST deve ter 7 d�gitos.")
@@ -158,54 +134,6 @@ public class Produto implements BaseEntityP, Serializable {
 
 	public void setUnidadeComercial(String unidadeComercial) {
 		this.unidadeComercial = unidadeComercial;
-	}
-
-	public String getCsosn() {
-		return csosn;
-	}
-
-	public void setCsosn(String csosn) {
-		this.csosn = csosn;
-	}
-
-	public BigDecimal getpCredSN() {
-		return pCredSN;
-	}
-
-	public void setpCredSN(BigDecimal pCredSN) {
-		this.pCredSN = pCredSN;
-	}
-
-	public BigDecimal getvCredICMSSN() {
-		return vCredICMSSN;
-	}
-
-	public void setvCredICMSSN(BigDecimal vCredICMSSN) {
-		this.vCredICMSSN = vCredICMSSN;
-	}
-
-	public BigDecimal getvBCSTRet() {
-		return vBCSTRet;
-	}
-
-	public BigDecimal getvICMSSTRet() {
-		return vICMSSTRet;
-	}
-
-	public void setvBCSTRet(BigDecimal vBCSTRet) {
-		this.vBCSTRet = vBCSTRet;
-	}
-
-	public void setvICMSSTRet(BigDecimal vICMSSTRet) {
-		this.vICMSSTRet = vICMSSTRet;
-	}
-
-	public BigDecimal getpST() {
-		return pST;
-	}
-
-	public void setpST(BigDecimal pST) {
-		this.pST = pST;
 	}
 
 	public String getCest() {

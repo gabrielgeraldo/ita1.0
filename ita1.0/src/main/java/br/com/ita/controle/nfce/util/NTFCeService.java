@@ -68,10 +68,8 @@ import com.fincatto.documentofiscal.utils.DFAssinaturaDigital;
 import com.fincatto.documentofiscal.utils.DFPersister;
 
 import br.com.ita.controle.config.Config;
-import br.com.ita.dominio.Configuracao;
 import br.com.ita.dominio.ItemNTFCe;
 import br.com.ita.dominio.NTFCe;
-import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.dao.EstadoDAO;
 import br.com.ita.dominio.dao.MunicipioDAO;
 import br.com.ita.dominio.notafiscal.NFeConfigIta;
@@ -135,8 +133,6 @@ public class NTFCeService implements Serializable {
 	private NFNotaInfoPagamento pagamento = new NFNotaInfoPagamento();
 
 	private List<NFNotaInfoPagamento> pagamentos = new ArrayList<NFNotaInfoPagamento>();
-
-	private ConfiguracaoDAO daoConfiguracao = new ConfiguracaoDAO();
 
 	private EstadoDAO daoEstado = new EstadoDAO();
 
@@ -371,14 +367,6 @@ public class NTFCeService implements Serializable {
 		this.pagamentos = pagamentos;
 	}
 
-	public ConfiguracaoDAO getDaoConfiguracao() {
-		return daoConfiguracao;
-	}
-
-	public void setDaoConfiguracao(ConfiguracaoDAO daoConfiguracao) {
-		this.daoConfiguracao = daoConfiguracao;
-	}
-
 	public EstadoDAO getDaoEstado() {
 		return daoEstado;
 	}
@@ -477,10 +465,13 @@ public class NTFCeService implements Serializable {
 
 		identificacao.setUf(DFUnidadeFederativa.valueOfCodigo(Config.propertiesLoader().getProperty("uf")));
 		identificacao.setCodigoRandomico(this.gerarCodigoRandomico());
+
 		// VERIFICAR SE SEMPRE SERA VENDA.
 		identificacao.setNaturezaOperacao("VENDA");
+
 		// Removido 20180913 ao atualizar nfe40
 		// identificacao.setFormaPagamento(NFFormaPagamentoPrazo.A_VISTA);
+
 		identificacao.setModelo(DFModelo.NFCE);
 		identificacao.setSerie(Integer.toString(nfce.getSerie()));
 		identificacao.setNumeroNota(Integer.toString(nfce.getNumero()));
@@ -510,14 +501,13 @@ public class NTFCeService implements Serializable {
 
 		/*
 		 * NFNotaInfoFormaPagamento fpgto = new NFNotaInfoFormaPagamento();
-		 * fpgto.setMeioPagamento(NFMeioPagamento.DINHEIRO);
-		 * fpgto.setValorPagamento(new java.math.BigDecimal("0.00"));
+		 * fpgto.setMeioPagamento(NFMeioPagamento.DINHEIRO); fpgto.setValorPagamento(new
+		 * java.math.BigDecimal("0.00"));
 		 * 
 		 * List<NFNotaInfoFormaPagamento> lsFpgto = new
 		 * ArrayList<NFNotaInfoFormaPagamento>(); lsFpgto.add(fpgto);
 		 * 
-		 * pagamento.setDetalhamentoFormasPagamento(lsFpgto);
-		 * pagamentos.add(pagamento);
+		 * pagamento.setDetalhamentoFormasPagamento(lsFpgto); pagamentos.add(pagamento);
 		 */
 
 		NFNotaInfoFormaPagamento fpgto = new NFNotaInfoFormaPagamento();
@@ -619,6 +609,7 @@ public class NTFCeService implements Serializable {
 		}
 
 		this.geraPagamentos();
+
 		// info.setPagamentos(pagamentos);
 		info.setPagamento(pagamento);
 
@@ -626,26 +617,25 @@ public class NTFCeService implements Serializable {
 
 	public void geraProdutos() {
 
-		// Usado se a configura��o do imposto estiver no sistema.
-		Configuracao config = (Config.propertiesLoader().getProperty("imposto").equals("1")
-				? daoConfiguracao.lerPorId(new Long(1)) : null);
-
 		for (int i = 0; i < itensNfce.size(); i++) {
 
 			item.setNumeroItem(i + 1);
 
 			produto.setCodigo(itensNfce.get(i).getProduto().getCodigo().toString() != null
-					? itensNfce.get(i).getProduto().getCodigo().toString() : "");
+					? itensNfce.get(i).getProduto().getCodigo().toString()
+					: "");
 
 			produto.setCodigoDeBarras("SEM GTIN");
 
 			produto.setCodigoDeBarrasTributavel("SEM GTIN");
 
-			produto.setDescricao(itensNfce.get(i).getProduto().getDescricao() != null
-					? itensNfce.get(i).getProduto().getDescricao() : "");
+			produto.setDescricao(
+					itensNfce.get(i).getProduto().getDescricao() != null ? itensNfce.get(i).getProduto().getDescricao()
+							: "");
 
-			produto.setNcm(itensNfce.get(i).getProduto().getNcm() != null
-					? itensNfce.get(i).getProduto().getNcm().toString() : "");
+			produto.setNcm(
+					itensNfce.get(i).getProduto().getNcm() != null ? itensNfce.get(i).getProduto().getNcm().toString()
+							: "");
 
 			// produto.setCfop(itensNfce.get(i).getCfop().toString() != null ?
 			// itensNfce.get(i).getCfop().toString() : "");
@@ -653,133 +643,33 @@ public class NTFCeService implements Serializable {
 			produto.setCfop("5102");
 
 			produto.setUnidadeComercial(itensNfce.get(i).getProduto().getUnidadeComercial() != null
-					? itensNfce.get(i).getProduto().getUnidadeComercial() : "");
+					? itensNfce.get(i).getProduto().getUnidadeComercial()
+					: "");
 
 			produto.setUnidadeTributavel(itensNfce.get(i).getProduto().getUnidadeComercial() != null
-					? itensNfce.get(i).getProduto().getUnidadeComercial() : "");
+					? itensNfce.get(i).getProduto().getUnidadeComercial()
+					: "");
 
 			produto.setQuantidadeComercial(new BigDecimal(itensNfce.get(i).getQuantidade()) != null
-					? new BigDecimal(itensNfce.get(i).getQuantidade()) : null);
+					? new BigDecimal(itensNfce.get(i).getQuantidade())
+					: null);
 
 			produto.setQuantidadeTributavel(new BigDecimal(itensNfce.get(i).getQuantidade()) != null
-					? new BigDecimal(itensNfce.get(i).getQuantidade()) : null);
+					? new BigDecimal(itensNfce.get(i).getQuantidade())
+					: null);
 
 			produto.setValorUnitario(itensNfce.get(i).getProduto().getPrecoUnitario() != null
-					? itensNfce.get(i).getProduto().getPrecoUnitario() : null);
+					? itensNfce.get(i).getProduto().getPrecoUnitario()
+					: null);
 
 			produto.setValorUnitarioTributavel(itensNfce.get(i).getProduto().getPrecoUnitario() != null
-					? itensNfce.get(i).getProduto().getPrecoUnitario() : null);
+					? itensNfce.get(i).getProduto().getPrecoUnitario()
+					: null);
 
 			produto.setValorTotalBruto(itensNfce.get(i).getProduto().getPrecoUnitario()
 					.multiply(new BigDecimal(itensNfce.get(i).getQuantidade())));
 
 			produto.setCompoeValorNota(NFProdutoCompoeValorNota.SIM);
-
-			// Se a configura��o estiver no produto.
-			if (Config.propertiesLoader().getProperty("imposto").equals("2")) {
-				switch (itensNfce.get(i).getProduto().getCsosn()) {
-				case "101":
-
-					NFNotaInfoItemImpostoICMSSN101 icmssn101 = new NFNotaInfoItemImpostoICMSSN101();
-					icmssn101.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_COM_PERMISSAO_CREDITO);
-					icmssn101.setOrigem(NFOrigem.NACIONAL);
-					icmssn101
-							.setPercentualAliquotaAplicavelCalculoCreditoSN(itensNfce.get(i).getProduto().getpCredSN());
-					icmssn101.setValorCreditoICMSSN(itensNfce.get(i).getProduto().getvCredICMSSN());
-					icms.setIcmssn101(icmssn101);
-					imposto.setIcms(icms);
-
-					break;
-				case "102":
-
-					NFNotaInfoItemImpostoICMSSN102 icmssn102 = new NFNotaInfoItemImpostoICMSSN102();
-					icmssn102.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO);
-					icmssn102.setOrigem(NFOrigem.NACIONAL);
-					icms.setIcmssn102(icmssn102);
-					imposto.setIcms(icms);
-
-					break;
-				case "500":
-
-					NFNotaInfoItemImpostoICMSSN500 icmssn500 = new NFNotaInfoItemImpostoICMSSN500();
-					icmssn500.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.ICMS_COBRADO_ANTERIORMENTE_POR_SUBSTITUICAO_TRIBUTARIA_SUBSIDIO_OU_POR_ANTECIPACAO);
-					icmssn500.setOrigem(NFOrigem.NACIONAL);
-					icmssn500.setValorBCICMSSTRetido(itensNfce.get(i).getProduto().getvBCSTRet());
-					icmssn500.setValorICMSSTRetido(itensNfce.get(i).getProduto().getvICMSSTRet());
-					icmssn500.setPercentualICMSSTRetido(itensNfce.get(i).getProduto().getpST());
-					icms.setIcmssn500(icmssn500);
-					imposto.setIcms(icms);
-
-					produto.setCodigoEspecificadorSituacaoTributaria(itensNfce.get(i).getProduto().getCest());
-
-					break;
-				default:
-
-				}
-
-			} else if (Config.propertiesLoader().getProperty("imposto").equals("1")) {
-
-				switch (config.getCsosn()) {
-				case "101":
-
-					NFNotaInfoItemImpostoICMSSN101 icmssn101 = new NFNotaInfoItemImpostoICMSSN101();
-					icmssn101.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_COM_PERMISSAO_CREDITO);
-					icmssn101.setOrigem(NFOrigem.NACIONAL);
-					icmssn101.setPercentualAliquotaAplicavelCalculoCreditoSN(config.getpCredSN());
-					icmssn101.setValorCreditoICMSSN(config.getvCredICMSSN());
-					icms.setIcmssn101(icmssn101);
-					imposto.setIcms(icms);
-
-					break;
-				case "102":
-
-					NFNotaInfoItemImpostoICMSSN102 icmssn102 = new NFNotaInfoItemImpostoICMSSN102();
-					icmssn102.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO);
-					icmssn102.setOrigem(NFOrigem.NACIONAL);
-					icms.setIcmssn102(icmssn102);
-					imposto.setIcms(icms);
-
-					break;
-				case "500":
-
-					NFNotaInfoItemImpostoICMSSN500 icmssn500 = new NFNotaInfoItemImpostoICMSSN500();
-					icmssn500.setSituacaoOperacaoSN(
-							NFNotaSituacaoOperacionalSimplesNacional.ICMS_COBRADO_ANTERIORMENTE_POR_SUBSTITUICAO_TRIBUTARIA_SUBSIDIO_OU_POR_ANTECIPACAO);
-					icmssn500.setOrigem(NFOrigem.NACIONAL);
-					icmssn500.setValorBCICMSSTRetido(config.getvBCSTRet());
-					icmssn500.setValorICMSSTRetido(config.getvICMSSTRet());
-					icmssn500.setPercentualICMSSTRetido(config.getpST());
-					icms.setIcmssn500(icmssn500);
-					imposto.setIcms(icms);
-
-					produto.setCodigoEspecificadorSituacaoTributaria(itensNfce.get(i).getProduto().getCest());
-
-					break;
-				default:
-				}
-
-			}
-
-			NFNotaInfoItemImpostoPISOutrasOperacoes pis = new NFNotaInfoItemImpostoPISOutrasOperacoes();
-			pis.setSituacaoTributaria(NFNotaInfoSituacaoTributariaPIS.OUTRAS_OPERACOES);
-			pis.setValorBaseCalculo(new java.math.BigDecimal("0.00"));
-			pis.setPercentualAliquota(new java.math.BigDecimal("0.00"));
-			pis.setValorTributo(new java.math.BigDecimal("0.00"));
-			this.pis.setOutrasOperacoes(pis);
-			imposto.setPis(this.pis);
-
-			NFNotaInfoItemImpostoCOFINSOutrasOperacoes cofins = new NFNotaInfoItemImpostoCOFINSOutrasOperacoes();
-			cofins.setSituacaoTributaria(NFNotaInfoSituacaoTributariaCOFINS.OUTRAS_OPERACOES);
-			cofins.setValorBaseCalculo(new java.math.BigDecimal("0.00"));
-			cofins.setPercentualCOFINS(new java.math.BigDecimal("0.00"));
-			cofins.setValorCOFINS(new java.math.BigDecimal("0.00"));
-			this.cofins.setOutrasOperacoes(cofins);
-			imposto.setCofins(this.cofins);
 
 			item.setProduto(produto);
 
@@ -897,20 +787,20 @@ public class NTFCeService implements Serializable {
 		lote.setVersao(config.getVersao());
 		lote.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
 
-		// Gabiarra para gerar o c�digo Randomico e o Indentificador.
+		// Gabiarra para gerar o codigo Randomico e o Indentificador.
 		NFGeraChave nfGeraChave = new NFGeraChave(nota);
 
 		// Mostrando os valores gerados pela classe NFGeraChave.
 		// System.out.println("----- Valores gerados pela classe NFGeraChave
 		// ----- ");
-		// System.out.println("C�digo Randomico gerado pela classe NFGeraChave:
+		// System.out.println("Codigo Randomico gerado pela classe NFGeraChave:
 		// " + nfGeraChave.geraCodigoRandomico());
 		// System.out.println("Identificador gerado pela classe NFGeraChave: " +
 		// nfGeraChave.getChaveAcesso());
 
 		// Mostrando os valores de teste dos objetos.
 		// System.out.println("----- Valores de teste dos objetos ----- ");
-		// System.out.println("C�digo Randomico com valor de teste: " +
+		// System.out.println("Codigo Randomico com valor de teste: " +
 		// identificacao.getCodigoRandomico());
 		// System.out.println("Identificador com valor de teste: " +
 		// info.getIdentificador());
@@ -921,7 +811,7 @@ public class NTFCeService implements Serializable {
 
 		// Mostrando os valores atualizados.
 		// System.out.println("----- Valores atualizados ----- ");
-		// System.out.println("C�digo Randomico com valor atualizado: " +
+		// System.out.println("Codigo Randomico com valor atualizado: " +
 		// identificacao.getCodigoRandomico());
 		// System.out.println("Identificador com valor atualizado: " +
 		// info.getIdentificador());
@@ -951,7 +841,7 @@ public class NTFCeService implements Serializable {
 
 		System.out.println(" ");
 
-		System.out.println("----------DADOS AP�S TRANSMISSAO DA NF-e FIM--------------");
+		System.out.println("----------DADOS APOS TRANSMISSAO DA NF-e FIM--------------");
 
 		NFLoteEnvioRetornoDados retorno = new WSFacade(config).enviaLote(lote);
 
@@ -961,22 +851,22 @@ public class NTFCeService implements Serializable {
 
 		System.out.println(" ");
 
-		// RETORNO DAS INFORMA��ES GERADAS AP�S TRANSMISS�O DA NF-CE.
+		// RETORNO DAS INFORMACOES GERADAS AP�S TRANSMISSAO DA NF-CE.
 		NFLoteConsultaRetorno retc = new WSFacade(config)
 				.consultaLote(retorno.getRetorno().getInfoRecebimento().getRecibo(), DFModelo.NFCE);
 
 		for (NFProtocolo prot : retc.getProtocolos()) {
 
-			System.out.println("----------DADOS AP�S TRANSMISSAO DA NFC-e INICIO-----------");
+			System.out.println("----------DADOS APOS TRANSMISSAO DA NFC-e INICIO-----------");
 			System.out.println(" ");
 			System.out.println("Chave: " + prot.getProtocoloInfo().getChave());
-			System.out.println("N�mero Protocolo: " + prot.getProtocoloInfo().getNumeroProtocolo());
+			System.out.println("Numero Protocolo: " + prot.getProtocoloInfo().getNumeroProtocolo());
 			System.out.println("Status: " + prot.getProtocoloInfo().getStatus());
 			System.out.println("Motivo: " + prot.getProtocoloInfo().getMotivo());
 			System.out.println("Ambiente: " + prot.getProtocoloInfo().getAmbiente().getCodigo());
 			System.out.println("DataRecebimento: " + prot.getProtocoloInfo().getDataRecebimento());
 			System.out.println(" ");
-			System.out.println("----------DADOS AP�S TRANSMISSAO DA NFC-e FIM--------------");
+			System.out.println("----------DADOS APOS TRANSMISSAO DA NFC-e FIM--------------");
 
 			nfce.setChave(prot.getProtocoloInfo().getChave());
 			nfce.setNumProtocolo(prot.getProtocoloInfo().getNumeroProtocolo());

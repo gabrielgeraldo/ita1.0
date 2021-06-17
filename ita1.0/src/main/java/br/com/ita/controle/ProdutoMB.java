@@ -10,7 +10,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.ita.controle.config.Config;
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.dominio.Categoria;
 import br.com.ita.dominio.Fornecedor;
@@ -55,8 +54,6 @@ public class ProdutoMB implements Serializable {
 
 	private Long produtosSemNcm;
 
-	private Boolean renderizaConfgImposto;
-
 	private BigDecimal margemLucro = new BigDecimal(0);
 
 	private List<TipoPesquisaProduto> tiposPesquisaProduto = null;
@@ -69,8 +66,6 @@ public class ProdutoMB implements Serializable {
 		cont = daoProduto.contaRegistros();
 
 		produtosSemNcm = daoProduto.contaProdutosSemNcm();
-
-		renderizaConfgImposto = (Config.propertiesLoader().getProperty("imposto").equals("1") ? false : true);
 
 	}
 
@@ -315,14 +310,6 @@ public class ProdutoMB implements Serializable {
 
 	public void setProdutosSemNcm(Long produtosSemNcm) {
 		this.produtosSemNcm = produtosSemNcm;
-	}
-
-	public Boolean getRenderizaConfgImposto() {
-		return renderizaConfgImposto;
-	}
-
-	public void setRenderizaConfgImposto(Boolean renderizaConfgImposto) {
-		this.renderizaConfgImposto = renderizaConfgImposto;
 	}
 
 	public BigDecimal getMargemLucro() {

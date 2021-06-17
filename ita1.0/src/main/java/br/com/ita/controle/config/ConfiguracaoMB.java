@@ -12,8 +12,6 @@ import javax.inject.Named;
 import org.primefaces.event.RowEditEvent;
 
 import br.com.ita.controle.util.JSFUtil;
-import br.com.ita.dominio.Configuracao;
-import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.dao.util.ControleNumerosDAO;
 import br.com.ita.dominio.util.ControleNumeros;
 
@@ -56,14 +54,6 @@ public class ConfiguracaoMB implements Serializable {
 
 	private String tpImp;
 
-	private String imposto;
-
-	@Inject
-	private Configuracao configuracao;
-
-	@Inject
-	private ConfiguracaoDAO daoConfiguracao;
-
 	private String tpImpVenda;
 
 	private String codClient;
@@ -80,11 +70,8 @@ public class ConfiguracaoMB implements Serializable {
 		ambiente = Config.propertiesLoader().getProperty("ambiente");
 		tpImp = Config.propertiesLoader().getProperty("tpImp");
 		tpImpVenda = Config.propertiesLoader().getProperty("tpImpVenda");
-		imposto = Config.propertiesLoader().getProperty("imposto");
 		codClient = Config.propertiesLoader().getProperty("codClient");
 
-		configuracao = (daoConfiguracao.lerPorId(new Long(1)) != null ? daoConfiguracao.lerPorId(new Long(1))
-				: configuracao);
 	}
 
 	public String listar() {
@@ -99,10 +86,6 @@ public class ConfiguracaoMB implements Serializable {
 		Config.atualizaProperties("ambiente", ambiente);
 		Config.atualizaProperties("tpImp", tpImp);
 		Config.atualizaProperties("tpImpVenda", tpImpVenda);
-		Config.atualizaProperties("imposto", imposto);
-
-		configuracao.setCodigo(new Long(1));
-		daoConfiguracao.merge(configuracao);
 
 		JSFUtil.retornarMensagemInfo("Configura��es atualizadas!", null, null);
 
@@ -242,30 +225,6 @@ public class ConfiguracaoMB implements Serializable {
 
 	public void setNumerosPedidoVenda(List<ControleNumeros> numerosPedidoVenda) {
 		this.numerosPedidoVenda = numerosPedidoVenda;
-	}
-
-	public String getImposto() {
-		return imposto;
-	}
-
-	public void setImposto(String imposto) {
-		this.imposto = imposto;
-	}
-
-	public Configuracao getConfiguracao() {
-		return configuracao;
-	}
-
-	public ConfiguracaoDAO getDaoConfiguracao() {
-		return daoConfiguracao;
-	}
-
-	public void setConfiguracao(Configuracao configuracao) {
-		this.configuracao = configuracao;
-	}
-
-	public void setDaoConfiguracao(ConfiguracaoDAO daoConfiguracao) {
-		this.daoConfiguracao = daoConfiguracao;
 	}
 
 	public String getTpImpVenda() {

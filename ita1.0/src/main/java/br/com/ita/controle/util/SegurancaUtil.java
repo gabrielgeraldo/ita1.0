@@ -20,32 +20,10 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
 import br.com.ita.controle.config.Config;
-import br.com.ita.dominio.Configuracao;
-import br.com.ita.dominio.dao.ConfiguracaoDAO;
 
 import java.util.*;
 
 public class SegurancaUtil {
-
-	private Configuracao configuracao;
-
-	private ConfiguracaoDAO daoConfiguracao;
-
-	public ConfiguracaoDAO getDaoConfiguracao() {
-		return daoConfiguracao;
-	}
-
-	public void setDaoConfiguracao(ConfiguracaoDAO daoConfiguracao) {
-		this.daoConfiguracao = daoConfiguracao;
-	}
-
-	public Configuracao getConfiguracao() {
-		return configuracao;
-	}
-
-	public void setConfiguracao(Configuracao configuracao) {
-		this.configuracao = configuracao;
-	}
 
 	public static boolean verificaMec() {
 		/*
@@ -117,8 +95,8 @@ public class SegurancaUtil {
 
 			ano = time.get(Calendar.YEAR);
 			mes = time.get(Calendar.MONTH) + 1;
-			// Mês da classe Calendar é 0 based, isto é, janeiro = 0, fevereiro
-			// =1, março = 3 e assim por diante.
+			// Mï¿½s da classe Calendar ï¿½ 0 based, isto ï¿½, janeiro = 0, fevereiro
+			// =1, marï¿½o = 3 e assim por diante.
 
 			// System.out.println("ANO LOCAL: " + ano);
 			// System.out.println("MES LOCAL: " + mes);
