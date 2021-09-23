@@ -18,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -129,7 +130,7 @@ public class NTFe implements BaseEntity, Serializable {
 	@ManyToOne
 	private NFEntrada nfEntrada;
 
-	@ManyToOne
+	@OneToOne
 	private Orcamento orcamento;
 
 	@ManyToOne

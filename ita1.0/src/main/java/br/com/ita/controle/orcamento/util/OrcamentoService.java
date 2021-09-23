@@ -1,4 +1,4 @@
-package br.com.ita.controle.venda.util;
+package br.com.ita.controle.orcamento.util;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,7 +17,6 @@ import com.fincatto.documentofiscal.nfe.NFTipoEmissao;
 import com.fincatto.documentofiscal.nfe400.classes.NFNotaSituacaoOperacionalSimplesNacional;
 import com.fincatto.documentofiscal.nfe400.classes.NFEndereco;
 import com.fincatto.documentofiscal.nfe400.classes.NFFinalidade;
-import com.fincatto.documentofiscal.nfe400.classes.NFIndicadorFormaPagamento;
 import com.fincatto.documentofiscal.nfe400.classes.NFModalidadeFrete;
 import com.fincatto.documentofiscal.nfe400.classes.NFNotaInfoSituacaoTributariaCOFINS;
 import com.fincatto.documentofiscal.nfe400.classes.NFNotaInfoSituacaoTributariaPIS;
@@ -31,12 +30,10 @@ import com.fincatto.documentofiscal.nfe400.classes.lote.envio.NFLoteEnvio;
 import com.fincatto.documentofiscal.nfe400.classes.lote.envio.NFLoteIndicadorProcessamento;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFIdentificadorLocalDestinoOperacao;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFIndicadorPresencaComprador;
-import com.fincatto.documentofiscal.nfe400.classes.nota.NFMeioPagamento;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNota;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfo;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoDestinatario;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoEmitente;
-import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoFormaPagamento;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoICMSTotal;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoIdentificacao;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItem;
@@ -60,15 +57,15 @@ import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoTransporte;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFOperacaoConsumidorFinal;
 
 import br.com.ita.controle.nfce.util.QRCode;
-import br.com.ita.dominio.ItemVenda;
-import br.com.ita.dominio.Venda;
+import br.com.ita.dominio.ItemOrcamento;
+import br.com.ita.dominio.Orcamento;
 import br.com.ita.dominio.config.Configuracao;
 import br.com.ita.dominio.dao.EstadoDAO;
 import br.com.ita.dominio.dao.MunicipioDAO;
 import br.com.ita.dominio.empresa.Empresa;
 import br.com.ita.dominio.notafiscal.NFeConfigIta;
 
-public class VendaService implements Serializable {
+public class OrcamentoService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -120,10 +117,6 @@ public class VendaService implements Serializable {
 
 	private NFLoteEnvio lote = new NFLoteEnvio();
 
-	private Venda venda = new Venda();
-
-	private List<ItemVenda> itensVenda = new ArrayList<ItemVenda>();
-
 	private NFNotaInfoPagamento pagamento = new NFNotaInfoPagamento();
 
 	private List<NFNotaInfoPagamento> pagamentos = new ArrayList<NFNotaInfoPagamento>();
@@ -132,13 +125,17 @@ public class VendaService implements Serializable {
 
 	private MunicipioDAO daoMunicipio = new MunicipioDAO();
 
+	private Orcamento orcamento = new Orcamento();
+
+	private List<ItemOrcamento> itensOrcamento = new ArrayList<ItemOrcamento>();
+
 	private Empresa empresa = new Empresa();
 
 	private Configuracao configuracao = new Configuracao();
 
-	public VendaService(Venda venda, List<ItemVenda> itensVenda, Empresa empresa, Configuracao configuracao) {
-		this.setVenda(venda);
-		this.setItensVenda(itensVenda);
+	public OrcamentoService(Orcamento orcamento, List<ItemOrcamento> itensOrcamento, Empresa empresa, Configuracao configuracao) {
+		this.setOrcamento(orcamento);
+		this.setItensOrcamento(itensOrcamento);
 		this.setEmpresa(empresa);
 		this.setConfiguracao(configuracao);
 	}
@@ -335,22 +332,6 @@ public class VendaService implements Serializable {
 		this.lote = lote;
 	}
 
-	public Venda getVenda() {
-		return venda;
-	}
-
-	public List<ItemVenda> getItensVenda() {
-		return itensVenda;
-	}
-
-	public void setVenda(Venda venda) {
-		this.venda = venda;
-	}
-
-	public void setItensVenda(List<ItemVenda> itensVenda) {
-		this.itensVenda = itensVenda;
-	}
-
 	public NFNotaInfoPagamento getPagamento() {
 		return pagamento;
 	}
@@ -381,6 +362,22 @@ public class VendaService implements Serializable {
 
 	public void setDaoMunicipio(MunicipioDAO daoMunicipio) {
 		this.daoMunicipio = daoMunicipio;
+	}
+
+	public Orcamento getOrcamento() {
+		return orcamento;
+	}
+
+	public void setOrcamento(Orcamento orcamento) {
+		this.orcamento = orcamento;
+	}
+
+	public List<ItemOrcamento> getItensOrcamento() {
+		return itensOrcamento;
+	}
+
+	public void setItensOrcamento(List<ItemOrcamento> itensOrcamento) {
+		this.itensOrcamento = itensOrcamento;
 	}
 
 	public Empresa getEmpresa() {
@@ -437,19 +434,19 @@ public class VendaService implements Serializable {
 
 	public void geraDestinatarioEndereco() {
 
-		if (venda.getCliente() != null) {
+		if (orcamento.getCliente() != null) {
 
-			destinatarioEndereco.setLogradouro(venda.getCliente().getEndereco());
-			destinatarioEndereco.setNumero(venda.getCliente().getNumero());
-			destinatarioEndereco.setComplemento(venda.getCliente().getComplemento());
-			destinatarioEndereco.setBairro(venda.getCliente().getBairro());
-			destinatarioEndereco.setCodigoMunicipio(venda.getCliente().getMunicipio().getCodigo().toString());
-			destinatarioEndereco.setDescricaoMunicipio(venda.getCliente().getMunicipio().getNome());
-			destinatarioEndereco.setUf(DFUnidadeFederativa.valueOfCodigo(venda.getCliente().getEstado().getUf()));
-			destinatarioEndereco.setCep(venda.getCliente().getCep());
+			destinatarioEndereco.setLogradouro(orcamento.getCliente().getEndereco());
+			destinatarioEndereco.setNumero(orcamento.getCliente().getNumero());
+			destinatarioEndereco.setComplemento(orcamento.getCliente().getComplemento());
+			destinatarioEndereco.setBairro(orcamento.getCliente().getBairro());
+			destinatarioEndereco.setCodigoMunicipio(orcamento.getCliente().getMunicipio().getCodigo().toString());
+			destinatarioEndereco.setDescricaoMunicipio(orcamento.getCliente().getMunicipio().getNome());
+			destinatarioEndereco.setUf(DFUnidadeFederativa.valueOfCodigo(orcamento.getCliente().getEstado().getUf()));
+			destinatarioEndereco.setCep(orcamento.getCliente().getCep());
 			destinatarioEndereco.setCodigoPais("1058");
 			destinatarioEndereco.setDescricaoPais("BRASIL");
-			destinatarioEndereco.setTelefone(venda.getCliente().getTelefone());
+			destinatarioEndereco.setTelefone(orcamento.getCliente().getTelefone());
 
 		}
 
@@ -457,22 +454,22 @@ public class VendaService implements Serializable {
 
 	public void geraDestinatario() {
 
-		if (venda.getCliente() != null) {
+		if (orcamento.getCliente() != null) {
 
-			if (venda.getCliente().getTipo().equals("F")) {
-				destinatario.setCpf(venda.getCliente().getCgc());
-			} else if (venda.getCliente().getTipo().equals("J")) {
-				destinatario.setCnpj(venda.getCliente().getCgc());
+			if (orcamento.getCliente().getTipo().equals("F")) {
+				destinatario.setCpf(orcamento.getCliente().getCgc());
+			} else if (orcamento.getCliente().getTipo().equals("J")) {
+				destinatario.setCnpj(orcamento.getCliente().getCgc());
 			}
 
-			if (!venda.getCliente().getInscEst().isEmpty()) {
-				destinatario.setInscricaoEstadual(venda.getCliente().getInscEst());
+			if (!orcamento.getCliente().getInscEst().isEmpty()) {
+				destinatario.setInscricaoEstadual(orcamento.getCliente().getInscEst());
 			}
 
-			destinatario.setRazaoSocial(venda.getCliente().getNome());
+			destinatario.setRazaoSocial(orcamento.getCliente().getNome());
 			destinatario.setEndereco(destinatarioEndereco);
-			destinatario.setIndicadorIEDestinatario(venda.getCliente().getNfIndicadorIEDestinatario());
-			destinatario.setEmail(venda.getCliente().getEmail());
+			destinatario.setIndicadorIEDestinatario(orcamento.getCliente().getNfIndicadorIEDestinatario());
+			destinatario.setEmail(orcamento.getCliente().getEmail());
 
 		}
 
@@ -484,8 +481,8 @@ public class VendaService implements Serializable {
 		identificacao.setCodigoRandomico(this.gerarCodigoRandomico());
 		identificacao.setNaturezaOperacao("ABCD");
 		identificacao.setModelo(DFModelo.NFCE);
-		identificacao.setSerie(String.valueOf(venda.getCodigo()));
-		identificacao.setNumeroNota(String.valueOf(venda.getCodigo()));
+		identificacao.setSerie(String.valueOf(orcamento.getCodigo()));
+		identificacao.setNumeroNota(String.valueOf(orcamento.getCodigo()));
 		identificacao.setDataHoraEmissao(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 		identificacao.setTipo(NFTipo.SAIDA);
 		identificacao.setIdentificadorLocalDestinoOperacao(NFIdentificadorLocalDestinoOperacao.OPERACAO_INTERNA);
@@ -509,99 +506,9 @@ public class VendaService implements Serializable {
 	}
 
 	public void geraPagamentos() {
-		/*
-		 * NFNotaInfoFormaPagamento fpgto = new NFNotaInfoFormaPagamento();
-		 * fpgto.setMeioPagamento(NFMeioPagamento.DINHEIRO); fpgto.setValorPagamento(new
-		 * java.math.BigDecimal("0.00"));
-		 * 
-		 * List<NFNotaInfoFormaPagamento> lsFpgto = new
-		 * ArrayList<NFNotaInfoFormaPagamento>(); lsFpgto.add(fpgto);
-		 * 
-		 * pagamento.setDetalhamentoFormasPagamento(lsFpgto); pagamentos.add(pagamento);
-		 */
 
-		NFNotaInfoFormaPagamento fpgto = new NFNotaInfoFormaPagamento();
-
-		switch (this.venda.getCondicaoPagamento().getFormaPagamento()) {
-		case AVISTA:
-			fpgto.setIndicadorFormaPagamento(NFIndicadorFormaPagamento.A_VISTA);
-			break;
-
-		case APRAZO:
-			fpgto.setIndicadorFormaPagamento(NFIndicadorFormaPagamento.A_PRAZO);
-			break;
-
-		default:
-			fpgto.setIndicadorFormaPagamento(null);
-			System.out.println("ERRO NO PREENCHIMENTO DA FORMA DE PAGAMENTO!");
-
-		}
-
-		switch (this.venda.getCondicaoPagamento().getMeioPagamento()) {
-		case DINHEIRO:
-			fpgto.setMeioPagamento(NFMeioPagamento.DINHEIRO);
-			break;
-
-		case CHEQUE:
-			fpgto.setMeioPagamento(NFMeioPagamento.CHEQUE);
-			break;
-
-		case CARTAO_CREDITO:
-			fpgto.setMeioPagamento(NFMeioPagamento.CARTAO_CREDITO);
-			break;
-
-		case CARTAO_DEBITO:
-			fpgto.setMeioPagamento(NFMeioPagamento.CARTAO_DEBITO);
-			break;
-
-		case CARTAO_LOJA:
-			fpgto.setMeioPagamento(NFMeioPagamento.CARTAO_LOJA);
-			break;
-
-		case VALE_ALIMENTACAO:
-			fpgto.setMeioPagamento(NFMeioPagamento.VALE_ALIMENTACAO);
-			break;
-
-		case VALE_REFEICAO:
-			fpgto.setMeioPagamento(NFMeioPagamento.VALE_REFEICAO);
-			break;
-
-		case VALE_PRESENTE:
-			fpgto.setMeioPagamento(NFMeioPagamento.VALE_PRESENTE);
-			break;
-
-		case VALE_COMBUSTIVEL:
-			fpgto.setMeioPagamento(NFMeioPagamento.VALE_COMBUSTIVEL);
-			break;
-
-		case DUPLICATA_MERCANTIL:
-			fpgto.setMeioPagamento(NFMeioPagamento.DUPLICATA_MERCANTIL);
-			break;
-
-		case BOLETO_BANCARIO:
-			fpgto.setMeioPagamento(NFMeioPagamento.BOLETO_BANCARIO);
-			break;
-
-		case SEM_PAGAMENTO:
-			fpgto.setMeioPagamento(NFMeioPagamento.SEM_PAGAMENTO);
-			break;
-
-		case OUTRO:
-			fpgto.setMeioPagamento(NFMeioPagamento.OUTRO);
-			break;
-
-		default:
-			fpgto.setMeioPagamento(null);
-			System.out.println("ERRO NO PREENCHIMENTO DO MEIO DE PAGAMENTO!");
-
-		}
-
-		fpgto.setValorPagamento(this.venda.getValorPagamento());
-		List<NFNotaInfoFormaPagamento> lsFpgto = new ArrayList<NFNotaInfoFormaPagamento>();
-		lsFpgto.add(fpgto);
-
-		pagamento.setDetalhamentoFormasPagamento(lsFpgto);
-		pagamentos.add(pagamento);
+		pagamento.setDetalhamentoFormasPagamento(null);
+		pagamentos.add(null);
 
 	}
 
@@ -613,7 +520,7 @@ public class VendaService implements Serializable {
 		info.setTransporte(transporte);
 		info.setEmitente(emitente);
 
-		if (venda.getCliente() != null)
+		if (orcamento.getCliente() != null)
 			info.setDestinatario(destinatario);
 
 		this.geraPagamentos();
@@ -624,52 +531,52 @@ public class VendaService implements Serializable {
 
 	public void geraProdutos() {
 
-		for (int i = 0; i < itensVenda.size(); i++) {
+		for (int i = 0; i < itensOrcamento.size(); i++) {
 
 			item.setNumeroItem(i + 1);
 
-			produto.setCodigo(itensVenda.get(i).getProduto().getCodigo().toString() != null
-					? itensVenda.get(i).getProduto().getCodigo().toString()
+			produto.setCodigo(itensOrcamento.get(i).getProduto().getCodigo().toString() != null
+					? itensOrcamento.get(i).getProduto().getCodigo().toString()
 					: "");
 
 			produto.setCodigoDeBarras("SEM GTIN");
 
 			produto.setCodigoDeBarrasTributavel("SEM GTIN");
 
-			produto.setDescricao(itensVenda.get(i).getProduto().getDescricao() != null
-					? itensVenda.get(i).getProduto().getDescricao()
+			produto.setDescricao(itensOrcamento.get(i).getProduto().getDescricao() != null
+					? itensOrcamento.get(i).getProduto().getDescricao()
 					: "");
 
 			produto.setNcm("00000000");
 
 			produto.setCfop("5102");
 
-			produto.setUnidadeComercial(itensVenda.get(i).getProduto().getUnidadeComercial() != null
-					? itensVenda.get(i).getProduto().getUnidadeComercial()
+			produto.setUnidadeComercial(itensOrcamento.get(i).getProduto().getUnidadeComercial() != null
+					? itensOrcamento.get(i).getProduto().getUnidadeComercial()
 					: "");
 
-			produto.setUnidadeTributavel(itensVenda.get(i).getProduto().getUnidadeComercial() != null
-					? itensVenda.get(i).getProduto().getUnidadeComercial()
+			produto.setUnidadeTributavel(itensOrcamento.get(i).getProduto().getUnidadeComercial() != null
+					? itensOrcamento.get(i).getProduto().getUnidadeComercial()
 					: "");
 
-			produto.setQuantidadeComercial(new BigDecimal(itensVenda.get(i).getQuantidade()) != null
-					? new BigDecimal(itensVenda.get(i).getQuantidade())
+			produto.setQuantidadeComercial(new BigDecimal(itensOrcamento.get(i).getQuantidade()) != null
+					? new BigDecimal(itensOrcamento.get(i).getQuantidade())
 					: null);
 
-			produto.setQuantidadeTributavel(new BigDecimal(itensVenda.get(i).getQuantidade()) != null
-					? new BigDecimal(itensVenda.get(i).getQuantidade())
+			produto.setQuantidadeTributavel(new BigDecimal(itensOrcamento.get(i).getQuantidade()) != null
+					? new BigDecimal(itensOrcamento.get(i).getQuantidade())
 					: null);
 
-			produto.setValorUnitario(itensVenda.get(i).getProduto().getPrecoUnitario() != null
-					? itensVenda.get(i).getProduto().getPrecoUnitario()
+			produto.setValorUnitario(itensOrcamento.get(i).getProduto().getPrecoUnitario() != null
+					? itensOrcamento.get(i).getProduto().getPrecoUnitario()
 					: null);
 
-			produto.setValorUnitarioTributavel(itensVenda.get(i).getProduto().getPrecoUnitario() != null
-					? itensVenda.get(i).getProduto().getPrecoUnitario()
+			produto.setValorUnitarioTributavel(itensOrcamento.get(i).getProduto().getPrecoUnitario() != null
+					? itensOrcamento.get(i).getProduto().getPrecoUnitario()
 					: null);
 
-			produto.setValorTotalBruto(itensVenda.get(i).getProduto().getPrecoUnitario()
-					.multiply(new BigDecimal(itensVenda.get(i).getQuantidade())));
+			produto.setValorTotalBruto(itensOrcamento.get(i).getProduto().getPrecoUnitario()
+					.multiply(new BigDecimal(itensOrcamento.get(i).getQuantidade())));
 
 			produto.setCompoeValorNota(NFProdutoCompoeValorNota.SIM);
 
@@ -734,7 +641,7 @@ public class VendaService implements Serializable {
 		icmsTotal.setValorICMSDesonerado(new java.math.BigDecimal("0.00"));
 		icmsTotal.setBaseCalculoICMSST(new java.math.BigDecimal("0.00"));
 		icmsTotal.setValorTotalICMSST(new java.math.BigDecimal("0.00"));
-		icmsTotal.setValorTotalDosProdutosServicos(venda.getTotal());
+		icmsTotal.setValorTotalDosProdutosServicos(orcamento.getTotal());
 		icmsTotal.setValorTotalFrete(new java.math.BigDecimal("0.00"));
 		icmsTotal.setValorTotalSeguro(new java.math.BigDecimal("0.00"));
 		icmsTotal.setValorTotalDesconto(new java.math.BigDecimal("0.00"));
@@ -743,7 +650,7 @@ public class VendaService implements Serializable {
 		icmsTotal.setValorPIS(new java.math.BigDecimal("0.00"));
 		icmsTotal.setValorCOFINS(new java.math.BigDecimal("0.00"));
 		icmsTotal.setOutrasDespesasAcessorias(new java.math.BigDecimal("0.00"));
-		icmsTotal.setValorTotalNFe(venda.getTotal());
+		icmsTotal.setValorTotalNFe(orcamento.getTotal());
 
 		// adicionado nfe40
 		icmsTotal.setValorTotalFundoCombatePobreza(new java.math.BigDecimal("0.00"));

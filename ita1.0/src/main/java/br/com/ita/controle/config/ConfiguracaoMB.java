@@ -4,20 +4,23 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-//import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.RowEditEvent;
 
 import br.com.ita.controle.util.JSFUtil;
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.dao.util.ControleNumerosDAO;
 import br.com.ita.dominio.util.ControleNumeros;
 
 @Named("configuracaoMB")
 @ViewScoped
 public class ConfiguracaoMB implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private List<ControleNumeros> numerosNfe = null;
 
@@ -28,68 +31,51 @@ public class ConfiguracaoMB implements Serializable {
 	@Inject
 	private ControleNumerosDAO daoControleNumeros = null;
 
-	private static final long serialVersionUID = 1L;
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
 
-	// @Inject
-	private String senhaCert;
+	@Inject
+	private Configuracao configuracao;
 
-	private String idCodigoSegurancaContribuinte;
+	private List<Configuracao> configuracoes = null;
 
-	// @Inject
-	private String codigoSegurancaContribuinte;
-
-	// @Inject
-	private String cnpj;
-
-	// @Inject
-	private String inscricaoEstadual;
-
-	// @Inject
-	private String razaoSocial;
-
-	// @Inject
-	private String nomeFantasia;
-
-	private String ambiente;
-
-	private String tpImp;
-
-	private String tpImpVenda;
-
-	private String codClient;
+	private List<Configuracao> configuracoesFiltrados = null;
 
 	@PostConstruct
 	public void init() {
-		senhaCert = Config.propertiesLoader().getProperty("senhaCert");
-		idCodigoSegurancaContribuinte = Config.propertiesLoader().getProperty("idCodigoSegurancaContribuinte");
-		codigoSegurancaContribuinte = Config.propertiesLoader().getProperty("codigoSegurancaContribuinte");
-		cnpj = Config.propertiesLoader().getProperty("cnpj");
-		inscricaoEstadual = Config.propertiesLoader().getProperty("inscricaoEstadual");
-		razaoSocial = Config.propertiesLoader().getProperty("razaoSocial");
-		nomeFantasia = Config.propertiesLoader().getProperty("nomeFantasia");
-		ambiente = Config.propertiesLoader().getProperty("ambiente");
-		tpImp = Config.propertiesLoader().getProperty("tpImp");
-		tpImpVenda = Config.propertiesLoader().getProperty("tpImpVenda");
-		codClient = Config.propertiesLoader().getProperty("codClient");
+
+		Configuracao objetoDoBanco = this.configuracaoDao.lerPorId(new Long(1));
+		this.setConfiguracao(objetoDoBanco);
 
 	}
 
 	public String listar() {
-		return "/Configuracao/configuracaoEditar.xhtml?faces-redirect=true";
+		return "/Configuracao/configuracaoListar.xhtml?faces-redirect=true";
 	}
 
 	public String salvar() {
 
-		Config.atualizaProperties("senhaCert", senhaCert);
-		Config.atualizaProperties("idCodigoSegurancaContribuinte", idCodigoSegurancaContribuinte);
-		Config.atualizaProperties("codigoSegurancaContribuinte", codigoSegurancaContribuinte);
-		Config.atualizaProperties("ambiente", ambiente);
-		Config.atualizaProperties("tpImp", tpImp);
-		Config.atualizaProperties("tpImpVenda", tpImpVenda);
+		this.configuracaoDao.merge(this.getConfiguracao());
+		// limpa a lista
+		this.configuracoes = null;
 
-		JSFUtil.retornarMensagemInfo("Configura��es atualizadas!", null, null);
+		// limpar o objeto da p�gina
+		this.setConfiguracao(new Configuracao());
 
-		return "/home.xhtml?faces-redirect=true";
+		JSFUtil.retornarMensagemInfo("Configuracoes atualizadas!", null, null);
+
+		return "/Configuracao/configuracaoListar.xhtml";
+	}
+
+	public String alterar() {
+
+		Long codigo = JSFUtil.getParametroLong("itemcodigo");
+
+		Configuracao objetoDoBanco = this.configuracaoDao.lerPorId(codigo);
+		this.setConfiguracao(objetoDoBanco);
+
+		return "/Configuracao/configuracaoEditar.xhtml";
+
 	}
 
 	public void onRowEdit(RowEditEvent event) {
@@ -98,11 +84,11 @@ public class ConfiguracaoMB implements Serializable {
 
 			daoControleNumeros.merge((ControleNumeros) event.getObject());
 
-			JSFUtil.retornarMensagemInfo("N�mero atualizado.", null, null);
+			JSFUtil.retornarMensagemInfo("Numero atualizado.", null, null);
 
 		} catch (Exception e) {
 
-			JSFUtil.retornarMensagemErro("Error! N�mero n�o atualizado.", null, null);
+			JSFUtil.retornarMensagemErro("Erro! Numero nao atualizado.", null, null);
 
 		}
 
@@ -129,70 +115,6 @@ public class ConfiguracaoMB implements Serializable {
 		this.daoControleNumeros = daoControleNumeros;
 	}
 
-	public String getSenhaCert() {
-		return senhaCert;
-	}
-
-	public void setSenhaCert(String senhaCert) {
-		this.senhaCert = senhaCert;
-	}
-
-	public String getIdCodigoSegurancaContribuinte() {
-		return idCodigoSegurancaContribuinte;
-	}
-
-	public void setIdCodigoSegurancaContribuinte(String idCodigoSegurancaContribuinte) {
-		this.idCodigoSegurancaContribuinte = idCodigoSegurancaContribuinte;
-	}
-
-	public String getCodigoSegurancaContribuinte() {
-		return codigoSegurancaContribuinte;
-	}
-
-	public void setCodigoSegurancaContribuinte(String codigoSegurancaContribuinte) {
-		this.codigoSegurancaContribuinte = codigoSegurancaContribuinte;
-	}
-
-	public String getCnpj() {
-		return cnpj;
-	}
-
-	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
-	}
-
-	public String getInscricaoEstadual() {
-		return inscricaoEstadual;
-	}
-
-	public void setInscricaoEstadual(String inscricaoEstadual) {
-		this.inscricaoEstadual = inscricaoEstadual;
-	}
-
-	public String getRazaoSocial() {
-		return razaoSocial;
-	}
-
-	public void setRazaoSocial(String razaoSocial) {
-		this.razaoSocial = razaoSocial;
-	}
-
-	public String getNomeFantasia() {
-		return nomeFantasia;
-	}
-
-	public void setNomeFantasia(String nomeFantasia) {
-		this.nomeFantasia = nomeFantasia;
-	}
-
-	public String getAmbiente() {
-		return ambiente;
-	}
-
-	public void setAmbiente(String ambiente) {
-		this.ambiente = ambiente;
-	}
-
 	public List<ControleNumeros> getNumerosNfce() {
 
 		if (numerosNfce == null) {
@@ -204,14 +126,6 @@ public class ConfiguracaoMB implements Serializable {
 
 	public void setNumerosNfce(List<ControleNumeros> numerosNfce) {
 		this.numerosNfce = numerosNfce;
-	}
-
-	public String getTpImp() {
-		return tpImp;
-	}
-
-	public void setTpImp(String tpImp) {
-		this.tpImp = tpImp;
 	}
 
 	public List<ControleNumeros> getNumerosPedidoVenda() {
@@ -227,20 +141,40 @@ public class ConfiguracaoMB implements Serializable {
 		this.numerosPedidoVenda = numerosPedidoVenda;
 	}
 
-	public String getTpImpVenda() {
-		return tpImpVenda;
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
 	}
 
-	public void setTpImpVenda(String tpImpVenda) {
-		this.tpImpVenda = tpImpVenda;
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
 	}
 
-	public String getCodClient() {
-		return codClient;
+	public Configuracao getConfiguracao() {
+		return configuracao;
 	}
 
-	public void setCodClient(String codClient) {
-		this.codClient = codClient;
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
+	}
+
+	public List<Configuracao> getConfiguracoes() {
+
+		if (this.configuracoes == null)
+			this.configuracoes = this.configuracaoDao.lerTodos();
+
+		return configuracoes;
+	}
+
+	public void setConfiguracoes(List<Configuracao> configuracoes) {
+		this.configuracoes = configuracoes;
+	}
+
+	public List<Configuracao> getConfiguracoesFiltrados() {
+		return configuracoesFiltrados;
+	}
+
+	public void setConfiguracoesFiltrados(List<Configuracao> configuracoesFiltrados) {
+		this.configuracoesFiltrados = configuracoesFiltrados;
 	}
 
 }

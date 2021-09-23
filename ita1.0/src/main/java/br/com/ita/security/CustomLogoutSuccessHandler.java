@@ -21,9 +21,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 			try {
 				httpServletRequest.getSession().invalidate();
 				// System.out.println("USUARIO DESLOGADO!");
-				// você pode adicionar mais códigos aqui quando o usuário logar
+				// vocï¿½ pode adicionar mais cï¿½digos aqui quando o usuï¿½rio logar
 				// com sucesso Fora, como atualizar o banco de dados para o
-				// último ativo.
+				// ï¿½ltimo ativo.
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -31,15 +31,27 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
 		if (SegurancaUtil.verificaMec()) {
 
-			if (SegurancaUtil.verificaSenhaMes()) {
-				httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-				// redirect to login
-				httpServletResponse.sendRedirect("login.xhtml");
+			if (SegurancaUtil.verificaDadosDaEmpresaEDadosConfiguracao()) {
+
+				if (SegurancaUtil.verificaSenhaMes()) {
+
+					httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+					// redirect to login
+					httpServletResponse.sendRedirect("login.xhtml");
+
+				} else {
+
+					httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+					// redirect to login
+					httpServletResponse.sendRedirect("_senhaMes.xhtml");
+
+				}
+
 			} else {
 				httpServletResponse.setCharacterEncoding("UTF-8");
 				httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 				// redirect to login
-				httpServletResponse.sendRedirect("_senhaMes.xhtml");
+				httpServletResponse.sendRedirect("_dadosDaEmpresa.xhtml");
 			}
 
 		} else {

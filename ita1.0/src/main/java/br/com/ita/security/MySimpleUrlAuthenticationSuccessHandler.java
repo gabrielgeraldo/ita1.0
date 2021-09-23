@@ -58,29 +58,45 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 
 		if (SegurancaUtil.verificaMec()) {
 
-			if (SegurancaUtil.verificaSenhaMes()) {
-				/*
-				 * for (GrantedAuthority grantedAuthority : authorities) {
-				 * System.out.println(grantedAuthority.getAuthority());
-				 * 
-				 * if (grantedAuthority.getAuthority().equals("VENDEDOR")) {
-				 * isVendedor = true; }
-				 * 
-				 * if (grantedAuthority.getAuthority().equals("GERENTE")) {
-				 * isAdmin = true; }
-				 * 
-				 * }
-				 * 
-				 * System.out.println("isAdmin: " + isAdmin);
-				 * System.out.println("isVendedor: " + isVendedor);
-				 * 
-				 * if (isVendedor == true && isAdmin == false) { return
-				 * "/home.xhtml"; } else if (isVendedor == true && isAdmin ==
-				 * true) { return "/home.xhtml"; } else { return
-				 * "/_acessoNegado.xhtml"; }
-				 */
+			if (SegurancaUtil.verificaDadosDaEmpresaEDadosConfiguracao()) {
+				
+				if (SegurancaUtil.verificaSenhaMes()) {
 
-				return "/home.xhtml";
+					/*
+					 * for (GrantedAuthority grantedAuthority : authorities) {
+					 * System.out.println(grantedAuthority.getAuthority());
+					 * 
+					 * if (grantedAuthority.getAuthority().equals("VENDEDOR")) { isVendedor = true;
+					 * }
+					 * 
+					 * if (grantedAuthority.getAuthority().equals("GERENTE")) { isAdmin = true; }
+					 * 
+					 * }
+					 * 
+					 * System.out.println("isAdmin: " + isAdmin); System.out.println("isVendedor: "
+					 * + isVendedor);
+					 * 
+					 * if (isVendedor == true && isAdmin == false) { return "/home.xhtml"; } else if
+					 * (isVendedor == true && isAdmin == true) { return "/home.xhtml"; } else {
+					 * return "/_acessoNegado.xhtml"; }
+					 */
+
+					return "/home.xhtml";
+
+				} else {
+
+					try {
+						RequestDispatcher dispatcher = JSFUtil.getServletRequest()
+								.getRequestDispatcher("/j_spring_security_logout");
+						dispatcher.forward(JSFUtil.getServletRequest(), JSFUtil.getServletResponse());
+						FacesContext.getCurrentInstance().responseComplete();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+
+					return null;
+
+				}
 
 			} else {
 

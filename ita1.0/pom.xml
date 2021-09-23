@@ -180,7 +180,7 @@
 		<dependency>
 			<groupId>com.github.wmixvideo</groupId>
 			<artifactId>nfe</artifactId>
-			<version>3.0.41</version>
+			<version>3.0.62</version>
 		</dependency>
 
 

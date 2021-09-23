@@ -65,7 +65,7 @@ public class LogonMB extends AdminSession implements Serializable {
 	public void preRender() {
 
 		// if ("true".equals(request.getParameter("invalid"))) {
-		// JSFUtil.retornarMensagemErro("Usuário ou senha inválido!", null,
+		// JSFUtil.retornarMensagemErro("Usuï¿½rio ou senha invï¿½lido!", null,
 		// null);
 		// }
 	}
@@ -75,7 +75,7 @@ public class LogonMB extends AdminSession implements Serializable {
 		currentUser = usuario;
 		this.addDetailMessage("Logged in successfully as <b>" + usuario + "</b>", null);
 		Faces.getExternalContext().getFlash().setKeepMessages(true);
-		
+
 		// System.out.println(usuario);
 
 		usuarioDao = new UsuarioDAO();
@@ -217,4 +217,5 @@ public class LogonMB extends AdminSession implements Serializable {
 	public void setMunicipioDao(MunicipioDAO municipioDao) {
 		this.municipioDao = municipioDao;
 	}
+
 }

@@ -20,48 +20,48 @@ public class Produto implements BaseEntityP, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@NotEmpty(message = "O c�digo � de preenchimento obrigat�rio.")
+	@NotEmpty(message = "O código � de preenchimento obrigatório.")
 	private String codigo;
 
-	@Column(length = 65, nullable = false)
-	@NotNull(message = "A descri��o � de preenchimento obrigat�rio.")
-	@Size(min = 4, max = 65, message = "A descri��o deve ter entre 4 e 65 caracteres.")
+	@Column(length = 120, nullable = false)
+	@NotNull(message = "A descriçãoo é de preenchimento obrigatório.")
+	@Size(min = 1, max = 120, message = "A descrição deve ter entre 1 e 120 caracteres.")
 	private String descricao;
 
 	@ManyToOne
-	@NotNull(message = "O fornecedor � de preenchimento obrigat�rio.")
+	@NotNull(message = "O fornecedor é de preenchimento obrigatório.")
 	private Fornecedor fornecedor;
 
 	@ManyToOne
-	@NotNull(message = "A categoria � de preenchimento obrigat�rio.")
+	@NotNull(message = "A categoria é de preenchimento obrigatório.")
 	private Categoria categoria;
 
 	@Column(precision = 7, scale = 2, nullable = false)
-	@NotNull(message = "O pre�o de custo � de preenchimento obrigat�rio.")
+	@NotNull(message = "O preço de custo é de preenchimento obrigatório.")
 	private BigDecimal precoCusto;
 
 	@Column(precision = 7, scale = 2, nullable = false)
-	@NotNull(message = "O pre�o de unit�rio � de preenchimento obrigat�rio.")
+	@NotNull(message = "O preço de unitário é de preenchimento obrigatório.")
 	private BigDecimal precoUnitario;
 
 	@Column(nullable = false)
-	@NotNull(message = "A quantidade em estoque � de preenchimento obrigat�rio.")
+	@NotNull(message = "A quantidade em estoque é de preenchimento obrigatório.")
 	private int qtdEstq;
 
 	// @ManyToOne
 	private String ncm;
 
-	@Column(length = 2, nullable = false)
-	@Size(min = 0, max = 2, message = "A unidade comercia deve ter entre 0 e 2 caracteres.")
-	@NotNull(message = "A unidade comercia � de preenchimento obrigat�rio.")
+	@Column(length = 6, nullable = false)
+	@Size(min = 1, max = 6, message = "A unidade comercia deve ter entre 1 e 6 caracteres.")
+	@NotNull(message = "A unidade comercia é de preenchimento obrigatório.")
 	private String unidadeComercial;
 
 	@Column(length = 7)
-	@Size(min = 0, max = 7, message = "O c�digo CEST deve ter 7 d�gitos.")
+	@Size(min = 0, max = 7, message = "O código CEST deve ter 7 dígitos.")
 	private String Cest;
 
 	@Column(length = 15)
-	@Size(min = 0, max = 15, message = "O c�digo de barras deve ter entre 0 e 15 caracteres.")
+	@Size(min = 0, max = 15, message = "O código de barras deve ter entre 0 e 15 caracteres.")
 	private String codigoBarras;
 
 	public String getCodigo() {

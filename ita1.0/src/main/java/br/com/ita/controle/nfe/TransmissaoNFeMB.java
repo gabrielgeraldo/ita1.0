@@ -93,16 +93,19 @@ import com.fincatto.documentofiscal.nfe400.classes.statusservico.consulta.NFStat
 import com.fincatto.documentofiscal.nfe400.utils.NFGeraChave;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
 
-import br.com.ita.controle.config.Config;
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.util.XmlUtil;
 import br.com.ita.dominio.FormaPagamento;
 import br.com.ita.dominio.ItemNTFe;
 import br.com.ita.dominio.NTFe;
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
+import br.com.ita.dominio.dao.EmpresaDAO;
 import br.com.ita.dominio.dao.EstadoDAO;
 import br.com.ita.dominio.dao.ItemNFeDAO;
 import br.com.ita.dominio.dao.MunicipioDAO;
 import br.com.ita.dominio.dao.NFeDAO;
+import br.com.ita.dominio.empresa.Empresa;
 import br.com.ita.dominio.notafiscal.NFeConfigIta;
 
 @Named("transmissaoNFeMB")
@@ -195,10 +198,26 @@ public class TransmissaoNFeMB implements Serializable {
 
 	private String dadosDoCertificado;
 
+	@Inject
+	private EmpresaDAO empresaDao;
+
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
+
+	@Inject
+	private Empresa empresa;
+
+	@Inject
+	private Configuracao configuracao;
+
 	@PostConstruct
 	public void init() {
 
-		ambienteConfigurado = Config.propertiesLoader().getProperty("ambiente");
+		empresa = empresaDao.lerPorId(new Long(1));
+		
+		configuracao = configuracaoDao.lerPorId(new Long(1));
+		
+		ambienteConfigurado = configuracao.getAmbiente();
 
 		this.setDadosDoCertificado(config.getDadosDoCertificado());
 
@@ -268,27 +287,27 @@ public class TransmissaoNFeMB implements Serializable {
 
 	public void geraEmitenteEndereco() {
 
-		emitenteEndereco.setLogradouro(Config.propertiesLoader().getProperty("endereco"));
-		emitenteEndereco.setNumero(Config.propertiesLoader().getProperty("numero"));
-		emitenteEndereco.setComplemento(Config.propertiesLoader().getProperty("complemento"));
-		emitenteEndereco.setBairro(Config.propertiesLoader().getProperty("bairro"));
-		emitenteEndereco.setCodigoMunicipio(Config.propertiesLoader().getProperty("codigoMunicipio"));
-		emitenteEndereco.setDescricaoMunicipio(Config.propertiesLoader().getProperty("descricaoMunicipio"));
-		emitenteEndereco.setUf(DFUnidadeFederativa.valueOfCodigo(Config.propertiesLoader().getProperty("uf")));
-		emitenteEndereco.setCep(Config.propertiesLoader().getProperty("cep"));
-		emitenteEndereco.setCodigoPais(Config.propertiesLoader().getProperty("codigoPais"));
-		emitenteEndereco.setDescricaoPais(Config.propertiesLoader().getProperty("descricaoPais"));
-		emitenteEndereco.setTelefone(Config.propertiesLoader().getProperty("telefone"));
+		emitenteEndereco.setLogradouro(empresa.getEndereco());
+		emitenteEndereco.setNumero(empresa.getNumero());
+		emitenteEndereco.setComplemento(empresa.getComplemento());
+		emitenteEndereco.setBairro(empresa.getBairro());
+		emitenteEndereco.setCodigoMunicipio(empresa.getCodigoMunicipio());
+		emitenteEndereco.setDescricaoMunicipio(empresa.getDescricaoMunicipio());
+		emitenteEndereco.setUf(DFUnidadeFederativa.valueOfCodigo(empresa.getUf()));
+		emitenteEndereco.setCep(empresa.getCep());
+		emitenteEndereco.setCodigoPais(empresa.getCodigoPais());
+		emitenteEndereco.setDescricaoPais(empresa.getDescricaoPais());
+		emitenteEndereco.setTelefone(empresa.getTelefone());
 
 	}
 
 	public void geraEmitente() {
 
-		emitente.setCnpj(Config.propertiesLoader().getProperty("cnpj"));
-		emitente.setRazaoSocial(Config.propertiesLoader().getProperty("razaoSocial"));
-		emitente.setNomeFantasia(Config.propertiesLoader().getProperty("nomeFantasia"));
+		emitente.setCnpj(empresa.getCnpj());
+		emitente.setRazaoSocial(empresa.getRazaoSocial());
+		emitente.setNomeFantasia(empresa.getNomeFantasia());
 		emitente.setEndereco(emitenteEndereco);
-		emitente.setInscricaoEstadual(Config.propertiesLoader().getProperty("inscricaoEstadual"));
+		emitente.setInscricaoEstadual(empresa.getInscricaoEstadual());
 		emitente.setRegimeTributario(nfe.getRegimeTributario());
 
 	}
@@ -375,7 +394,7 @@ public class TransmissaoNFeMB implements Serializable {
 
 	public void geraNFNotaInfoIdentificacao() {
 
-		identificacao.setUf(DFUnidadeFederativa.valueOfCodigo(Config.propertiesLoader().getProperty("uf")));
+		identificacao.setUf(DFUnidadeFederativa.valueOfCodigo(empresa.getUf()));
 
 		// Esse atributo e setado no metodo transmitirNfe().
 		// identificacao.setCodigoRandomico(null);
@@ -396,7 +415,7 @@ public class TransmissaoNFeMB implements Serializable {
 		identificacao.setDataHoraSaidaOuEntrada(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 		identificacao.setTipo(this.nfe.getTipo());
 		identificacao.setIdentificadorLocalDestinoOperacao(this.nfe.getNfIdentificadorLocalDestinoOperacao());
-		identificacao.setCodigoMunicipio(Config.propertiesLoader().getProperty("codigoMunicipio"));
+		identificacao.setCodigoMunicipio(empresa.getCodigoMunicipio());
 		identificacao.setTipoImpressao(NFTipoImpressao.valueOfCodigo("1"));
 		identificacao.setTipoEmissao(NFTipoEmissao.valueOfCodigo("1"));
 		identificacao.setDigitoVerificador(1);
@@ -1904,13 +1923,30 @@ public class TransmissaoNFeMB implements Serializable {
 
 				System.out.println(" ");
 
-				System.out.println("----------DADOS APOS TRANSMISSAO DA NF-e FIM--------------");
+				System.out.println("----------DADOS CONTIDOS NO LOTE FIM--------------");
 
 				retorno = new WSFacade(config).enviaLote(lote);
 
 				System.out.println(" ");
 
 				System.out.println("LOTE ENVIADO!");
+
+				System.out.println(" ");
+
+				System.out.println("----------DADOS DO RETORNO INICIO--------------");
+				System.out.println("Motivo: " + retorno.getRetorno().getMotivo());
+				System.out.println(
+						"Protocolo Recebimento Sincrono: " + retorno.getRetorno().getProtocoloRecebimentoSincrono());
+				System.out.println("Status: " + retorno.getRetorno().getStatus());
+				System.out.println("Versao: " + retorno.getRetorno().getVersao());
+				System.out.println("Versao Aplicacao: " + retorno.getRetorno().getVersaoAplicacao());
+				System.out.println("Ambiente: " + retorno.getRetorno().getAmbiente());
+				System.out.println("Assinatura: " + retorno.getRetorno().getAssinatura());
+				System.out.println("Data Recebimento: " + retorno.getRetorno().getDataRecebimento());
+				System.out.println("Info Recebimento: " + retorno.getRetorno().getInfoRecebimento());
+				System.out.println("Protocolo Info: " + retorno.getRetorno().getProtocoloInfo());
+				System.out.println("Uf: " + retorno.getRetorno().getUf());
+				System.out.println("----------DADOS DO RETORNO FIM --------------");
 
 				System.out.println(" ");
 
@@ -1937,7 +1973,7 @@ public class TransmissaoNFeMB implements Serializable {
 				JSFUtil.retornarMensagemFatal(null, e.getMessage(), null);
 			}
 
-			// RETORNO DAS INFORMACOES GERADAS AP�S TRANSMISSAO DA NF-E.
+			// RETORNO DAS INFORMACOES GERADAS APOS TRANSMISSAO DA NF-E.
 			try {
 
 				NFLoteConsultaRetorno retc = new WSFacade(config)
@@ -2349,6 +2385,38 @@ public class TransmissaoNFeMB implements Serializable {
 
 	public void setDadosDoCertificado(String dadosDoCertificado) {
 		this.dadosDoCertificado = dadosDoCertificado;
+	}
+
+	public EmpresaDAO getEmpresaDao() {
+		return empresaDao;
+	}
+
+	public void setEmpresaDao(EmpresaDAO empresaDao) {
+		this.empresaDao = empresaDao;
+	}
+
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
+	}
+
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public Configuracao getConfiguracao() {
+		return configuracao;
+	}
+
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
 	}
 
 }

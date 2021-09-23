@@ -134,6 +134,13 @@ public class ImpostoMB implements Serializable {
 
 	public String novo() {
 
+		// SO PERMITI INCLUIR (1) REGISTRO.
+		// SE LOCALIZAR UM OU MAIS REGISTRO, RETORNA NULL.
+		if (this.impostoDao.contaRegistros() > 0) {
+			JSFUtil.retornarMensagemAviso(null, "Não é permitido mais de um cadastro.", null);
+			return null;
+		}
+
 		this.setImposto(new Imposto());
 
 		return "/Configuracao/impostoEditar.xhtml";

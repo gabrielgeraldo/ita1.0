@@ -13,9 +13,13 @@ import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.venda.util.VendaService;
 import br.com.ita.dominio.ItemVenda;
 import br.com.ita.dominio.Venda;
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
+import br.com.ita.dominio.dao.EmpresaDAO;
 import br.com.ita.dominio.dao.ItemVendaDAO;
 import br.com.ita.dominio.dao.VendaDAO;
 import br.com.ita.dominio.dao.filtros.FiltroVenda;
+import br.com.ita.dominio.empresa.Empresa;
 
 @Named("vendasMB")
 @RequestScoped
@@ -40,6 +44,18 @@ public class VendasMB {
 
 	@Inject
 	private FiltroVenda filtro;
+
+	@Inject
+	private EmpresaDAO empresaDao;
+
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
+
+	@Inject
+	private Empresa empresa;
+
+	@Inject
+	private Configuracao configuracao;
 
 	public void consultar() {
 
@@ -84,8 +100,11 @@ public class VendasMB {
 		}
 
 		String XMLVenda = null;
+		
+		empresa = empresaDao.lerPorId(new Long(1));
+		configuracao = configuracaoDao.lerPorId(new Long(1));
 
-		vendaService = new VendaService(this.venda, this.itensVendas);
+		vendaService = new VendaService(this.venda, this.itensVendas, empresa, configuracao);
 
 		try {
 
@@ -223,6 +242,38 @@ public class VendasMB {
 
 	public void setFiltro(FiltroVenda filtro) {
 		this.filtro = filtro;
+	}
+
+	public EmpresaDAO getEmpresaDao() {
+		return empresaDao;
+	}
+
+	public void setEmpresaDao(EmpresaDAO empresaDao) {
+		this.empresaDao = empresaDao;
+	}
+
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
+	}
+
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public Configuracao getConfiguracao() {
+		return configuracao;
+	}
+
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
 	}
 
 }

@@ -1,13 +1,17 @@
 package br.com.ita.controle.nfe;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.inject.Inject;
 
 import com.fincatto.documentofiscal.DFUnidadeFederativa;
 import com.fincatto.documentofiscal.nfe.classes.distribuicao.NFDistribuicaoDFeLote;
 import com.fincatto.documentofiscal.nfe.classes.distribuicao.NFDistribuicaoIntRetorno;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
 
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.notafiscal.NFeConfigIta;
 
 @ManagedBean(name = "consultarNfeNaSefazMB")
@@ -15,6 +19,19 @@ import br.com.ita.dominio.notafiscal.NFeConfigIta;
 public class ConsultarNfeNaSefazMB {
 
 	private NFeConfigIta config = new NFeConfigIta();
+
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
+
+	@Inject
+	private Configuracao configuracao;
+
+	@PostConstruct
+	public void init() {
+
+		configuracao = configuracaoDao.lerPorId(new Long(1));
+
+	}
 
 	public void acaoConsultar() {
 
@@ -49,6 +66,22 @@ public class ConsultarNfeNaSefazMB {
 
 	public void setConfig(NFeConfigIta config) {
 		this.config = config;
+	}
+
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
+	}
+
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
+	}
+
+	public Configuracao getConfiguracao() {
+		return configuracao;
+	}
+
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
 	}
 
 }

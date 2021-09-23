@@ -17,7 +17,6 @@ import javax.xml.transform.TransformerException;
 import org.primefaces.PrimeFaces;
 import org.xml.sax.SAXException;
 
-import br.com.ita.controle.config.Config;
 import br.com.ita.controle.nfce.util.NTFCeService;
 import br.com.ita.controle.util.ItaMail;
 import br.com.ita.controle.util.JSFUtil;
@@ -30,11 +29,15 @@ import br.com.ita.dominio.NTFCe;
 import br.com.ita.dominio.Orcamento;
 import br.com.ita.dominio.Produto;
 import br.com.ita.dominio.TipoPesquisaProduto;
+import br.com.ita.dominio.config.Configuracao;
 import br.com.ita.dominio.dao.ClienteDAO;
 import br.com.ita.dominio.dao.CondicaoPagamentoDAO;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
+import br.com.ita.dominio.dao.EmpresaDAO;
 import br.com.ita.dominio.dao.ItemOrcamentoDAO;
 import br.com.ita.dominio.dao.ProdutoDAO;
 import br.com.ita.dominio.dao.util.ControleNumerosDAO;
+import br.com.ita.dominio.empresa.Empresa;
 import br.com.ita.dominio.util.ControleNumeros;
 import br.com.ita.dominio.dao.NTFCeDAO;
 import br.com.ita.dominio.dao.OrcamentoDAO;
@@ -90,15 +93,34 @@ public class nfceMB implements Serializable {
 
 	private TipoPesquisaProduto tipoPesquisaProduto;
 
-	// SEM ESSE CONTRUTOR � APRESENTADO ERRO AO ADICIONAR UM PRODUTO.
+	@Inject
+	private EmpresaDAO empresaDao;
+
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
+
+	@Inject
+	private Empresa empresa;
+
+	@Inject
+	private Configuracao configuracao;
+
+	// SEM ESSE CONTRUTOR e APRESENTADO ERRO AO ADICIONAR UM PRODUTO.
 	@PostConstruct
 	public void init() {
+
+		empresa = empresaDao.lerPorId(new Long(1));
+
+		configuracao = configuracaoDao.lerPorId(new Long(1));
+
 		this.novaNfce();
-		ambienteConfigurado = Config.propertiesLoader().getProperty("ambiente");
+
+		ambienteConfigurado = configuracao.getAmbiente();
 
 		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
 
 		itemNfce.setQuantidade(1);
+
 	}
 
 	public String iniciarNTFCe() {
@@ -362,7 +384,7 @@ public class nfceMB implements Serializable {
 
 		}
 
-		nfceService = new NTFCeService(nfce, itensNfce);
+		nfceService = new NTFCeService(nfce, itensNfce, empresa, configuracao);
 
 		try {
 
@@ -370,6 +392,10 @@ public class nfceMB implements Serializable {
 			nfce = nfceService.transmitir();
 
 		} catch (NullPointerException e) {
+			e.printStackTrace();
+			JSFUtil.retornarMensagemErro(null, "Verifique a configuração dos impostos.", null);
+
+		} catch (java.lang.IndexOutOfBoundsException e) {
 			e.printStackTrace();
 			JSFUtil.retornarMensagemErro(null, "Verifique a configuração dos impostos.", null);
 
@@ -410,8 +436,9 @@ public class nfceMB implements Serializable {
 				System.out.println("Erro durante o armazenamento do XML: " + nfce.getChave());
 				System.out.println("----------------------------------------------------------------------------");
 
-				ItaMail.mail("Erro durante o armazenamento do XML: " + Config.propertiesLoader().getProperty("cnpj")
-						+ ", " + Config.propertiesLoader().getProperty("codClient"), "NFC-e:" + nfce.getChave());
+				ItaMail.mail(
+						"Erro durante o armazenamento do XML: " + empresa.getCnpj() + ", " + empresa.getCodClient(),
+						"NFC-e:" + nfce.getChave());
 
 				JSFUtil.retornarMensagemErro(null, "Erro durante o armazenamento do XML: " + e.getMessage(), null);
 			}
@@ -428,8 +455,8 @@ public class nfceMB implements Serializable {
 				System.out.println("Erro ao salvar NFC-e: " + nfce.getChave());
 				System.out.println("-------------------------------------------------------------");
 
-				ItaMail.mail("Erro ao salvar NFC-e: " + Config.propertiesLoader().getProperty("cnpj") + ", "
-						+ Config.propertiesLoader().getProperty("codClient"), "NFC-e:" + nfce.getChave());
+				ItaMail.mail("Erro ao salvar NFC-e: " + empresa.getCnpj() + ", " + empresa.getCodClient(),
+						"NFC-e:" + nfce.getChave());
 
 				JSFUtil.retornarMensagemErro(null, "Erro ao salvar NFC-e: " + e.getMessage(), null);
 			}
@@ -592,6 +619,38 @@ public class nfceMB implements Serializable {
 
 	public void setTipoPesquisaProduto(TipoPesquisaProduto tipoPesquisaProduto) {
 		this.tipoPesquisaProduto = tipoPesquisaProduto;
+	}
+
+	public EmpresaDAO getEmpresaDao() {
+		return empresaDao;
+	}
+
+	public void setEmpresaDao(EmpresaDAO empresaDao) {
+		this.empresaDao = empresaDao;
+	}
+
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
+	}
+
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public Configuracao getConfiguracao() {
+		return configuracao;
+	}
+
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
 	}
 
 }

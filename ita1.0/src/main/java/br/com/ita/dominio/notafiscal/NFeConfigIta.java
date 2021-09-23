@@ -20,7 +20,7 @@ import com.fincatto.documentofiscal.DFAmbiente;
 import com.fincatto.documentofiscal.DFUnidadeFederativa;
 import com.fincatto.documentofiscal.nfe.NFeConfig;
 
-import br.com.ita.controle.config.Config;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
 
 public class NFeConfigIta extends NFeConfig implements Serializable {
 
@@ -36,17 +36,20 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 
 	@Override
 	public Integer getCodigoSegurancaContribuinteID() {
-		return Integer.parseInt(Config.propertiesLoader().getProperty("idCodigoSegurancaContribuinte"));
+		ConfiguracaoDAO configuracaoDao = new ConfiguracaoDAO();
+		return Integer.parseInt(configuracaoDao.lerPorId(new Long(1)).getIdCodigoSegurancaContribuinte());
 	}
 
 	@Override
 	public String getCodigoSegurancaContribuinte() {
-		return Config.propertiesLoader().getProperty("codigoSegurancaContribuinte");
+		ConfiguracaoDAO configuracaoDao = new ConfiguracaoDAO();
+		return configuracaoDao.lerPorId(new Long(1)).getCodigoSegurancaContribuinte();
 	}
 
 	@Override
 	public DFAmbiente getAmbiente() {
-		return DFAmbiente.valueOfCodigo(Config.propertiesLoader().getProperty("ambiente"));
+		ConfiguracaoDAO configuracaoDao = new ConfiguracaoDAO();
+		return DFAmbiente.valueOfCodigo(configuracaoDao.lerPorId(new Long(1)).getAmbiente());
 	}
 
 	@Override
@@ -89,7 +92,8 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 
 	@Override
 	public String getCertificadoSenha() {
-		return Config.propertiesLoader().getProperty("senhaCert");
+		ConfiguracaoDAO configuracaoDao = new ConfiguracaoDAO();
+		return configuracaoDao.lerPorId(new Long(1)).getSenhaCer();
 	}
 
 	public KeyStore getKeyStoreCertificado() {

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
 
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
@@ -15,8 +16,11 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
-import br.com.ita.controle.config.Config;
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
+import br.com.ita.dominio.dao.EmpresaDAO;
 import br.com.ita.dominio.dao.VendaDAO;
+import br.com.ita.dominio.empresa.Empresa;
 
 @ManagedBean
 @ViewScoped
@@ -41,11 +45,20 @@ public class ChartView implements Serializable {
 	private String razaoSocial;
 
 	private String cnpj;
-	
+
 	private String nomeFantasia;
+
+	@Inject
+	private EmpresaDAO empresaDao;
+
+	@Inject
+	private Empresa empresa;
 
 	@PostConstruct
 	public void init() {
+
+		empresa = empresaDao.lerPorId(new Long(1));
+
 		this.getVendasDinheiro();
 		this.getVendasCartao();
 		this.getVendasOutras();
@@ -53,9 +66,9 @@ public class ChartView implements Serializable {
 		createAnimatedModels();
 		createPieModels();
 
-		razaoSocial = Config.propertiesLoader().getProperty("razaoSocial");
-		nomeFantasia = Config.propertiesLoader().getProperty("nomeFantasia");
-		cnpj = Config.propertiesLoader().getProperty("cnpj");
+		razaoSocial = empresa.getRazaoSocial();
+		nomeFantasia = empresa.getNomeFantasia();
+		cnpj = empresa.getCnpj();
 
 	}
 
@@ -224,6 +237,22 @@ public class ChartView implements Serializable {
 
 	public void setNomeFantasia(String nomeFantasia) {
 		this.nomeFantasia = nomeFantasia;
+	}
+
+	public EmpresaDAO getEmpresaDao() {
+		return empresaDao;
+	}
+
+	public void setEmpresaDao(EmpresaDAO empresaDao) {
+		this.empresaDao = empresaDao;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 }

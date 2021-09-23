@@ -19,7 +19,10 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import br.com.ita.controle.config.Config;
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
+import br.com.ita.dominio.dao.EmpresaDAO;
+import br.com.ita.dominio.empresa.Empresa;
 
 import java.util.*;
 
@@ -30,8 +33,8 @@ public class SegurancaUtil {
 		 * String chave = "MINHACHAVESEGITA"; DescriptografiaAES aes = new
 		 * DescriptografiaAES(chave); String criptografado =
 		 * Config.propertiesLoader().getProperty("mecClient"); String txt =
-		 * aes.descriptografa(criptografado); System.out.println(
-		 * "MEC REGISTRADO: " + txt);
+		 * aes.descriptografa(criptografado); System.out.println( "MEC REGISTRADO: " +
+		 * txt);
 		 * 
 		 * System.out.println("MEC PC: " + NetwrokUtil.getMecAddr());
 		 * 
@@ -43,7 +46,40 @@ public class SegurancaUtil {
 		return true;
 	}
 
+	public static boolean verificaDadosDaEmpresaEDadosConfiguracao() {
+
+		EmpresaDAO empresaDao = new EmpresaDAO();
+		ConfiguracaoDAO configuracaoDao = new ConfiguracaoDAO();
+		
+		Configuracao configuracao = configuracaoDao.lerPorId(new Long(1));
+		Empresa empresa = empresaDao.lerPorId(new Long(1));
+
+		// SO PERMITI A ENTRADA NO SISTEMA SE FOR LOCALIZADO APENAS (1) REGISTRO.
+		if ((configuracao != null) && (empresa != null)) {
+
+			empresaDao = null;
+			configuracaoDao = null;
+			
+			configuracao = null;
+			empresa = null;
+			
+			return true;
+		} else {
+
+			empresaDao = null;
+			configuracaoDao = null;
+			
+			configuracao = null;
+			empresa = null;
+			
+			return false;
+		}
+	}
+
 	public static boolean verificaSenhaMes() {
+
+		EmpresaDAO empresaDao = new EmpresaDAO();
+		ConfiguracaoDAO configuracaoDao = new ConfiguracaoDAO();
 
 		int mes, ano, senhaMes;
 
@@ -103,16 +139,26 @@ public class SegurancaUtil {
 
 		}
 
-		senhaMes = Integer.parseInt(Config.propertiesLoader().getProperty("codClient")) * mes * ano + 1;
+		senhaMes = Integer.parseInt(empresaDao.lerPorId(new Long(1)).getCodClient()) * mes * ano + 1;
 
 		// System.out.println("SENHA MES: " + senhaMes);
 		// System.out.println("SENHA MES Sistema: " +
 		// Integer.parseInt(Config.propertiesLoader().getProperty("senhaMes")));
 
-		if (senhaMes == Integer.parseInt(Config.propertiesLoader().getProperty("senhaMes")))
+		if (senhaMes == Integer.parseInt(configuracaoDao.lerPorId(new Long(1)).getSenhaMes())) {
+
+			empresaDao = null;
+			configuracaoDao = null;
+
 			return true;
-		else
+		} else {
+
+			empresaDao = null;
+			configuracaoDao = null;
+
 			return false;
+		}
+
 	}
 
 	// Fonte:https://www.mkyong.com/java/how-to-create-xml-file-in-java-jdom-parser/

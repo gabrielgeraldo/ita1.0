@@ -10,8 +10,10 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 
 import org.primefaces.PrimeFaces;
 
@@ -25,13 +27,15 @@ import br.com.ita.controle.util.XmlUtil;
 import br.com.ita.dominio.EventosNFe;
 import br.com.ita.dominio.ItemNTFe;
 import br.com.ita.dominio.NTFe;
+import br.com.ita.dominio.config.Configuracao;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
 import br.com.ita.dominio.dao.EventosNFeDAO;
 import br.com.ita.dominio.dao.ItemNFeDAO;
 import br.com.ita.dominio.dao.NFeDAO;
 import br.com.ita.dominio.dao.filtros.FiltroNfe;
 import br.com.ita.dominio.notafiscal.NFeConfigIta;
 
-@ManagedBean(name = "consultarNfeMB")
+@Named("consultarNfeMB")
 @RequestScoped
 public class ConsultarNfeMB implements Serializable {
 
@@ -57,6 +61,19 @@ public class ConsultarNfeMB implements Serializable {
 	private List<EventosNFe> eventos = null;
 
 	private String mensagemEvento;
+
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
+
+	@Inject
+	private Configuracao configuracao;
+
+	@PostConstruct
+	public void init() {
+
+		configuracao = configuracaoDao.lerPorId(new Long(1));
+
+	}
 
 	public void consultar() {
 
@@ -440,6 +457,22 @@ public class ConsultarNfeMB implements Serializable {
 
 	public void setMensagemEvento(String mensagemEvento) {
 		this.mensagemEvento = mensagemEvento;
+	}
+
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
+	}
+
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
+	}
+
+	public Configuracao getConfiguracao() {
+		return configuracao;
+	}
+
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
 	}
 
 }

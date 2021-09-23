@@ -55,6 +55,8 @@ html {
 }
 
 )
+
+
 no-repeat
 
 
@@ -103,7 +105,9 @@ no-repeat
 
 
 
+
  
+
 
 
 
@@ -199,7 +203,9 @@ center
 
 
 
+
  
+
 
 
 
@@ -295,7 +301,9 @@ center
 
 
 
+
  
+
 
 
 
@@ -344,6 +352,8 @@ center
 
 
 fixed
+
+
 
 
 
@@ -534,7 +544,10 @@ fixed
 
 
 
+
+
 :
+
 
 
 
@@ -630,7 +643,10 @@ fixed
 
 
 
+
 cover
+
+
 
 
 
@@ -821,7 +837,10 @@ cover
 
 
 
+
+
 :
+
 
 
 
@@ -917,7 +936,10 @@ cover
 
 
 
+
 cover
+
+
 
 
 
@@ -1108,7 +1130,10 @@ cover
 
 
 
+
+
 :
+
 
 
 
@@ -1204,7 +1229,10 @@ cover
 
 
 
+
 cover
+
+
 
 
 
@@ -1395,6 +1423,8 @@ background-size
 
 
 
+
+
 :
 
 
@@ -1443,7 +1473,9 @@ background-size
 
 
 
+
  
+
 
 
 
@@ -1586,13 +1618,18 @@ cover
 
 
 
+
+
 ;
 }
 @media ( max-width : 768px) {
 	html {
 		background-image: url(#{ resource [ 'images:login-bg-mobile.jpeg' ]
 	}
-	);
+	)
+	;
+	
+
 }
 }
 </style>
@@ -1666,8 +1703,8 @@ cover
 
 						<br />
 
-						<p>Razao Social: #{configuracaoMB.razaoSocial}</p>
-						<p>Nome Fantasia: #{configuracaoMB.nomeFantasia}</p>
+						<p>Razao Social: #{empresaMB.empresa.razaoSocial}</p>
+						<p>Nome Fantasia: #{empresaMB.empresa.nomeFantasia}</p>
 
 					</div>
 

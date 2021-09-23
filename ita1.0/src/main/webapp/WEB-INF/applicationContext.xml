@@ -27,6 +27,7 @@
 	<http pattern="/403.xhtml" security="none" />
 	<http pattern="/_senhaMes.xhtml" security="none" />
 	<http pattern="/_sistemaNaoRegistrado.xhtml" security="none" />
+	<http pattern="/_dadosDaEmpresa.xhtml" security="none" />
 
 	<http pattern="/404.xhtml" security="none" />
 	<http pattern="/expired.xhtml" security="none" />

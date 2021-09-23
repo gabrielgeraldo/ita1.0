@@ -1,6 +1,7 @@
 package br.com.ita.dominio.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -90,10 +91,9 @@ public class OrcamentoDAO extends JpaDAO<Orcamento> implements Serializable {
 	// Fonte: https://www.youtube.com/watch?v=JmpX_TLwBTs
 	@SuppressWarnings("unchecked")
 	public List<Orcamento> autoCompleteOrcamento(String orcamento) {
-		Session session = this.getEntityManager().unwrap(Session.class);
-		Criteria criteria = session.createCriteria(Orcamento.class);
 
-		// criteria.add(Restrictions.isNull("nfe"));
+		Query query = null;
+		List<Orcamento> results = new ArrayList<Orcamento>();
 
 		if (StringUtils.isNoneBlank(orcamento)) {
 
@@ -101,15 +101,29 @@ public class OrcamentoDAO extends JpaDAO<Orcamento> implements Serializable {
 
 				Long codigo = Long.parseLong(orcamento);
 
-				criteria.add(Restrictions.eq("codigo", codigo));
+				query = this.getEntityManager().createNativeQuery("SELECT * "
+						+ "FROM ORCAMENTO "
+						+ "LEFT JOIN NFE ON "
+						+ "         ORCAMENTO.CODIGO = NFE.ORCAMENTO_CODIGO "
+						+ "LEFT JOIN NFCE ON "
+						+ "         ORCAMENTO.CODIGO = NFCE.ORCAMENTO_CODIGO "
+						+ "LEFT JOIN VENDA ON "
+						+ "         ORCAMENTO.CODIGO = VENDA.ORCAMENTO_CODIGO "
+						+ "WHERE NFE.ORCAMENTO_CODIGO IS NULL "
+						+ "AND NFCE.ORCAMENTO_CODIGO IS NULL "
+						+ "AND VENDA.ORCAMENTO_CODIGO IS NULL "
+						+ "AND ORCAMENTO.CODIGO=:CODIGO ", Orcamento.class);
+				query.setParameter("CODIGO", codigo);
+
+				results = query.getResultList();
 
 			} catch (Exception e) {
-
+				e.getStackTrace();
 			}
 
 		}
 
-		return criteria.list();
+		return results;
 
 	}
 

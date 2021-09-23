@@ -12,7 +12,7 @@
 
 	<ul class="sidebar-menu tree" data-widget="tree">
 
-		<li class="header">#{configuracaoMB.razaoSocial}</li>
+		<li class="header">#{empresaMB.empresa.razaoSocial}</li>
 
 		<li><p:commandLink onclick="PF('dlg2').show()">
 				<i class="fa fa-book"></i>
@@ -25,12 +25,12 @@
 
 			<div class="social-auth-links text-center">
 
-				<p>Razao Social: #{configuracaoMB.razaoSocial}</p>
-				<p>Nome Fantasia: #{configuracaoMB.nomeFantasia}</p>
-				<p>CNPJ: #{configuracaoMB.cnpj}</p>
-				<p>Incrição Estadual: #{configuracaoMB.inscricaoEstadual}</p>
+				<p>Razao Social: #{empresaMB.empresa.razaoSocial}</p>
+				<p>Nome Fantasia: #{empresaMB.empresa.nomeFantasia}</p>
+				<p>CNPJ: #{empresaMB.empresa.cnpj}</p>
+				<p>Incrição Estadual: #{empresaMB.empresa.inscricaoEstadual}</p>
 
-				<p>Código do Cliente: #{configuracaoMB.codClient}</p>
+				<p>Código do Cliente: #{empresaMB.empresa.codClient}</p>
 
 
 			</div>

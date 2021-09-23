@@ -1,14 +1,10 @@
-package br.com.ita.controle;
+package br.com.ita.controle.orcamento;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
@@ -29,13 +25,17 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import br.com.ita.controle.orcamento.util.OrcamentoService;
 import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.dominio.Cliente;
 import br.com.ita.dominio.ItemOrcamento;
 import br.com.ita.dominio.Orcamento;
 import br.com.ita.dominio.Produto;
 import br.com.ita.dominio.TipoPesquisaProduto;
+import br.com.ita.dominio.config.Configuracao;
 import br.com.ita.dominio.dao.ClienteDAO;
+import br.com.ita.dominio.dao.ConfiguracaoDAO;
+import br.com.ita.dominio.dao.EmpresaDAO;
 import br.com.ita.dominio.dao.ItemOrcamentoDAO;
 import br.com.ita.dominio.dao.OrcamentoDAO;
 import br.com.ita.dominio.dao.ProdutoDAO;
@@ -43,6 +43,7 @@ import br.com.ita.dominio.dao.UsuarioDAO;
 import br.com.ita.dominio.dao.filtros.FiltroOrcamento;
 import br.com.ita.dominio.dao.filtros.FiltroProduto;
 import br.com.ita.dominio.dao.util.ControleNumerosDAO;
+import br.com.ita.dominio.empresa.Empresa;
 
 @Path("/orcamento")
 @Named("orcamentoMB")
@@ -106,29 +107,26 @@ public class OrcamentoMB implements Serializable {
 	@Context
 	private ServletContext context;
 
+	private OrcamentoService orcamentoService = null;
+
+	@Inject
+	private EmpresaDAO empresaDao;
+
+	@Inject
+	private ConfiguracaoDAO configuracaoDao;
+
+	@Inject
+	private Empresa empresa;
+
+	@Inject
+	private Configuracao configuracao;
+
 	@GET
 	@Produces("application/json; charset=UTF-8")
 	@Path("/getRazaoSocial")
 	public String getRazaoSocial() {
 
-		String atualDir = context.getRealPath("/resources/conf.properties");
-
-		Properties props = new Properties();
-		FileInputStream file = null;
-		try {
-			file = new FileInputStream(atualDir);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			props.load(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return props.getProperty("razaoSocial");
+		return empresaDao.lerPorId(new Long(1)).getRazaoSocial();
 	}
 
 	@GET
@@ -157,7 +155,13 @@ public class OrcamentoMB implements Serializable {
 
 	@PostConstruct
 	public void init() {
+
+		empresa = empresaDao.lerPorId(new Long(1));
+
+		configuracao = configuracaoDao.lerPorId(new Long(1));
+
 		getRazaoSocial();
+
 	}
 
 	public String listar() {
@@ -305,7 +309,20 @@ public class OrcamentoMB implements Serializable {
 
 			Orcamento orcamentoSalvo = daoOrcamento.salvarOrcamento(orcamento, orcamento.getItens());
 
-			return "Orcamento finalizado com sucesso! Codigo: " + orcamentoSalvo.getCodigo();
+			String XMLVenda = null;
+
+			orcamentoService = new OrcamentoService(orcamentoSalvo, orcamento.getItens(), empresa, configuracao);
+
+			try {
+
+				XMLVenda = orcamentoService.gerarXMLVenda();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				JSFUtil.retornarMensagemErro(null, "Erro ao gerar comprovante: " + e.getMessage(), null);
+			}
+
+			return XMLVenda;
 
 		} catch (Exception e) {
 
@@ -555,6 +572,38 @@ public class OrcamentoMB implements Serializable {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public EmpresaDAO getEmpresaDao() {
+		return empresaDao;
+	}
+
+	public void setEmpresaDao(EmpresaDAO empresaDao) {
+		this.empresaDao = empresaDao;
+	}
+
+	public ConfiguracaoDAO getConfiguracaoDao() {
+		return configuracaoDao;
+	}
+
+	public void setConfiguracaoDao(ConfiguracaoDAO configuracaoDao) {
+		this.configuracaoDao = configuracaoDao;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public Configuracao getConfiguracao() {
+		return configuracao;
+	}
+
+	public void setConfiguracao(Configuracao configuracao) {
+		this.configuracao = configuracao;
 	}
 
 }

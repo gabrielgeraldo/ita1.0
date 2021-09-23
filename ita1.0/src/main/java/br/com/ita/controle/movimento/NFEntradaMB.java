@@ -523,8 +523,9 @@ public class NFEntradaMB implements Serializable {
 									nota.getNota().getInfo().getItens().get(i).getProduto().getValorUnitario()));
 
 							produto.setQtdEstq(0);
-
-							produto.setUnidadeComercial("CX");
+							
+							produto.setUnidadeComercial(nota.getNota().getInfo().getItens().get(i).getProduto().getUnidadeTributavel());
+							
 							daoProduto.merge(produto);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
