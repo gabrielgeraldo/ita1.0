@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<ui:composition template="#{layoutMB.template}">
+
+	<ui:define name="title">
+		<h1 class="aw-page-title">Manifestação Destinatário</h1>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<p:panel styleClass="card no-border" style="min-height: 100px">
+
+			<h:form id="form">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<div style="padding: 15px">
+						<div align="center">
+							<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+						</div>
+					</div>
+				</p:dialog>
+
+				<p:messages id="messagens" showSummary="false" showDetail="true"
+					closable="true" />
+
+				<br />
+
+				<h:outputText
+					rendered="#{manifestacaoDestinatarioMB.ambienteConfigurado.equals('1')}"
+					id="ambConfigProd" value="Ambiente configurado: Produção"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<h:outputText
+					rendered="#{manifestacaoDestinatarioMB.ambienteConfigurado.equals('2')}"
+					id="ambConfigHml" value="Ambiente configurado: Homologação"
+					style="float:right;font-weight: bold">
+				</h:outputText>
+
+				<p:panelGrid columns="10" layout="grid">
+
+					<p:outputLabel for="nsu" value="Nsu:" />
+
+					<p:inputText id="nsu" value="#{manifestacaoDestinatarioMB.nsu}">
+						<f:validateRegex pattern="(^[0-9]+$)?" />
+					</p:inputText>
+
+					<h:outputText value="Até" />
+
+					<p:outputLabel for="ultNsu" value="Último Nsu" />
+
+					<p:inputText id="ultNsu"
+						value="#{manifestacaoDestinatarioMB.ultNsu}">
+						<f:validateRegex pattern="(^[0-9]+$)?" />
+					</p:inputText>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="10" layout="grid">
+
+					<p:outputLabel for="chave" value="Chave:" />
+					<p:inputText id="chave" size="55"
+						value="#{manifestacaoDestinatarioMB.chave}">
+					</p:inputText>
+
+					<p:outputLabel for="ufConsulta" value="UF:" />
+					<p:selectOneMenu id="ufConsulta" converter="converter-generico"
+						filterMatchMode="startsWith"
+						value="#{manifestacaoDestinatarioMB.estado}">>
+						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{manifestacaoDestinatarioMB.estados}" />
+					</p:selectOneMenu>
+
+					<p:commandButton styleClass="btn-primary btn-block" update="form"
+						value="Consultar" action="#{manifestacaoDestinatarioMB.consultar}" />
+
+				</p:panelGrid>
+
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+					<p:outputLabel style="font-weight: bold"
+						value="Notas para manifestar (Max. 50 itens)." />
+
+				</h:panelGrid>
+
+				<br />
+
+				<t:saveState
+					value="#{manifestacaoDestinatarioMB.notasParaManifestar}" />
+
+				<p:dataTable id="tabNFesManifestadas" var="item"
+					value="#{manifestacaoDestinatarioMB.notasParaManifestar}"
+					rowKey="#{item.chave}" emptyMessage="Não há itens."
+					paginator="false" scrollable="true" scrollHeight="250"
+					selectionMode="single">
+
+					<p:column style="width:325px">
+
+						<h:outputText value="#{item.chave}" />
+					</p:column>
+
+					<p:column style="width:220px">
+
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+
+					<p:column style="width:100px">
+
+						<h:outputText value="#{item.dataHoraRecebimento.toLocalDate()}">
+
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:80px">
+
+						<h:outputText value="#{item.valor}" />
+					</p:column>
+
+					<p:column style="width:100px">
+
+						<h:outputText value="#{item.situacao}" />
+					</p:column>
+
+					<p:column style="width:130px">
+
+
+
+						<div align="center">
+
+							<p:commandButton image="ui-icon-document" value="Manifestar"
+								action="#{manifestacaoDestinatarioMB.manifestarNota}"
+								ajax="false">
+
+								<f:param value="#{item.chave}" name="itemcodigo" />
+
+							</p:commandButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<i style="font-size: 20px; color: #34454D" class="fa">&#xf05a;</i>
+
+					<p:outputLabel style="font-weight: bold"
+						value="Notas processadas (Max. 50 itens)." />
+
+				</h:panelGrid>
+
+				<br />
+
+				<t:saveState value="#{manifestacaoDestinatarioMB.notasManifestadas}" />
+
+				<p:dataTable id="tabNFes" var="item"
+					value="#{manifestacaoDestinatarioMB.notasManifestadas}"
+					rowKey="#{item.nota.info.chaveAcesso}" emptyMessage="Não há itens."
+					paginator="false" scrollable="true" scrollHeight="250"
+					selectionMode="single">
+
+					<p:column style="width:325px">
+
+						<h:outputText value="#{item.nota.info.chaveAcesso}" />
+					</p:column>
+
+					<p:column style="width:220px">
+
+						<h:outputText value="#{item.nota.info.emitente.razaoSocial}" />
+					</p:column>
+
+					<p:column style="width:100px">
+
+						<h:outputText
+							value="#{item.protocolo.protocoloInfo.dataRecebimento.toLocalDate()}">
+
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:80px">
+
+						<h:outputText
+							value="#{item.nota.info.total.icmsTotal.valorTotalNFe}" />
+					</p:column>
+
+					<p:column style="width:100px">
+
+						<h:outputText value="#{item.protocolo.protocoloInfo.motivo}" />
+					</p:column>
+
+
+					<p:column style="width:130px">
+
+
+
+						<div align="center">
+
+							<p:commandButton image="ui-icon-document" value="XML"
+								action="#{manifestacaoDestinatarioMB.downloadXml}" ajax="false">
+
+								<f:param value="#{item}" name="itemcodigo" />
+
+							</p:commandButton>
+
+						</div>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:separator />
+
+			</h:form>
+
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

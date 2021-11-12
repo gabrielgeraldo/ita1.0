@@ -35,16 +35,16 @@ public class RelatorioMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@NotNull(message = "Favor digitar uma data início.")
+	@NotNull(message = "Favor digitar uma data inï¿½cio.")
 	private Date dataInicio;
 
 	@NotNull(message = "Favor digitar uma data final.")
 	private Date dataFim;
 
-	@NotNull(message = "Selecione o tipo do relatório.")
+	@NotNull(message = "Selecione o tipo do relatï¿½rio.")
 	private String tipoRelatorio;
 
-	@NotEmpty(message = "Selecione as possíveis situações.")
+	@NotEmpty(message = "Selecione as possï¿½veis situaï¿½ï¿½es.")
 	private List<String> situacaoSelecionada = new ArrayList<>();
 
 	@NotEmpty(message = "Favor selecionar as formas de pagamento.")
@@ -189,7 +189,7 @@ public class RelatorioMB implements Serializable {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				JasperViewer viewer = new JasperViewer(relatorio, false);
-				viewer.setTitle("Relatório");
+				viewer.setTitle("Relatï¿½rio");
 				viewer.setVisible(true);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -206,26 +206,26 @@ public class RelatorioMB implements Serializable {
 			 * byte[] b = JasperExportManager.exportReportToPdf(relatorio);
 			 * HttpServletResponse res = (HttpServletResponse)
 			 * FacesContext.getCurrentInstance().getExternalContext()
-			 * .getResponse(); res.setContentType("application/pdf"); // Código
-			 * abaixo gerar o relatório e disponibiliza diretamente na // página
+			 * .getResponse(); res.setContentType("application/pdf"); // Cï¿½digo
+			 * abaixo gerar o relatï¿½rio e disponibiliza diretamente na // pï¿½gina
 			 * res.setHeader("Content-Disposition",
-			 * "inline; filename=Relatorio.pdf"); // Código abaixo gerar o
-			 * relatório e disponibiliza para o cliente // baixar ou salvar //
+			 * "inline; filename=Relatorio.pdf"); // Cï¿½digo abaixo gerar o
+			 * relatï¿½rio e disponibiliza para o cliente // baixar ou salvar //
 			 * res.setHeader("Content-disposition", //
 			 * "attachment;filename=arquivo.pdf");
 			 * res.getOutputStream().write(b); res.getCharacterEncoding();
 			 * FacesContext.getCurrentInstance().responseComplete();
 			 */
 
-			JSFUtil.retornarMensagemInfo("Relatório gerado com sucesso!", null, null);
+			JSFUtil.retornarMensagemInfo("Relatï¿½rio gerado com sucesso!", null, null);
 
 		} catch (JRException erro) {
 			erro.printStackTrace();
-			JSFUtil.retornarMensagemErro("Erro ao gerar relatório!", null, null);
+			JSFUtil.retornarMensagemErro("Erro ao gerar relatï¿½rio!", null, null);
 		} catch (java.lang.NullPointerException erro) {
 			System.out.println("Erro/Fala: (java.lang.NullPointerException))");
 			erro.printStackTrace();
-			JSFUtil.retornarMensagemErro("Falha ao gerar relatório!", erro.getMessage(), null);
+			JSFUtil.retornarMensagemErro("Falha ao gerar relatï¿½rio!", erro.getMessage(), null);
 		} catch (Exception erro) {
 			System.out.println("Erro/Falha: Desconhecido).");
 			erro.printStackTrace();

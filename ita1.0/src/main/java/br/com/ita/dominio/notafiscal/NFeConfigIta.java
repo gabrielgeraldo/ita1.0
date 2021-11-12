@@ -78,6 +78,7 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 
 	@Override
 	public KeyStore getCertificadoKeyStore() throws KeyStoreException {
+
 		if (this.keyStoreCertificado == null) {
 			this.keyStoreCertificado = KeyStore.getInstance("PKCS12");
 			try (InputStream certificadoStream = new FileInputStream("C:/Ita/cert/cert.pfx")) {
@@ -88,6 +89,7 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 			}
 		}
 		return this.keyStoreCertificado;
+
 	}
 
 	@Override
@@ -154,7 +156,7 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 				// rdn.getValue());
 				// }
 
-				return "Cerificado digital : " + ldapDN.getRdns().get(7).getValue() + " | Data de validade: "
+				return "Cerificado digital : " + ldapDN.getRdns().get(8).getValue() + " | Data de validade: "
 						+ dataValidade + " | Informações: " + infoCert;
 
 			}
@@ -163,5 +165,4 @@ public class NFeConfigIta extends NFeConfig implements Serializable {
 		}
 		return "Atenção! Não foi possível obeter os dados do certificado digital. Entre em contato com o suporte.";
 	}
-
 }

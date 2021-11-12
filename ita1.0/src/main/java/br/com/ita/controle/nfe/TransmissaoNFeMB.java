@@ -214,9 +214,9 @@ public class TransmissaoNFeMB implements Serializable {
 	public void init() {
 
 		empresa = empresaDao.lerPorId(new Long(1));
-		
+
 		configuracao = configuracaoDao.lerPorId(new Long(1));
-		
+
 		ambienteConfigurado = configuracao.getAmbiente();
 
 		this.setDadosDoCertificado(config.getDadosDoCertificado());

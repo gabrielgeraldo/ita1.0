@@ -249,7 +249,7 @@ public class ConsultarNfeMB implements Serializable {
 
 		} else {
 
-			JSFUtil.retornarMensagemAviso("Esta NF-e n�o pode ser cancelada.", null, null);
+			JSFUtil.retornarMensagemAviso("Esta NF-e nao pode ser cancelada.", null, null);
 
 		}
 

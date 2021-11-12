@@ -28,17 +28,20 @@
 						<p:panelGrid columns="2" layout="grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
+							<p:outputLabel for="cert" value="Certificado:" />
+							<p:outputLabel id="cert" value="C:\Ita\cert" />
+
+							<p:outputLabel for="senhaCert" value="Senha Certificado:" />
+							<p:inputText id="senhaCert"
+								value="#{configuracaoMB.configuracao.senhaCer}">
+							</p:inputText>
+
 							<p:outputLabel for="amb" value="Ambiente:" />
 							<p:selectOneMenu id="amb"
 								value="#{configuracaoMB.configuracao.ambiente}">
 								<f:selectItem itemLabel="Produção" itemValue="1" />
 								<f:selectItem itemLabel="Homologação" itemValue="2" />
 							</p:selectOneMenu>
-
-							<p:outputLabel for="senhaCert" value="Senha Certificado:" />
-							<p:inputText id="senhaCert"
-								value="#{configuracaoMB.configuracao.senhaCer}">
-							</p:inputText>
 
 						</p:panelGrid>
 
