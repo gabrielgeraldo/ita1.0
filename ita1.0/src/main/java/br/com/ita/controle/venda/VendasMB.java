@@ -109,6 +109,8 @@ public class VendasMB {
 		try {
 
 			XMLVenda = vendaService.gerarXMLVenda();
+			
+			// System.out.println(XMLVenda);
 
 		} catch (Exception e) {
 			e.printStackTrace();

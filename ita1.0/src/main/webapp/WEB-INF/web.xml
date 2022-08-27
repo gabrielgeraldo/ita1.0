@@ -41,7 +41,7 @@
 	</context-param>
 
 	<session-config>
-		<session-timeout>6</session-timeout>
+		<session-timeout>0</session-timeout>
 		<tracking-mode>COOKIE</tracking-mode>
 	</session-config>
 

@@ -16,6 +16,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 import br.com.ita.dominio.NTFe;
+import br.com.ita.dominio.Venda;
 
 @Entity
 @Table(name = "contas_receber")
@@ -27,23 +28,23 @@ public class ContasReceber implements Serializable {
 	private ContasReceberPK id;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@NotNull(message = "A emissão é de preenchimento obrigatório.")
+	@NotNull(message = "A emissï¿½o ï¿½ de preenchimento obrigatï¿½rio.")
 	private Date emissao;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@NotNull(message = "A vencimento é de preenchimento obrigatório.")
+	@NotNull(message = "A vencimento ï¿½ de preenchimento obrigatï¿½rio.")
 	private Date vencimento;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date baixa;
 
-	@NotNull(message = "A valor é de preenchimento obrigatório.")
-	@DecimalMin(value = "0.01", message = "O valor deverá ser superior a 0.00")
+	@NotNull(message = "A valor ï¿½ de preenchimento obrigatï¿½rio.")
+	@DecimalMin(value = "0.01", message = "O valor deverï¿½ ser superior a 0.00")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal valor;
 
-	@NotNull(message = "O saldo é de preenchimento obrigatório.")
-	@DecimalMin(value = "0.00", message = "O saldo deverá ser um valor positivo")
+	@NotNull(message = "O saldo ï¿½ de preenchimento obrigatï¿½rio.")
+	@DecimalMin(value = "0.00", message = "O saldo deverï¿½ ser um valor positivo")
 	@Column(precision = 7, scale = 2, nullable = false)
 	private BigDecimal saldo;
 
@@ -52,6 +53,9 @@ public class ContasReceber implements Serializable {
 
 	@ManyToOne
 	private NTFe nfe;
+
+	@ManyToOne
+	private Venda venda;
 
 	public ContasReceberPK getId() {
 		return id;
@@ -115,6 +119,14 @@ public class ContasReceber implements Serializable {
 
 	public void setNfe(NTFe nfe) {
 		this.nfe = nfe;
+	}
+
+	public Venda getVenda() {
+		return venda;
+	}
+
+	public void setVenda(Venda venda) {
+		this.venda = venda;
 	}
 
 	@Override

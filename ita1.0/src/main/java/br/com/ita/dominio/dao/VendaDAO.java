@@ -1,6 +1,7 @@
 package br.com.ita.dominio.dao;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -368,19 +369,20 @@ public class VendaDAO extends JpaDAO<Venda> implements Serializable {
 
 	public List<Object> lerVendasTodasMesNFeNFCeVenda() {
 
-		Query query = this.getEntityManager().createNativeQuery("SELECT Sum(total) AS total FROM nfe WHERE "
-				+ "DATE_PART('MONTH', data) = DATE_PART('MONTH', CURRENT_TIMESTAMP)"
+		Query query = this.getEntityManager()
+				.createNativeQuery("SELECT Sum(total) AS total FROM nfe WHERE "
+						+ "DATE_PART('MONTH', data) = DATE_PART('MONTH', CURRENT_TIMESTAMP)"
 
-				+ "UNION ALL"
+						+ "UNION ALL"
 
-				+ " SELECT Sum(total) AS total FROM  nfce WHERE "
-				+ "DATE_PART('MONTH', data) = DATE_PART('MONTH', CURRENT_TIMESTAMP)"
+						+ " SELECT Sum(total) AS total FROM  nfce WHERE "
+						+ "DATE_PART('MONTH', data) = DATE_PART('MONTH', CURRENT_TIMESTAMP)"
 
-				+ "UNION ALL"
+						+ "UNION ALL"
 
-				+ " SELECT Sum(total) AS total FROM  venda WHERE "
-				+ "DATE_PART('MONTH', data) = DATE_PART('MONTH', CURRENT_TIMESTAMP)"
-				+ "AND    situacao = 'FINALIZADA'");
+						+ " SELECT Sum(total) AS total FROM  venda WHERE "
+						+ "DATE_PART('MONTH', data) = DATE_PART('MONTH', CURRENT_TIMESTAMP)"
+						+ "AND    situacao = 'FINALIZADA'");
 
 		@SuppressWarnings("unchecked")
 		List<Object> results = query.getResultList();
@@ -407,4 +409,16 @@ public class VendaDAO extends JpaDAO<Venda> implements Serializable {
 		return criteria.list();
 	}
 
+	public Long proximoNumeroVenda() {
+		/*
+		Query q = this.getEntityManager().createQuery("SELECT nextval('codigo_venda')");
+		BigDecimal result = (BigDecimal) q.getSingleResult();
+		return result.longValue();
+		*/
+		
+		Query query = this.getEntityManager().createNativeQuery("SELECT nextval('codigo_venda')");
+        Object obj = query.getSingleResult();
+        return ( (java.math.BigInteger)obj ).longValue();
+
+	}
 }

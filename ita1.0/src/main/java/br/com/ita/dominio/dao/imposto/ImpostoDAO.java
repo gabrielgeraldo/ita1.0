@@ -20,7 +20,7 @@ public class ImpostoDAO extends JpaDAO<Imposto> implements Serializable {
 	public ImpostoDAO(EntityManager manager) {
 		super(manager);
 	}
-	
+
 	public Long contaRegistros() {
 
 		Session session = this.getEntityManager().unwrap(Session.class);
@@ -30,5 +30,5 @@ public class ImpostoDAO extends JpaDAO<Imposto> implements Serializable {
 		return cont;
 
 	}
-	
+
 }

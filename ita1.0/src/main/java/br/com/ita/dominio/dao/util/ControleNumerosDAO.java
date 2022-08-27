@@ -72,7 +72,7 @@ public class ControleNumerosDAO extends JpaDAO<ControleNumeros> implements Seria
 
 			ControleNumeros numeroASerAtualizado = buscaNumeroPorTabelaEChave(tabela, chave);
 
-			// System.out.println("Antes atualização:");
+			// System.out.println("Antes atualizaï¿½ï¿½o:");
 			// System.out.println("Anterior:" +
 			// numeroASerAtualizado.getNumeroAnterior());
 			// System.out.println("Atual:" +
@@ -84,7 +84,7 @@ public class ControleNumerosDAO extends JpaDAO<ControleNumeros> implements Seria
 			numeroASerAtualizado.setNumeroAtual(numeroASerAtualizado.getNumeroAtual() + 1);
 			numeroASerAtualizado.setProximoNumero(numeroASerAtualizado.getProximoNumero() + 1);
 
-			// System.out.println("Após atualização:");
+			// System.out.println("Apï¿½s atualizaï¿½ï¿½o:");
 			// System.out.println("Anterior:" +
 			// numeroASerAtualizado.getNumeroAnterior());
 			// System.out.println("Atual:" +
@@ -125,14 +125,16 @@ public class ControleNumerosDAO extends JpaDAO<ControleNumeros> implements Seria
 										+ "INSERT INTO controle_numeros (codigo, chave, numeroanterior, numeroatual, proximonumero, tabela) VALUES (4, '4', 0, 1, 2, 'nfe');"
 										+ "INSERT INTO controle_numeros (codigo, chave, numeroanterior, numeroatual, proximonumero, tabela) VALUES (1, '1', 0, 1, 2, 'nfe');"
 										+ "INSERT INTO controle_numeros (codigo, chave, numeroanterior, numeroatual, proximonumero, tabela) VALUES (5, '1', 0, 1, 2, 'nfce');"
-										+ "INSERT INTO controle_numeros (codigo, chave, numeroanterior, numeroatual, proximonumero, tabela) VALUES (6, '1', 0, 1, 2, 'orc');")
+										+ "INSERT INTO controle_numeros (codigo, chave, numeroanterior, numeroatual, proximonumero, tabela) VALUES (6, '1', 0, 1, 2, 'orc');"
+										+ "INSERT INTO controle_numeros (codigo, chave, numeroanterior, numeroatual, proximonumero, tabela) VALUES (7, '2', 0, 1, 2, 'nfce');")
+						
 						.executeUpdate();
 
 				query = this.getEntityManager().createNativeQuery("Select * from controle_numeros");
 
 				if (!query.getResultList().isEmpty()) {
-					JSFUtil.retornarMensagemInfo(null, "Criando números! Aguarde...", null);
-					System.out.println("Criando números! Aguarde...");
+					JSFUtil.retornarMensagemInfo(null, "Criando nï¿½meros! Aguarde...", null);
+					System.out.println("Criando nï¿½meros! Aguarde...");
 				}
 
 				if (!transacaoAtiva)
@@ -142,8 +144,8 @@ public class ControleNumerosDAO extends JpaDAO<ControleNumeros> implements Seria
 
 				this.desfazerTransacao();
 
-				JSFUtil.retornarMensagemErro(null, "Erro ao criar números, entre em contato com suporte.", null);
-				System.out.println("Erro ao criar números, entre em contato com suporte.");
+				JSFUtil.retornarMensagemErro(null, "Erro ao criar nï¿½meros, entre em contato com suporte.", null);
+				System.out.println("Erro ao criar nï¿½meros, entre em contato com suporte.");
 
 				e.printStackTrace();
 			}

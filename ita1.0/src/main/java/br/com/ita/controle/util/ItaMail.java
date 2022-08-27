@@ -26,11 +26,11 @@ public class ItaMail {
 
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("infosistemaita@gmail.com", "ita$4074");
+				return new PasswordAuthentication("infosistemaita@gmail.com", "ita*4*7*");
 			}
 		});
 
-		/** Ativa Debug para sessão */
+		/** Ativa Debug para sessï¿½o */
 		session.setDebug(false);
 
 		try {
@@ -39,7 +39,7 @@ public class ItaMail {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("infosistemaita@gmail.com"));
 
-			// Destinatário(s)
+			// Destinatï¿½rio(s)
 			Address[] toUser = InternetAddress.parse("gabrieldomingosgeraldo@gmail.com");
 
 			message.setRecipients(Message.RecipientType.TO, toUser);
@@ -47,7 +47,7 @@ public class ItaMail {
 			// Assunto
 			message.setSubject(assunto);
 			message.setText(corpo);
-			/** Método para enviar a mensagem criada */
+			/** Mï¿½todo para enviar a mensagem criada */
 			Transport.send(message);
 
 		} catch (MessagingException e) {

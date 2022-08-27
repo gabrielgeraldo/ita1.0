@@ -17,6 +17,7 @@ import br.com.ita.controle.util.JSFUtil;
 import br.com.ita.controle.venda.util.VendaService;
 import br.com.ita.dominio.Cliente;
 import br.com.ita.dominio.CondicaoPagamento;
+import br.com.ita.dominio.FormaPagamento;
 import br.com.ita.dominio.ItemOrcamento;
 import br.com.ita.dominio.ItemVenda;
 import br.com.ita.dominio.Orcamento;
@@ -78,14 +79,22 @@ public class EfetuarVendaMB implements Serializable {
 
 	private TipoPesquisaProduto tipoPesquisaProduto;
 
+	private boolean renderizaCompoentesDeParcelas;
+
+	private boolean desabilitaHabilitaCompoentesDeParcelas;
+
+	private VendaDAO daoVenda = new VendaDAO();
+
 	@PostConstruct
 	public void init() {
 		venda.setTotal(new BigDecimal("0.00"));
 		this.setItensVenda(new ArrayList<ItemVenda>());
-		
+
 		itemVenda.setQuantidade(1);
 
 		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
+
+		venda.setCodigo(daoVenda.proximoNumeroVenda());
 
 	}
 
@@ -111,6 +120,38 @@ public class EfetuarVendaMB implements Serializable {
 
 	public List<Orcamento> completeOrcamento(String orcamento) {
 		return this.daoOrcamento.autoCompleteOrcamento(orcamento);
+	}
+
+	public void renderizaCompoentesDeParcelas() {
+		if (this.venda.getCondicaoPagamento().getFormaPagamento() == FormaPagamento.APRAZO)
+			this.renderizaCompoentesDeParcelas = true;
+		else
+			this.renderizaCompoentesDeParcelas = false;
+
+	}
+
+	public String calcularParcelas() {
+		
+		if (venda.getCondicaoPagamento().getFormaPagamento() == FormaPagamento.APRAZO) {
+			if (venda.getCliente() == null) {
+				JSFUtil.retornarMensagemErro(null, "Forma de pagamento a prazo e cliente não informado.", null);
+				return null;
+			}
+		}
+
+		this.venda.calculaParcelas();
+
+		JSFUtil.retornarMensagemAviso(null, "Parcelas calculadas.", null);
+		
+		return null;
+
+	}
+
+	public void excluirParcelas() {
+
+		this.venda.excluirParcelas();
+
+		JSFUtil.retornarMensagemAviso(null, "Parcelas excluidas.", null);
 	}
 
 	public void adicionarProdutoPeloCodigo() {
@@ -311,8 +352,10 @@ public class EfetuarVendaMB implements Serializable {
 		itensVenda = new ArrayList<ItemVenda>();
 
 		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
-		
+
 		itemVenda.setQuantidade(1);
+
+		this.renderizaCompoentesDeParcelas = false;
 
 		return "/EfetuarVenda/efetuarVenda?faces-redirect=true";
 	}
@@ -329,13 +372,26 @@ public class EfetuarVendaMB implements Serializable {
 			return null;
 		}
 
-		venda.setSituacao("FINALIZADA");
+		
+		if (this.venda.getCondicaoPagamento().getFormaPagamento() == FormaPagamento.APRAZO
+				&& this.venda.getContasReceber() == null && this.venda.getNumeroDeParcelas() >= 1) {
 
-		VendaDAO daoVenda = new VendaDAO();
+			this.venda.calculaParcelas();
+
+			JSFUtil.retornarMensagemAviso(null, "Parcelas calculadas.", null);
+
+			return null;
+
+		}
+
+		venda.setSituacao("FINALIZADA");
+		venda.setValorTroco(venda.getValorPagamento().subtract(venda.getTotal()));
+
 		Venda vendaSalva = daoVenda.salvarVenda(venda, itensVenda);
 
 		if (vendaSalva != null && vendaSalva.getCodigo() != null)
-			JSFUtil.retornarMensagemInfo(null, "Venda finalizada com sucesso! Código: " + vendaSalva.getCodigo(), null);
+			JSFUtil.retornarMensagemInfo(null, "Venda finalizada com sucesso! Código: " + vendaSalva.getCodigo() + " "
+					+ "Troco: " + venda.getValorTroco(), null);
 
 		this.iniciarVenda();
 
@@ -482,6 +538,22 @@ public class EfetuarVendaMB implements Serializable {
 
 	public void setTipoPesquisaProduto(TipoPesquisaProduto tipoPesquisaProduto) {
 		this.tipoPesquisaProduto = tipoPesquisaProduto;
+	}
+
+	public boolean isRenderizaCompoentesDeParcelas() {
+		return renderizaCompoentesDeParcelas;
+	}
+
+	public void setRenderizaCompoentesDeParcelas(boolean renderizaCompoentesDeParcelas) {
+		this.renderizaCompoentesDeParcelas = renderizaCompoentesDeParcelas;
+	}
+
+	public boolean isDesabilitaHabilitaCompoentesDeParcelas() {
+		return desabilitaHabilitaCompoentesDeParcelas;
+	}
+
+	public void setDesabilitaHabilitaCompoentesDeParcelas(boolean desabilitaHabilitaCompoentesDeParcelas) {
+		this.desabilitaHabilitaCompoentesDeParcelas = desabilitaHabilitaCompoentesDeParcelas;
 	}
 
 }

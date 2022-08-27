@@ -379,6 +379,7 @@ public class NFeMB implements Serializable {
 
 		this.desabilitaHabilita = false;
 		this.renderizaCompoentesDeParcelas = false;
+		
 		// this.desabilitaHabilitaCompoentesDeParcelas = true;
 
 		this.devolucao = true;
@@ -390,7 +391,28 @@ public class NFeMB implements Serializable {
 		nfe.setNfOperacaoConsumidorFinal(NFOperacaoConsumidorFinal.SIM);
 		nfe.setNfIndicadorPresencaComprador(NFIndicadorPresencaComprador.NAO_APLICA);
 		nfe.setNfModalidadeFrete(NFModalidadeFrete.SEM_OCORRENCIA_TRANSPORTE);
-
+		
+		nfe.setRegimeTributario(NFRegimeTributario.SIMPLES_NACIONAL);
+		nfe.setICMS(br.com.ita.dominio.imposto.ICMS.ICMSSN102);
+		nfe.setSituacaoOperacaoSN(NFNotaSituacaoOperacionalSimplesNacional.TRIBUTADA_SEM_PERMISSAO_CREDITO);
+		nfe.setOrigem(NFOrigem.NACIONAL);
+		
+		nfe.setSituacaoTributariaPIS(NFNotaInfoSituacaoTributariaPIS.OUTRAS_OPERACOES);
+		nfe.setValorBaseCalculoPIS("0.00");
+		nfe.setPercentualAliquotaPIS("0.00");
+		nfe.setValorTributoPIS("0.00");
+		nfe.setQuantidadeVendidaPIS("0.00");
+		nfe.setValorAliquotaPIS("0.00");
+		
+		nfe.setSituacaoTributariaCOFINS(NFNotaInfoSituacaoTributariaCOFINS.OUTRAS_OPERACOES);
+		nfe.setValorBaseCalculoCOFINS("0.00");
+		nfe.setPercentualAliquotaCOFINS("0.00");
+		nfe.setValorCOFINS("0.00");
+		nfe.setQuantidadeVendidaCOFINS("0.00");
+		nfe.setValorAliquotaCOFINS("0.00");
+		nfe.setValorTributoCOFINS("0.00");
+		nfe.setPercentualCOFINS("0.00");
+		
 		this.setItensNfe(new ArrayList<ItemNTFe>());
 
 		nfe.setTotal(new BigDecimal("0.00"));

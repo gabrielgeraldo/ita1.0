@@ -49,10 +49,14 @@ public class DanfeUtil {
 			@SuppressWarnings("rawtypes") // VERIFICAR.
 			HashMap mapa = new HashMap();
 
-			String caminhoLogoDanfe = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/report/logo-nfe.png");
+			String caminhoLogoDanfe = "c://ita//system//logo.png";
+
+			// caminhoLogoDanfe = FacesContext.getCurrentInstance().getExternalContext()
+					// .getRealPath("/report/logo-nfe.png");
 
 			mapa.put("Logo", caminhoLogoDanfe);
+
+			System.out.println(mapa);
 
 			// Gerando o relatorio (Filling) informando o caminho do relatorio,
 			// os parametros (neste caso nenhum paramentro esta sendo passado ao

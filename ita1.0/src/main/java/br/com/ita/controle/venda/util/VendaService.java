@@ -601,6 +601,9 @@ public class VendaService implements Serializable {
 		lsFpgto.add(fpgto);
 
 		pagamento.setDetalhamentoFormasPagamento(lsFpgto);
+		
+		pagamento.setValorTroco(this.venda.getValorTroco());
+		
 		pagamentos.add(pagamento);
 
 	}

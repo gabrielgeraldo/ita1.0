@@ -43,6 +43,11 @@ public class Configuracao implements BaseEntity, Serializable {
 	@NotNull(message = "A senha do mês é de preenchimento obrigatório.")
 	private String senhaMes;
 
+	@Column(length = 1, nullable = false, columnDefinition = "VARCHAR(1) default '1'")
+	@NotNull(message = "A série é de preenchimento obrigatório.")
+	@Size(min = 1, max = 1, message = "A série deve somente 1 caractere.")
+	private String serieNfce;
+
 	public Long getCodigo() {
 		return codigo;
 	}
@@ -89,6 +94,14 @@ public class Configuracao implements BaseEntity, Serializable {
 
 	public void setSenhaMes(String senhaMes) {
 		this.senhaMes = senhaMes;
+	}
+
+	public String getSerieNfce() {
+		return serieNfce;
+	}
+
+	public void setSerieNfce(String serieNfce) {
+		this.serieNfce = serieNfce;
 	}
 
 }

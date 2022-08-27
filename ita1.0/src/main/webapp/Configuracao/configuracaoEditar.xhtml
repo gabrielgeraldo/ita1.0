@@ -49,8 +49,6 @@
 
 					<p:tab title="NF-e">
 
-						<br />
-
 						<p:panelGrid columns="2" layout="grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
 
@@ -132,6 +130,20 @@
 								value="#{configuracaoMB.configuracao.codigoSegurancaContribuinte}"
 								converter="toUpperCaseConverter" style="width: 300px">
 							</p:inputText>
+
+						</p:panelGrid>
+
+						<br />
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel for="ser" value="Série:" />
+							<p:selectOneMenu id="ser"
+								value="#{configuracaoMB.configuracao.serieNfce}">
+								<f:selectItem itemLabel="1" itemValue="1" />
+								<f:selectItem itemLabel="2" itemValue="2" />
+							</p:selectOneMenu>
 
 						</p:panelGrid>
 

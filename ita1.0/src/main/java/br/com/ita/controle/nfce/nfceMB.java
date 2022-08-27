@@ -143,7 +143,7 @@ public class nfceMB implements Serializable {
 
 		// String sessionId = VaadinSession.getCurrent().getSession().getId();
 
-		ControleNumeros n = daoControleNumeros.buscaNumeroPorTabelaEChave("nfce", "1");
+		ControleNumeros n = daoControleNumeros.buscaNumeroPorTabelaEChave("nfce", configuracao.getSerieNfce());
 		nfce.setSerie(Integer.parseInt(n.getChave()));
 		nfce.setNumero(n.getNumeroAtual());
 

@@ -261,35 +261,48 @@
 						style="margin-top:20px;margin-bottom: 10px">
 
 						<p:dataTable id="tabProdutos" var="item"
+							style="background-color: LightBlue;border-color:SkyBlue;"
 							value="#{orcamentoMB.produtos}" emptyMessage="Não há itens."
 							widgetVar="itemTable"
 							filteredValue="#{orcamentoMB.produtosFiltrados}"
-							rowKey="#{item.codigo}" selectionMode="single">
+							rowKey="#{item.codigo}" >
 
 							<f:facet name="header">
 								<h:outputText value="Produtos filtrados (Max. 50 itens)." />
 							</f:facet>
 
-							<p:column style="width:120px" sortBy="#{item.codigo}">
+							<p:column
+								style="width:120px;background-color: SteelBlue;border-color:#386890;"
+								sortBy="#{item.codigo}">
 								<f:facet name="header">
-									<h:outputText value="Código" />
+									<b><h:outputText value="Código"
+											style="color: white;font-family: 'arial" /></b>
 								</f:facet>
-								<h:outputText value="#{item.codigo}" />
+								<b><h:outputText value="#{item.codigo}"
+										style="color: white;font-family: 'arial" /></b>
 							</p:column>
 
-							<p:column style="width:120px" sortBy="#{item.codigoBarras}">
+							<p:column
+								style="width:120px;background-color: LightBlue;border-color:SkyBlue;"
+								sortBy="#{item.codigoBarras}">
 								<f:facet name="header">
-									<h:outputText value="Código de barras" />
+									<b><h:outputText value="Código de barras"
+											style="color: 1C1C1C;font-family: 'arial" /></b>
 								</f:facet>
-								<h:outputText value="#{item.codigoBarras}" />
+								<b><h:outputText value="#{item.codigoBarras}"
+										style="color: 1C1C1C;font-family: 'arial" /></b>
 							</p:column>
 
-							<p:column style="width:400px" sortBy="#{item.descricao}">
+							<p:column
+								style="width:400px;background-color: LightBlue;border-color:SkyBlue;"
+								sortBy="#{item.descricao}">
 								<f:facet name="header">
-									<h:outputText value="Descrição" />
+									<b><h:outputText value="Descrição"
+											style="color: 1C1C1C;font-family: 'arial" /></b>
 								</f:facet>
-								<h:outputText
-									value="#{item.descricao.length() >= 65 ? item.descricao.substring(0,65).concat('...') : item.descricao}" />
+								<b><h:outputText
+										value="#{item.descricao.length() >= 65 ? item.descricao.substring(0,65).concat('...') : item.descricao}"
+										style="color: 1C1C1C;font-family: 'arial" /></b>
 							</p:column>
 
 							<ui:remove>
@@ -309,37 +322,51 @@
 
 							</ui:remove>
 
-							<p:column style="width:130px"
+							<p:column
+								style="width:130px;background-color: LightBlue;border-color:SkyBlue;"
 								sortBy="#{item.categoria.toString()}">
 								<f:facet name="header">
-									<h:outputText value="Categoria" />
+									<b><h:outputText value="Categoria"
+											style="color: 1C1C1C;font-family: 'arial" /></b>
 								</f:facet>
-								<h:outputText value="#{item.categoria}" />
+								<b><h:outputText value="#{item.categoria}"
+										style="color: 1C1C1C;font-family: 'arial" /></b>
 							</p:column>
 
-							<p:column style="width:95px" sortBy="#{item.precoUnitario}">
+							<p:column
+								style="width:95px;background-color: LightBlue;border-color:SkyBlue;"
+								sortBy="#{item.precoUnitario}">
 								<f:facet name="header">
-									<h:outputText value="Preço Unitário" />
+									<b><h:outputText value="Preço Unitário"
+											style="color: 1C1C1C;font-family: 'arial" /></b>
 								</f:facet>
-								<h:outputText value="R$ #{item.precoUnitario}" />
+								<b><h:outputText value="R$ #{item.precoUnitario}"
+										style="color: 1C1C1C;font-family: 'arial" /></b>
 							</p:column>
 
-							<p:column style="width:95px" sortBy="#{item.qtdEstq}">
+							<p:column
+								style="width:95px;background-color: LightBlue;border-color:SkyBlue;"
+								sortBy="#{item.qtdEstq}">
 								<f:facet name="header">
-									<h:outputText value="Qtd.Estq." />
+									<b><h:outputText value="Qtd.Estq."
+											style="color: 1C1C1C;font-family: 'arial" /></b>
 								</f:facet>
-								<h:outputText value="#{item.qtdEstq}" />
+								<b><h:outputText value="#{item.qtdEstq}"
+										style="color: 1C1C1C;font-family: 'arial" /></b>
 							</p:column>
 
-							<p:column style="width:60px">
+							<p:column
+								style="width:60px;background-color: LightBlue;border-color:SkyBlue;">
 
 								<f:facet name="header">
-									<h:outputText value="Ações" />
+									<b><h:outputText value="Ações"
+											style="color: 1C1C1C;font-family: 'arial" /></b>
 								</f:facet>
 
 								<div align="center">
 
 									<p:commandButton value="X"
+										style=";background-color: SteelBlue;border-color:#386890;color:white;font-weight: bold"
 										actionListener="#{orcamentoMB.adicionar}" ajax="false"
 										update=":formOrcamento:panelItens  :formPesquisaProdutos :formOrcamento:messagens"
 										oncomplete="handleLoginRequest(xhr, status, args)">
