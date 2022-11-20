@@ -151,6 +151,12 @@
 			<version>2.1.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>4.2</version>
+		</dependency>
+
 		<!-- necessario jasper -->
 
 		<!-- Spring Security (autenticação e autorização) -->
