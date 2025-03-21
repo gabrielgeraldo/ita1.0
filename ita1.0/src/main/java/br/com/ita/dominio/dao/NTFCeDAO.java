@@ -48,7 +48,7 @@ public class NTFCeDAO extends JpaDAO<NTFCe> implements Serializable {
 				this.getEntityManager().merge(item);
 
 				Produto produto = item.getProduto();
-				produto.setQtdEstq(produto.getQtdEstq() - item.getQuantidade());
+				// produto.setQtdEstq(produto.getQtdEstq() - item.getQuantidade());
 
 				this.getEntityManager().merge(produto);
 

@@ -77,7 +77,7 @@ public class Produto implements BaseEntityP, Serializable {
 	}
 
 	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+		this.descricao = descricao.trim();
 	}
 
 	public Fornecedor getFornecedor() {

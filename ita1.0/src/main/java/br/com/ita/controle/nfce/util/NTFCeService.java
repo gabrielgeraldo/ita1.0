@@ -2,6 +2,7 @@ package br.com.ita.controle.nfce.util;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoEmitente;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoFormaPagamento;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoICMSTotal;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoIdentificacao;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoInformacoesAdicionais;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItem;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImposto;
 import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaInfoItemImpostoCOFINS;
@@ -688,12 +690,12 @@ public class NTFCeService implements Serializable {
 					? itensNfce.get(i).getProduto().getUnidadeComercial()
 					: "");
 
-			produto.setQuantidadeComercial(new BigDecimal(itensNfce.get(i).getQuantidade()) != null
-					? new BigDecimal(itensNfce.get(i).getQuantidade())
+			produto.setQuantidadeComercial(itensNfce.get(i).getQuantidade() != null
+					? itensNfce.get(i).getQuantidade()
 					: null);
 
-			produto.setQuantidadeTributavel(new BigDecimal(itensNfce.get(i).getQuantidade()) != null
-					? new BigDecimal(itensNfce.get(i).getQuantidade())
+			produto.setQuantidadeTributavel(itensNfce.get(i).getQuantidade() != null
+					? itensNfce.get(i).getQuantidade()
 					: null);
 
 			produto.setValorUnitario(itensNfce.get(i).getProduto().getPrecoUnitario() != null
@@ -703,9 +705,12 @@ public class NTFCeService implements Serializable {
 			produto.setValorUnitarioTributavel(itensNfce.get(i).getProduto().getPrecoUnitario() != null
 					? itensNfce.get(i).getProduto().getPrecoUnitario()
 					: null);
-
+			
+			System.out.println("x"+itensNfce.get(i).getProduto().getPrecoUnitario()
+					.multiply(itensNfce.get(i).getQuantidade()).setScale(2, RoundingMode.HALF_EVEN));
+			
 			produto.setValorTotalBruto(itensNfce.get(i).getProduto().getPrecoUnitario()
-					.multiply(new BigDecimal(itensNfce.get(i).getQuantidade())));
+					.multiply(itensNfce.get(i).getQuantidade()).setScale(2, RoundingMode.HALF_EVEN));
 
 			produto.setCompoeValorNota(NFProdutoCompoeValorNota.SIM);
 
@@ -1809,7 +1814,20 @@ public class NTFCeService implements Serializable {
 
 				default:
 				}
+			
+			if (this.nfce.getInformacoesComplementares() != null) {
 
+				// SE NAO FOR STRING VAZIA.
+				if (!this.nfce.getInformacoesComplementares().equals("")) {
+
+					NFNotaInfoInformacoesAdicionais infoAdc = new NFNotaInfoInformacoesAdicionais();
+					infoAdc.setInformacoesComplementaresInteresseContribuinte(nfce.getInformacoesComplementares());
+					info.setInformacoesAdicionais(infoAdc);
+
+				}
+
+			}
+			
 			item.setProduto(produto);
 
 			item.setImposto(imposto);
@@ -1880,7 +1898,7 @@ public class NTFCeService implements Serializable {
 		// nfs.setUrlConsultaChaveAcesso(geraQRCode.urlConsultaChaveAcesso());
 		// nfs.setQrCode(geraQRCode.getQRCode());
 		// nota.setInfoSuplementar(nfs);
-
+		
 		QRCode geraQRCode20 = new QRCode(nota, config);
 		NFNotaInfoSuplementar nfs = new NFNotaInfoSuplementar();
 		nfs.setUrlConsultaChaveAcesso(geraQRCode20.urlConsultaChaveAcesso());
@@ -1977,7 +1995,9 @@ public class NTFCeService implements Serializable {
 		System.out.println("dt. Emissao: " + lote.getNotas().get(0).getInfo().getIdentificacao().getDataHoraEmissao());
 		System.out.println("Numero NF: " + lote.getNotas().get(0).getInfo().getIdentificacao().getNumeroNota());
 		System.out.println("Serie NF: " + lote.getNotas().get(0).getInfo().getIdentificacao().getSerie());
-
+		
+		System.out.println(lote.getNotas().get(0).toString());
+		
 		System.out.println(" ");
 
 		System.out.println("----------DADOS CONTIDOS NO LOTE FIM--------------");

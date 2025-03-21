@@ -180,7 +180,7 @@
 
 		<!-- https://mvnrepository.com/artifact/com.github.wmixvideo/nfe -->
 		<!--<dependency> <groupId>com.github.gabrielgeraldo</groupId> <artifactId>nfe</artifactId> 
-			<version>correcao_url_rj_2-SNAPSHOT</version> </dependency> -->
+			<version>master</version> </dependency>--> 
 
 		<!-- https://mvnrepository.com/artifact/com.github.wmixvideo/nfe -->
 		<dependency>
@@ -383,6 +383,14 @@
 			<version>2.2.11</version>
 		</dependency>
 		<!-- removido 20210331 após recuperar windows -->
+
+		<!-- https://mvnrepository.com/artifact/org.richfaces/richfaces -->
+		<dependency>
+			<groupId>org.richfaces</groupId>
+			<artifactId>richfaces</artifactId>
+			<version>4.5.6.Final</version>
+		</dependency>
+
 
 	</dependencies>
 	<repositories>

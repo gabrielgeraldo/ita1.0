@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "nfce")
@@ -80,6 +81,10 @@ public class NTFCe implements BaseEntity, Serializable {
 	@DecimalMin(value = "0.01", message = "O valor pagamento deverá ser superior a 0.00")
 	@Column(precision = 7, scale = 2, nullable = false, columnDefinition = "decimal(7,2) default 0")
 	private BigDecimal valorPagamento;
+
+	@Column(length = 145)
+	@Size(min = 0, max = 145, message = "O campo informaçãoes complementares deve ter no máximo 145 caracteres.")
+	private String informacoesComplementares;
 
 	public Long getCodigo() {
 		return codigo;
@@ -207,6 +212,14 @@ public class NTFCe implements BaseEntity, Serializable {
 
 	public void setValorPagamento(BigDecimal valorPagamento) {
 		this.valorPagamento = valorPagamento;
+	}
+
+	public String getInformacoesComplementares() {
+		return informacoesComplementares;
+	}
+
+	public void setInformacoesComplementares(String informacoesComplementares) {
+		this.informacoesComplementares = informacoesComplementares.trim();
 	}
 
 	@Override

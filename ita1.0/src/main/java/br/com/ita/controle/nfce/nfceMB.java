@@ -3,6 +3,7 @@ package br.com.ita.controle.nfce;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,7 +120,7 @@ public class nfceMB implements Serializable {
 
 		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
 
-		itemNfce.setQuantidade(1);
+		itemNfce.setQuantidade(new BigDecimal("1.00"));
 
 	}
 
@@ -145,11 +146,12 @@ public class nfceMB implements Serializable {
 
 		ControleNumeros n = daoControleNumeros.buscaNumeroPorTabelaEChave("nfce", configuracao.getSerieNfce());
 		nfce.setSerie(Integer.parseInt(n.getChave()));
+		
 		nfce.setNumero(n.getNumeroAtual());
 
 		this.setTipoPesquisaProduto(TipoPesquisaProduto.DESCRICAO);
 
-		itemNfce.setQuantidade(1);
+		itemNfce.setQuantidade(new BigDecimal("1.00"));
 
 	}
 
@@ -189,32 +191,56 @@ public class nfceMB implements Serializable {
 
 		if (produto != null) {
 
-			int posicaoEncntrada = -1;
+			if (produto.getUnidadeComercial().equals("LT")) {
 
-			for (int i = 0; i < itensNfce.size() && posicaoEncntrada < 0; i++) {
-				ItemNTFCe itemTemp = itensNfce.get(i);
+				itemNfce.setProduto(produto);
 
-				if (itemTemp.getProduto().equals(produto)) {
-					posicaoEncntrada = i;
-				}
-			}
-
-			itemNfce.setProduto(produto);
-
-			if (posicaoEncntrada < 0) {
-				itemNfce.setQuantidade(1);
+				itemNfce.setQuantidade(
+						nfce.getValorPagamento().divide(produto.getPrecoUnitario(), 3, RoundingMode.HALF_UP));
+				
+				// System.out.println("x:"+nfce.getValorPagamento());
+				// System.out.println("x:"+produto.getPrecoUnitario());
+				// System.out.println("x:"+nfce.getValorPagamento().divide(produto.getPrecoUnitario(), 2, RoundingMode.HALF_UP));
+				// System.out.println("x:"+nfce.getValorPagamento().divide(produto.getPrecoUnitario(), RoundingMode.HALF_UP).intValue());
+	
+				
 				itemNfce.setPrecoCusto(produto.getPrecoCusto());
-				itemNfce.setPrecoVenda(produto.getPrecoUnitario());
+				itemNfce.setPrecoVenda(itemNfce.getQuantidade().multiply(produto.getPrecoUnitario()).setScale(2, RoundingMode.HALF_EVEN));
 				itensNfce.add(itemNfce);
-			} else {
-				ItemNTFCe itemTemp = itensNfce.get(posicaoEncntrada);
-				itemNfce.setQuantidade(itemTemp.getQuantidade() + 1);
-				itemNfce.setPrecoCusto(produto.getPrecoCusto());
-				itemNfce.setPrecoVenda(produto.getPrecoUnitario().multiply(new BigDecimal(itemNfce.getQuantidade())));
-				itensNfce.set(posicaoEncntrada, itemNfce);
-			}
 
-			nfce.setTotal(nfce.getTotal().add(produto.getPrecoUnitario()));
+				nfce.setTotal(nfce.getTotal().add(nfce.getValorPagamento()));
+
+			} else {
+
+				int posicaoEncntrada = -1;
+
+				for (int i = 0; i < itensNfce.size() && posicaoEncntrada < 0; i++) {
+					ItemNTFCe itemTemp = itensNfce.get(i);
+
+					if (itemTemp.getProduto().equals(produto)) {
+						posicaoEncntrada = i;
+					}
+				}
+
+				itemNfce.setProduto(produto);
+
+				if (posicaoEncntrada < 0) {
+					itemNfce.setQuantidade(new BigDecimal("1.00"));
+					itemNfce.setPrecoCusto(produto.getPrecoCusto());
+					itemNfce.setPrecoVenda(produto.getPrecoUnitario());
+					itensNfce.add(itemNfce);
+				} else {
+					ItemNTFCe itemTemp = itensNfce.get(posicaoEncntrada);
+					itemNfce.setQuantidade(itemTemp.getQuantidade().add(new BigDecimal("1.00")));
+					itemNfce.setPrecoCusto(produto.getPrecoCusto());
+					itemNfce.setPrecoVenda(
+							produto.getPrecoUnitario().multiply(itemNfce.getQuantidade()));
+					itensNfce.set(posicaoEncntrada, itemNfce);
+				}
+
+				nfce.setTotal(nfce.getTotal().add(produto.getPrecoUnitario()));
+
+			}
 
 			this.setItemNfce(new ItemNTFCe());
 
@@ -243,15 +269,15 @@ public class nfceMB implements Serializable {
 		itemNfce.setProduto(produto);
 
 		if (posicaoEncntrada < 0) {
-			itemNfce.setQuantidade(1);
+			itemNfce.setQuantidade(new BigDecimal("1.00"));
 			itemNfce.setPrecoCusto(produto.getPrecoCusto());
 			itemNfce.setPrecoVenda(produto.getPrecoUnitario());
 			itensNfce.add(itemNfce);
 		} else {
 			ItemNTFCe itemTemp = itensNfce.get(posicaoEncntrada);
-			itemNfce.setQuantidade(itemTemp.getQuantidade() + 1);
+			itemNfce.setQuantidade(itemTemp.getQuantidade().add(new BigDecimal("1.00")));
 			itemNfce.setPrecoCusto(produto.getPrecoCusto());
-			itemNfce.setPrecoVenda(produto.getPrecoUnitario().multiply(new BigDecimal(itemNfce.getQuantidade())));
+			itemNfce.setPrecoVenda(produto.getPrecoUnitario().multiply(itemNfce.getQuantidade()));
 			itensNfce.set(posicaoEncntrada, itemNfce);
 		}
 
@@ -290,7 +316,7 @@ public class nfceMB implements Serializable {
 			itensNfce.add(itemNfce);
 		} else {
 			ItemNTFCe itemTemp = itensNfce.get(posicaoEncntrada);
-			itemNfce.setQuantidade(itemTemp.getQuantidade() + itemNfce.getQuantidade());
+			itemNfce.setQuantidade(itemTemp.getQuantidade().add(itemNfce.getQuantidade()));
 			itemNfce.setPrecoCusto(produto.getPrecoCusto());
 			itemNfce.setPrecoVenda(produto.getPrecoUnitario());
 			itensNfce.set(posicaoEncntrada, itemNfce);
@@ -299,13 +325,13 @@ public class nfceMB implements Serializable {
 		nfce.setTotal(new BigDecimal("0.00"));
 		for (int j = 0; j < itensNfce.size(); j++) {
 			nfce.setTotal(nfce.getTotal()
-					.add(itensNfce.get(j).getPrecoVenda().multiply(new BigDecimal(itensNfce.get(j).getQuantidade()))));
+					.add(itensNfce.get(j).getPrecoVenda().multiply(itensNfce.get(j).getQuantidade())));
 
 		}
 		// -------------------- Método adicionar.
 
 		this.setItemNfce(new ItemNTFCe());
-		itemNfce.setQuantidade(1);
+		itemNfce.setQuantidade(new BigDecimal("1.00"));
 
 		boolean fecharDialog = true;
 		// RequestContext context = RequestContext.getCurrentInstance();
@@ -336,8 +362,8 @@ public class nfceMB implements Serializable {
 				itenNfce.setNfce(this.nfce);
 				itenNfce.setPrecoCusto(item.getPrecoCusto());
 				itenNfce.setPrecoVenda(item.getPrecoVenda());
-				itenNfce.setProduto(item.getProduto());
-				itenNfce.setQuantidade(item.getQuantidade());
+				itenNfce.setProduto(item.getProduto());			
+				itenNfce.setQuantidade(new BigDecimal(item.getQuantidade())); 
 
 				this.itensNfce.add(itenNfce);
 
@@ -371,9 +397,14 @@ public class nfceMB implements Serializable {
 
 		if (posicaoEncntrada > -1) {
 			itensNfce.remove(posicaoEncntrada);
-			nfce.setTotal(nfce.getTotal().subtract(itemNfce.getPrecoVenda()));
+			// nfce.setTotal(nfce.getTotal().subtract(itemNfce.getPrecoVenda()));
+			
+			if (itemNfce.getProduto().getUnidadeComercial().equals("LT")) {
+				nfce.setTotal(nfce.getTotal().subtract(nfce.getValorPagamento()));
+			} else {
+				nfce.setTotal(nfce.getTotal().subtract(itemNfce.getPrecoVenda()));
+			}
 		}
-
 	}
 
 	public String finalizarNTFCe() {

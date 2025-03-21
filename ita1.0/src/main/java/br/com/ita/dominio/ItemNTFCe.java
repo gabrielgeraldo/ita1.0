@@ -39,10 +39,10 @@ public class ItemNTFCe implements BaseEntity, Serializable {
 
 	@Column(nullable = false)
 	// @NotNull
-	private int quantidade;
+	private BigDecimal quantidade;
 
 	@Column(precision = 7, scale = 2, nullable = false)
-	// @NotNull(message = "Preço de custo não definido.")
+	// @NotNull(message = "Preï¿½o de custo nï¿½o definido.")
 	private BigDecimal precoCusto;
 
 	@Column(precision = 7, scale = 2, nullable = false)
@@ -74,11 +74,11 @@ public class ItemNTFCe implements BaseEntity, Serializable {
 		this.produto = produto;
 	}
 
-	public int getQuantidade() {
+	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(int quantidade) {
+	public void setQuantidade(BigDecimal quantidade) {
 		this.quantidade = quantidade;
 	}
 

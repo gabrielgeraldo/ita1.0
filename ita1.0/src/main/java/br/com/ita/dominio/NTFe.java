@@ -144,7 +144,7 @@ public class NTFe implements BaseEntity, Serializable {
 	private int numeroDeParcelas = 1;
 
 	@Column(length = 145)
-	@Size(min = 0, max = 145, message = "O campo informa��es complementares deve ter no m�ximo 145 caracteres.")
+	@Size(min = 0, max = 145, message = "O campo informaçãoes complementares deve ter no máximo 145 caracteres.")
 	private String informacoesComplementares;
 
 	@Enumerated(EnumType.STRING)
